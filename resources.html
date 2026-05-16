@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FRP - Resources</title>
+
+<style>
+
+/* =========================================================
+   GLOBAL DESIGN SYSTEM
+========================================================= */
+
+:root{
+    --deep-ocean:#063a4a;
+    --ocean:#007a8a;
+    --lagoon:#14b8a6;
+    --reef:#34d399;
+    --sun:#f7b538;
+    --coral:#f9735b;
+    --sand:#fff3d6;
+    --cloud:#f8fffb;
+    --ink:#123047;
+    --muted:#557084;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html,
+body{
+    margin:0;
+    height:100vh;
+    overflow:hidden;
+    font-family:Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at top left, rgba(247,181,56,0.20), transparent 28%),
+        radial-gradient(circle at top right, rgba(20,184,166,0.22), transparent 32%),
+        #f8fffb;
+    color:var(--ink);
+}
+
+body{
+    display:grid;
+    grid-template-rows:auto 1fr 26px auto;
+}
+
+a{
+    color:inherit;
+}
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+
+.navbar{
+    position:relative;
+    z-index:1000;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:9px 48px;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(0,122,138,0.12);
+    box-shadow:0 6px 20px rgba(0,80,100,0.07);
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.logo img{
+    height:31px;
+    width:auto;
+    display:block;
+}
+
+.logo-title{
+    font-weight:800;
+    color:var(--deep-ocean);
+    letter-spacing:-0.02em;
+    font-size:15px;
+}
+
+.navlinks{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.navlinks a{
+    text-decoration:none;
+    color:var(--deep-ocean);
+    font-weight:700;
+    padding:7px 13px;
+    border-radius:999px;
+    transition:0.22s;
+    font-size:15px;
+}
+
+.navlinks a:hover,
+.navlinks a.active{
+    background:linear-gradient(135deg, var(--lagoon), var(--ocean));
+    color:white;
+    transform:translateY(-1px);
+}
+
+/* =========================================================
+   SECTION GENERAL
+========================================================= */
+
+.section{
+    min-height:0;
+    padding:10px 48px 4px 48px;
+    overflow:hidden;
+}
+
+/* =========================================================
+   LEFT LIST + RIGHT PANEL LAYOUT
+========================================================= */
+
+.resources-layout{
+    display:grid;
+    grid-template-columns:0.82fr 2.18fr;
+    gap:14px;
+    height:100%;
+    min-height:0;
+    align-items:stretch;
+}
+
+.resources-list{
+    display:grid;
+    grid-template-rows:repeat(8, 1fr);
+    gap:8px;
+    height:100%;
+    min-height:0;
+}
+
+/* =========================================================
+   LEFT STACKED RESOURCE CARDS
+========================================================= */
+
+.resource-card{
+    position:relative;
+    overflow:hidden;
+    min-height:0;
+    padding:10px 14px;
+    border-radius:18px;
+    background:white;
+    box-shadow:0 8px 20px rgba(0,80,100,0.075);
+    border:1px solid rgba(0,122,138,0.10);
+    transition:0.22s;
+    text-decoration:none;
+    color:inherit;
+    cursor:pointer;
+}
+
+/* default upper-right corner */
+.resource-card::before{
+    content:"";
+    position:absolute;
+    right:-58px;
+    top:-60px;
+    width:118px;
+    height:118px;
+    border-radius:50%;
+    background:linear-gradient(135deg, rgba(247,181,56,0.22), rgba(20,184,166,0.18));
+    transition:0.22s;
+}
+
+/* bottom stripe */
+.resource-card::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:5px;
+    background:linear-gradient(90deg, var(--lagoon), var(--sun), var(--coral));
+}
+
+/* active card highlight */
+.resource-card.active::before{
+    right:-46px;
+    top:-48px;
+    width:140px;
+    height:140px;
+    background:linear-gradient(135deg, rgba(247,181,56,0.78), rgba(20,184,166,0.48));
+    box-shadow:0 0 34px rgba(247,181,56,0.28);
+}
+
+.resource-card:hover,
+.resource-card.active{
+    transform:translateY(-2px);
+    box-shadow:0 13px 30px rgba(0,80,100,0.13);
+    border-color:rgba(0,122,138,0.34);
+}
+
+.resource-card.active{
+    background:linear-gradient(180deg, #ffffff, #f4fbf8);
+}
+
+.resource-card-top{
+    position:relative;
+    z-index:2;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.resource-card .card-icon{
+    flex:0 0 auto;
+    width:33px;
+    height:33px;
+    border-radius:11px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg, var(--ocean), var(--lagoon));
+    color:white;
+    font-size:16px;
+    box-shadow:0 7px 15px rgba(20,184,166,0.22);
+}
+
+.resource-card h3{
+    position:relative;
+    z-index:2;
+    margin:0;
+    font-size:14.5px;
+    line-height:1.14;
+    color:var(--deep-ocean);
+}
+
+.resource-card p{
+    position:relative;
+    z-index:2;
+    margin:5px 0 0 43px;
+    color:var(--muted);
+    line-height:1.28;
+    font-size:11.7px;
+}
+
+/* =========================================================
+   LARGE CONTENT PANEL
+========================================================= */
+
+.resource-panel{
+    position:relative;
+    overflow:hidden;
+    min-height:0;
+    border-radius:28px;
+    background:white;
+    box-shadow:0 14px 38px rgba(0,80,100,0.10);
+    border:1px solid rgba(0,122,138,0.10);
+    padding:34px 52px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.resource-panel::before{
+    content:"";
+    position:absolute;
+    right:-145px;
+    top:-145px;
+    width:330px;
+    height:330px;
+    border-radius:50%;
+    background:linear-gradient(135deg, rgba(247,181,56,0.36), rgba(20,184,166,0.28));
+}
+
+.resource-panel::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:8px;
+    background:linear-gradient(90deg, var(--lagoon), var(--sun), var(--coral));
+}
+
+.panel-content{
+    position:relative;
+    z-index:2;
+    max-width:1080px;
+    max-height:100%;
+    overflow:auto;
+    padding-right:10px;
+}
+
+.panel-content::-webkit-scrollbar{
+    width:8px;
+}
+
+.panel-content::-webkit-scrollbar-track{
+    background:rgba(0,122,138,0.08);
+    border-radius:999px;
+}
+
+.panel-content::-webkit-scrollbar-thumb{
+    background:rgba(0,122,138,0.35);
+    border-radius:999px;
+}
+
+.panel-icon{
+    width:64px;
+    height:64px;
+    border-radius:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:22px;
+    background:linear-gradient(135deg, var(--ocean), var(--lagoon));
+    color:white;
+    font-size:31px;
+    box-shadow:0 12px 26px rgba(20,184,166,0.28);
+}
+
+.resource-panel h2{
+    margin:0 0 14px 0;
+    font-size:38px;
+    line-height:1.05;
+    color:var(--deep-ocean);
+    letter-spacing:-0.045em;
+}
+
+.resource-panel p{
+    margin:0;
+    color:var(--muted);
+    font-size:17px;
+    line-height:1.65;
+}
+
+.panel-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:24px;
+    align-items:center;
+}
+
+.panel-tag{
+    display:inline-block;
+    padding:8px 14px;
+    border-radius:999px;
+    background:#dcf8f2;
+    color:var(--ocean);
+    font-size:13px;
+    font-weight:800;
+}
+
+.panel-link{
+    display:inline-block;
+    padding:12px 19px;
+    border-radius:16px;
+    background:linear-gradient(135deg, var(--sun), #ffd166);
+    color:var(--deep-ocean);
+    font-weight:900;
+    text-decoration:none;
+    font-size:14px;
+    box-shadow:0 10px 24px rgba(247,181,56,0.28);
+    transition:0.22s;
+}
+
+.panel-link:hover{
+    transform:translateY(-2px);
+    box-shadow:0 14px 30px rgba(247,181,56,0.38);
+}
+
+.panel-note{
+    margin-top:26px;
+    padding:16px 20px;
+    border-radius:22px;
+    background:linear-gradient(135deg, rgba(220,248,242,0.75), rgba(255,243,214,0.65));
+    color:var(--deep-ocean);
+    font-size:14px;
+    line-height:1.5;
+    font-weight:600;
+}
+
+.panel-list{
+    margin:22px 0 0 0;
+    padding:0;
+    list-style:none;
+    display:grid;
+    gap:10px;
+}
+
+.panel-list li{
+    position:relative;
+    padding:12px 14px 12px 42px;
+    border-radius:16px;
+    background:linear-gradient(135deg, rgba(220,248,242,0.52), rgba(255,243,214,0.38));
+    color:var(--deep-ocean);
+    font-size:14.5px;
+    line-height:1.45;
+    font-weight:650;
+}
+
+.panel-list li::before{
+    content:"";
+    position:absolute;
+    left:16px;
+    top:18px;
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:linear-gradient(135deg, var(--lagoon), var(--sun));
+}
+
+.panel-list a{
+    color:var(--deep-ocean);
+    text-decoration:none;
+    border-bottom:1px solid rgba(0,122,138,0.25);
+}
+
+.panel-list a:hover{
+    color:var(--ocean);
+    border-bottom-color:var(--ocean);
+}
+
+/* =========================================================
+   FOOTER WAVE
+========================================================= */
+
+.footer-wave{
+    height:26px;
+    min-height:26px;
+    margin-top:0;
+    overflow:hidden;
+}
+
+.footer-wave svg{
+    width:100%;
+    height:100%;
+    display:block;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer{
+    margin-top:0;
+    background:
+        radial-gradient(circle at 12% 15%, rgba(247,181,56,0.42), transparent 28%),
+        linear-gradient(135deg, rgba(0,122,138,0.98), rgba(20,184,166,0.94));
+    padding:8px 48px;
+    border-top:1px solid rgba(255,255,255,0.26);
+    box-shadow:0 -7px 20px rgba(0,80,100,0.08);
+}
+
+.footer-inner{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+.footer-sentence{
+    max-width:1960px;
+    width:100%;
+    color:white;
+    font-size:12.5px;
+    line-height:1.35;
+    font-weight:600;
+    letter-spacing:0.01em;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1100px){
+
+    html,
+    body{
+        height:auto;
+        overflow:auto;
+    }
+
+    body{
+        display:block;
+    }
+
+    .navbar{
+        padding:14px 24px;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:12px;
+    }
+
+    .section{
+        height:auto;
+        min-height:auto;
+        padding:16px 32px 8px 32px;
+        overflow:visible;
+    }
+
+    .resources-layout{
+        grid-template-columns:1fr;
+        height:auto;
+    }
+
+    .resources-list{
+        grid-template-rows:auto;
+        height:auto;
+    }
+
+    .resource-card{
+        min-height:auto;
+    }
+
+    .resource-card p{
+        margin-left:43px;
+    }
+
+    .resource-panel{
+        min-height:420px;
+        padding:34px;
+    }
+
+    .resource-panel h2{
+        font-size:34px;
+    }
+
+    .footer{
+        padding:12px 32px;
+    }
+}
+
+@media(max-width:650px){
+
+    .navbar{
+        padding:12px 20px;
+    }
+
+    .navlinks a{
+        padding:8px 11px;
+        font-size:14px;
+    }
+
+    .logo-title{
+        font-size:14px;
+    }
+
+    .resource-card p{
+        display:none;
+    }
+
+    .resource-panel{
+        padding:28px 24px;
+    }
+
+    .resource-panel h2{
+        font-size:30px;
+    }
+
+    .resource-panel p{
+        font-size:16px;
+    }
+
+    .footer-wave{
+        height:24px;
+        min-height:24px;
+    }
+
+    .footer-sentence{
+        font-size:12px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<div class="navbar">
+
+    <div class="logo">
+        <img src="wb_blue.jpg" alt="World Bank Group">
+        <div class="logo-title">Fiscal Resilience Platform</div>
+    </div>
+
+    <div class="navlinks">
+        <a href="index.html">About</a>
+        <a href="region.html">Region</a>
+        <a href="countries.html">Countries</a>
+        <a href="themes.html">Themes</a>
+        <a href="resources.html" class="active">Resources</a>
+        <a href="community.html">Community</a>
+    </div>
+
+</div>
+
+<!-- =========================================================
+     RESOURCES CONTENT
+========================================================= -->
+
+<section class="section">
+
+    <div class="resources-layout">
+
+        <div class="resources-list">
+
+            <div class="resource-card active" onclick="showResource(0)">
+                <div class="resource-card-top">
+                    <div class="card-icon">🌊</div>
+                    <h3>Fiscal Resilience Explained</h3>
+                </div>
+                <p>Definition and core purpose.</p>
+            </div>
+
+            <div class="resource-card" onclick="showResource(1)">
+                <div class="resource-card-top">
+                    <div class="card-icon">🏝️</div>
+                    <h3>Why It Matters for Pacific SIDS</h3>
+                </div>
+                <p>Risks, shocks, and urgency in the Pacific.</p>
+            </div>
+
+            <div class="resource-card" onclick="showResource(2)">
+                <div class="resource-card-top">
+                    <div class="card-icon">🛡️</div>
+                    <h3>How It Helps Pacific SIDS</h3>
+                </div>
+                <p>What resilience enables.</p>
+            </div>
+
+            <div class="resource-card" onclick="showResource(3)">
+                <div class="resource-card-top">
+                    <div class="card-icon">🧭</div>
+                    <h3>Key Elements</h3>
+                </div>
+                <p>Buffers, revenues, PFM, risk transfer.</p>
+            </div>
+
+            <div class="resource-card" onclick="showResource(4)">
+                <div class="resource-card-top">
+                    <div class="card-icon">📘</div>
+                    <h3>Reports</h3>
+                </div>
+                <p>World Bank fiscal resilience reports.</p>
+            </div>
+
+            <div class="resource-card" onclick="showResource(5)">
+                <div class="resource-card-top">
+                    <div class="card-icon">📰</div>
+                    <h3>Articles & Blog Posts</h3>
+                </div>
+                <p>Short-form analysis and commentary.</p>
+            </div>
+
+            <div class="resource-card" onclick="showResource(6)">
+                <div class="resource-card-top">
+                    <div class="card-icon">🏗️</div>
+                    <h3>Projects</h3>
+                </div>
+                <p>Pacific DPOs and resilience operations.</p>
+            </div>
+
+            <div class="resource-card" onclick="showResource(7)">
+                <div class="resource-card-top">
+                    <div class="card-icon">🗂️</div>
+                    <h3>Datasets</h3>
+                </div>
+                <p>Data360 and fiscal space data.</p>
+            </div>
+
+        </div>
+
+        <div class="resource-panel">
+
+            <div class="panel-content">
+
+                <div id="panel-icon" class="panel-icon">🌊</div>
+
+                <h2 id="panel-title">
+                    Fiscal Resilience Explained
+                </h2>
+
+                <p id="panel-description">
+                    Fiscal resilience is the capacity of a government to effectively manage its fiscal resources in the face of economic shocks, disasters, and other unforeseen events. It involves maintaining fiscal stability and sustainability while being able to respond to and recover from adverse situations.
+                </p>
+
+                <div class="panel-meta">
+                    <div id="panel-tag" class="panel-tag">
+                        Fiscal Resilience
+                    </div>
+
+                    <a id="panel-link" href="#" class="panel-link">
+                        Open resource
+                    </a>
+                </div>
+
+                <div id="panel-note" class="panel-note">
+                    Fiscal resilience links fiscal stability, shock response, and long-term sustainability.
+                </div>
+
+                <ul id="panel-list" class="panel-list"></ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================================================
+     FOOTER WAVE
+========================================================= -->
+
+<div class="footer-wave">
+    <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
+        <path fill="#007a8a" d="M0,48 C180,90 360,90 540,50 C720,10 900,10 1080,48 C1260,86 1350,72 1440,42 L1440,90 L0,90 Z"></path>
+    </svg>
+</div>
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="footer">
+
+    <div class="footer-inner">
+        <div class="footer-sentence">
+            Fiscal resilience for Pacific SIDS is built before the next shock — through shared learning, stronger buffers, and public finance systems that protect communities when they need them most.
+        </div>
+    </div>
+
+</footer>
+
+<script>
+const resources = [
+    {
+        icon: "🌊",
+        title: "Fiscal Resilience Explained",
+        description: "Fiscal resilience is the capacity of a government to effectively manage its fiscal resources in the face of economic shocks, disasters, and other unforeseen events. It involves maintaining fiscal stability and sustainability while being able to respond to and recover from adverse situations.",
+        tag: "Fiscal Resilience",
+        note: "Fiscal resilience links fiscal stability, shock response, and long-term sustainability.",
+        link: "#",
+        items: []
+    },
+    {
+        icon: "🏝️",
+        title: "Why Fiscal Resilience Matters for Pacific SIDS",
+        description: "The slowdown in the global outlook, ongoing policy and trade uncertainty, investment and trade disruptions, and rising inflation are all threatening the economic stability of Pacific SIDS. These risks are further compounded by natural hazards. SIDS in the Pacific are highly vulnerable to climate-related disasters such as cyclones, earthquakes, volcanic eruptions, and tsunamis, which can cripple economies and infrastructure within days. Limited diversification, reliance on tourism and fishing, and geographic isolation make recovery slow. Extreme exposure to climate shocks can impose large annual economic costs. Combined with declining growth trajectories and rising sea levels, urgent action is needed to protect the economic future of Pacific SIDS.",
+        tag: "Pacific SIDS",
+        note: "Fiscal resilience is critical because Pacific island economies can be set back by years or decades when recovering from major disasters.",
+        link: "#",
+        items: []
+    },
+    {
+        icon: "🛡️",
+        title: "How Fiscal Resilience Helps Pacific SIDS",
+        description: "Building fiscal resilience enables Pacific SIDS to absorb shocks without severe economic disruption, maintain essential services during crises, create space for long-term development investments, adapt to climate change and other environmental threats, and reduce dependency on external emergency assistance.",
+        tag: "Resilience Benefits",
+        note: "Resilience is not only about recovery after disasters. It is about protecting services, livelihoods, and development before the next shock arrives.",
+        link: "#",
+        items: [
+            { text: "Absorb shocks without severe economic disruption", url: "#" },
+            { text: "Maintain essential services during crises", url: "#" },
+            { text: "Create space for long-term development investments", url: "#" },
+            { text: "Adapt to climate change and other environmental threats", url: "#" },
+            { text: "Reduce dependency on external emergency assistance", url: "#" }
+        ]
+    },
+    {
+        icon: "🧭",
+        title: "Key Elements of Fiscal Resilience",
+        description: "Fiscal resilience depends on a combination of fiscal buffers, diversified revenues, expenditure flexibility, strong institutional frameworks, risk transfer mechanisms, and robust growth. Together, these elements help governments prepare for shocks, respond during crises, and sustain long-term development priorities.",
+        tag: "Key Elements",
+        note: "The key elements connect fiscal policy, institutions, financial protection, and growth resilience.",
+        link: "#",
+        items: [
+            { text: "Fiscal buffers: public investment, protection of vulnerable households and firms, and liquidity to pay salaries", url: "#" },
+            { text: "Diversified revenue sources: expanding the tax base and developing multiple revenue streams", url: "#" },
+            { text: "Expenditure flexibility: reprioritizing spending during crises while maintaining critical services", url: "#" },
+            { text: "Strong institutional frameworks: fiscal rules, public financial management, and transparent budgeting", url: "#" },
+            { text: "Risk transfer mechanisms: insurance products and instruments such as catastrophe bonds", url: "#" },
+            { text: "Robust growth: reducing dependence on one or two sectors vulnerable to shocks", url: "#" }
+        ]
+    },
+    {
+        icon: "📘",
+        title: "Reports",
+        description: "Below is a list of World Bank reports that are relevant to fiscal resilience in Pacific SIDS.",
+        tag: "Reports",
+        note: "These reports provide deeper background on fiscal resilience, fiscal policy, natural disasters, climate shocks, and small island economies.",
+        link: "#",
+        items: [
+            { text: "Fiscal Resilience to Natural Disasters", url: "#" },
+            { text: "Fiscal Policy’s Role in Economic Resilience to Climate Shocks", url: "#" },
+            { text: "Fiscal Challenges in Small States: Weathering Storms, Rebuilding Resilience", url: "#" },
+            { text: "Having Space and Using It: Fiscal Policy Challenges in Developing Economies", url: "#" }
+        ]
+    },
+    {
+        icon: "📰",
+        title: "Articles and Blog Posts",
+        description: "Below is a list of World Bank articles and blog posts that are relevant to fiscal resilience in Pacific SIDS.",
+        tag: "Articles & Blogs",
+        note: "Short-form pieces can help explain core ideas quickly and support communication with policymakers and partners.",
+        link: "#",
+        items: [
+            { text: "Strengthening Fiscal Resilience in Small States", url: "#" },
+            { text: "Can Fiscal Policy Help Countries Face Extreme Weather Shocks", url: "#" },
+            { text: "Building Resilience in the Face of Uncertainty", url: "#" },
+            { text: "Budgeting for Resilience: A Blueprint for Incorporating Disaster Risk into Governments’ Budgets", url: "#" }
+        ]
+    },
+    {
+        icon: "🏗️",
+        title: "Projects",
+        description: "Below is a list of World Bank Development Policy Operations that are promoting fiscal resilience in the Pacific.",
+        tag: "Projects",
+        note: "Project examples help show how fiscal resilience priorities can be translated into operations, policy reforms, and financing instruments.",
+        link: "#",
+        items: [
+            { text: "Tonga Second Fiscal, Disaster, and Climate Resilience Development Policy Operation - Media Release", url: "#" },
+            { text: "Tuvalu Second Climate and Disaster Resilience Development Policy Financing - Project Document", url: "#" },
+            { text: "Vanuatu Resilience Development Policy Financing with a Catastrophe Deferred Drawdown Option - Media Release", url: "#" },
+            { text: "RMI Enhancing Fiscal Management and Building Disaster and Climate Resilience DPO with a Cat DDO - Media Release", url: "#" },
+            { text: "Fiji Growth and Resilience First Development Policy Financing with a Catastrophe Deferred Drawdown Option - Media Release", url: "#" }
+        ]
+    },
+    {
+        icon: "🗂️",
+        title: "Datasets",
+        description: "Below is a list of datasets and data resources relevant to fiscal resilience in Pacific SIDS.",
+        tag: "Datasets",
+        note: "Data resources support diagnostics, benchmarking, transparency, and consistent country analysis.",
+        link: "#",
+        items: [
+            { text: "Data360 - a newly curated collection of data, analytics, and tools to foster development", url: "#" },
+            { text: "Cross-Country Database of Fiscal Space - a comprehensive database covering 204 countries over 1990-2024 with 29 fiscal space indicators grouped into four categories", url: "#" }
+        ]
+    }
+];
+
+function showResource(index){
+    const item = resources[index];
+
+    document.getElementById("panel-icon").textContent = item.icon;
+    document.getElementById("panel-title").textContent = item.title;
+    document.getElementById("panel-description").textContent = item.description;
+    document.getElementById("panel-tag").textContent = item.tag;
+    document.getElementById("panel-note").textContent = item.note;
+    document.getElementById("panel-link").href = item.link;
+
+    const list = document.getElementById("panel-list");
+    list.innerHTML = "";
+
+    item.items.forEach(entry => {
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = entry.url;
+        a.textContent = entry.text;
+        li.appendChild(a);
+        list.appendChild(li);
+    });
+
+    const cards = document.querySelectorAll(".resource-card");
+    cards.forEach(card => card.classList.remove("active"));
+    cards[index].classList.add("active");
+}
+</script>
+
+</body>
+</html>

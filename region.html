@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FRP - Regional Profiles</title>
+
+<style>
+
+/* =========================================================
+   GLOBAL DESIGN SYSTEM
+========================================================= */
+
+:root{
+    --deep-ocean:#063a4a;
+    --ocean:#007a8a;
+    --lagoon:#14b8a6;
+    --reef:#34d399;
+    --sun:#f7b538;
+    --coral:#f9735b;
+    --sand:#fff3d6;
+    --cloud:#f8fffb;
+    --ink:#123047;
+    --muted:#557084;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html,
+body{
+    margin:0;
+    height:100vh;
+    overflow:hidden;
+    font-family:Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at top left, rgba(247,181,56,0.20), transparent 28%),
+        radial-gradient(circle at top right, rgba(20,184,166,0.22), transparent 32%),
+        #f8fffb;
+    color:var(--ink);
+}
+
+body{
+    display:grid;
+    grid-template-rows:auto 1fr 26px auto;
+}
+
+a{
+    color:inherit;
+}
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+
+.navbar{
+    position:relative;
+    z-index:1000;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:9px 48px;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(0,122,138,0.12);
+    box-shadow:0 6px 20px rgba(0,80,100,0.07);
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.logo img{
+    height:31px;
+    width:auto;
+    display:block;
+}
+
+.logo-title{
+    font-weight:800;
+    color:var(--deep-ocean);
+    letter-spacing:-0.02em;
+    font-size:15px;
+}
+
+.navlinks{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.navlinks a{
+    text-decoration:none;
+    color:var(--deep-ocean);
+    font-weight:700;
+    padding:7px 13px;
+    border-radius:999px;
+    transition:0.22s;
+    font-size:15px;
+}
+
+.navlinks a:hover,
+.navlinks a.active{
+    background:linear-gradient(135deg, var(--lagoon), var(--ocean));
+    color:white;
+    transform:translateY(-1px);
+}
+
+/* =========================================================
+   MAIN SECTION
+========================================================= */
+
+.section{
+    min-height:0;
+    padding:10px 48px 4px 48px;
+    overflow:hidden;
+}
+
+/* =========================================================
+   COUNTRY PANEL
+========================================================= */
+
+.country-panel{
+    position:relative;
+    overflow:hidden;
+    height:100%;
+    min-height:0;
+    border-radius:28px;
+    background:white;
+    box-shadow:0 14px 38px rgba(0,80,100,0.10);
+    border:1px solid rgba(0,122,138,0.10);
+    display:grid;
+    grid-template-rows:auto 1fr;
+}
+
+.country-panel::before{
+    content:"";
+    position:absolute;
+    right:-145px;
+    top:-145px;
+    width:330px;
+    height:330px;
+    border-radius:50%;
+    background:linear-gradient(135deg, rgba(247,181,56,0.36), rgba(20,184,166,0.28));
+}
+
+.country-panel::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:8px;
+    background:linear-gradient(90deg, var(--lagoon), var(--sun), var(--coral));
+}
+
+/* =========================================================
+   TOP AREA
+========================================================= */
+
+.country-top{
+    position:relative;
+    z-index:2;
+    padding:20px 42px 16px 42px;
+    border-bottom:1px solid rgba(0,122,138,0.10);
+    background:
+        linear-gradient(135deg, rgba(220,248,242,0.60), rgba(255,243,214,0.45));
+}
+
+.country-heading{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:24px;
+}
+
+.heading-text h1{
+    margin:0 0 7px 0;
+    font-size:36px;
+    line-height:1.05;
+    color:var(--deep-ocean);
+    letter-spacing:-0.045em;
+}
+
+.heading-text p{
+    margin:0;
+    max-width:920px;
+    color:var(--muted);
+    font-size:15.5px;
+    line-height:1.5;
+}
+
+.country-controls{
+    flex:0 0 300px;
+    position:relative;
+    overflow:hidden;
+    border-radius:18px;
+    background:white;
+    box-shadow:0 8px 20px rgba(0,80,100,0.07);
+    border:1px solid rgba(0,122,138,0.10);
+    padding:13px 16px;
+}
+
+.country-controls::before{
+    content:"";
+    position:absolute;
+    right:-44px;
+    top:-48px;
+    width:96px;
+    height:96px;
+    border-radius:50%;
+    background:linear-gradient(135deg, rgba(247,181,56,0.18), rgba(20,184,166,0.16));
+}
+
+.control-label{
+    position:relative;
+    z-index:2;
+    display:block;
+    margin-bottom:7px;
+    font-size:12px;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--ocean);
+}
+
+select{
+    position:relative;
+    z-index:2;
+    width:100%;
+    border:1px solid rgba(0,122,138,0.20);
+    border-radius:14px;
+    padding:11px 12px;
+    background:#f8fffb;
+    color:var(--deep-ocean);
+    font-weight:800;
+    font-size:14px;
+    outline:none;
+}
+
+/* =========================================================
+   SCROLLABLE CONTENT AREA
+========================================================= */
+
+.country-content{
+    position:relative;
+    z-index:2;
+    min-height:0;
+    overflow:auto;
+    padding:28px 42px 38px 42px;
+}
+
+.country-content::-webkit-scrollbar{
+    width:8px;
+}
+
+.country-content::-webkit-scrollbar-track{
+    background:rgba(0,122,138,0.08);
+    border-radius:999px;
+}
+
+.country-content::-webkit-scrollbar-thumb{
+    background:rgba(0,122,138,0.35);
+    border-radius:999px;
+}
+
+/* =========================================================
+   DIAGNOSTIC SUMMARY
+========================================================= */
+
+.country-title-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:18px;
+    margin-bottom:18px;
+}
+
+.country-title-row h2{
+    margin:0;
+    font-size:34px;
+    line-height:1.05;
+    color:var(--deep-ocean);
+    letter-spacing:-0.04em;
+}
+
+.country-badge{
+    display:inline-flex;
+    padding:8px 13px;
+    border-radius:999px;
+    background:#dcf8f2;
+    color:var(--ocean);
+    font-size:13px;
+    font-weight:900;
+    white-space:nowrap;
+}
+
+.diagnostic-grid{
+    display:grid;
+    grid-template-columns:0.95fr 1.05fr;
+    gap:26px;
+    align-items:stretch;
+    margin-bottom:22px;
+}
+
+.chart-card,
+.constraints-card{
+    position:relative;
+    overflow:hidden;
+    border-radius:24px;
+    background:white;
+    box-shadow:0 10px 28px rgba(0,80,100,0.08);
+    border:1px solid rgba(0,122,138,0.10);
+}
+
+.chart-card{
+    padding:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.chart-card img{
+    width:100%;
+    height:auto;
+    max-height:250px;
+    object-fit:contain;
+    display:block;
+    border-radius:18px;
+}
+
+.constraints-card{
+    padding:24px 26px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.constraints-card h3{
+    margin:0 0 14px 0;
+    color:var(--deep-ocean);
+    font-size:19px;
+}
+
+.constraints-list{
+    margin:0;
+    padding:0;
+    list-style:none;
+    display:grid;
+    gap:12px;
+}
+
+.constraints-list li{
+    position:relative;
+    padding-left:22px;
+    color:var(--ink);
+    font-size:15px;
+    line-height:1.45;
+}
+
+.constraints-list li::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:8px;
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:linear-gradient(135deg, var(--lagoon), var(--sun));
+}
+
+/* =========================================================
+   HEATMAP
+========================================================= */
+
+.heatmap-card{
+    position:relative;
+    width:100%;
+    overflow:hidden;
+    border-radius:22px;
+    background:white;
+    box-shadow:0 10px 28px rgba(0,80,100,0.08);
+    border:1px solid rgba(0,122,138,0.10);
+    padding:24px;
+    margin-bottom:32px;
+}
+
+.heatmap-card img{
+    display:block;
+    width:1060px;
+    height:190px;
+    border-radius:0;
+}
+
+
+/* =========================================================
+   OVERVIEW
+========================================================= */
+
+.overview-card{
+    margin-bottom:18px;
+    padding:20px 24px;
+    border-radius:22px;
+    background:linear-gradient(135deg, rgba(220,248,242,0.75), rgba(255,243,214,0.60));
+    border:1px solid rgba(0,122,138,0.10);
+}
+
+.overview-card h3{
+    margin:0 0 10px 0;
+    color:var(--deep-ocean);
+    font-size:19px;
+}
+
+.overview-card p{
+    margin:0;
+    color:var(--muted);
+    font-size:15.5px;
+    line-height:1.6;
+}
+
+/* =========================================================
+   ACCORDION
+========================================================= */
+
+.accordion{
+    display:grid;
+    gap:12px;
+}
+
+.accordion-item{
+    border-radius:20px;
+    background:white;
+    box-shadow:0 8px 22px rgba(0,80,100,0.075);
+    border:1px solid rgba(0,122,138,0.10);
+    overflow:hidden;
+}
+
+.accordion-header{
+    width:100%;
+    border:0;
+    background:white;
+    cursor:pointer;
+    padding:18px 22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    text-align:left;
+    color:var(--deep-ocean);
+    font-size:18px;
+    font-weight:900;
+}
+
+.accordion-header:hover{
+    background:#f8fffb;
+}
+
+.accordion-arrow{
+    font-size:17px;
+    color:var(--ocean);
+    transition:0.2s;
+}
+
+.accordion-item.open .accordion-arrow{
+    transform:rotate(90deg);
+}
+
+.accordion-body{
+    display:none;
+    padding:0 22px 20px 22px;
+    color:var(--muted);
+    font-size:15px;
+    line-height:1.65;
+}
+
+.accordion-item.open .accordion-body{
+    display:block;
+}
+
+.accordion-body p{
+    margin:0 0 13px 0;
+}
+
+.accordion-body p:last-child{
+    margin-bottom:0;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer-wave{
+    height:26px;
+    min-height:26px;
+    margin-top:0;
+    overflow:hidden;
+}
+
+.footer-wave svg{
+    width:100%;
+    height:100%;
+    display:block;
+}
+
+.footer{
+    margin-top:0;
+    background:
+        radial-gradient(circle at 12% 15%, rgba(247,181,56,0.42), transparent 28%),
+        linear-gradient(135deg, rgba(0,122,138,0.98), rgba(20,184,166,0.94));
+    padding:8px 48px;
+    border-top:1px solid rgba(255,255,255,0.26);
+    box-shadow:0 -7px 20px rgba(0,80,100,0.08);
+}
+
+.footer-inner{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+.footer-sentence{
+    max-width:1960px;
+    width:100%;
+    color:white;
+    font-size:12.5px;
+    line-height:1.35;
+    font-weight:600;
+    letter-spacing:0.01em;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1100px){
+
+    html,
+    body{
+        height:auto;
+        overflow:auto;
+    }
+
+    body{
+        display:block;
+    }
+
+    .navbar{
+        padding:14px 24px;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:12px;
+    }
+
+    .section{
+        height:auto;
+        min-height:auto;
+        padding:16px 32px 8px 32px;
+        overflow:visible;
+    }
+
+    .country-panel{
+        height:auto;
+    }
+
+    .country-heading,
+    .country-title-row{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .country-controls{
+        width:100%;
+        flex:0 0 auto;
+    }
+
+    .diagnostic-grid{
+        grid-template-columns:1fr;
+    }
+
+    .country-content{
+        overflow:visible;
+    }
+
+    .footer{
+        padding:12px 32px;
+    }
+}
+
+@media(max-width:650px){
+
+    .navbar{
+        padding:12px 20px;
+    }
+
+    .navlinks a{
+        padding:8px 11px;
+        font-size:14px;
+    }
+
+    .logo-title{
+        font-size:14px;
+    }
+
+    .country-top{
+        padding:24px 24px 18px 24px;
+    }
+
+    .heading-text h1{
+        font-size:31px;
+    }
+
+    .country-content{
+        padding:28px 24px 34px 24px;
+    }
+
+    .country-title-row h2{
+        font-size:30px;
+    }
+
+    .accordion-header{
+        font-size:16px;
+    }
+
+    .footer-wave{
+        height:24px;
+        min-height:24px;
+    }
+
+    .footer-sentence{
+        font-size:12px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<div class="navbar">
+
+    <div class="logo">
+        <img src="wb_blue.jpg" alt="World Bank Group">
+        <div class="logo-title">Pacific Fiscal Resilience Platform</div>
+    </div>
+
+    <div class="navlinks">
+        <a href="index.html">About</a>
+        <a href="region.html" class="active">Region</a>
+        <a href="countries.html">Countries</a>
+        <a href="themes.html">Themes</a>
+        <a href="resources.html">Resources</a>
+        <a href="community.html">Community</a>
+    </div>
+
+</div>
+
+<!-- =========================================================
+     REGIONAL CONTENT
+========================================================= -->
+
+<section class="section">
+
+    <div class="country-panel">
+
+        <div class="country-top">
+
+            <div class="country-heading">
+
+                <div class="heading-text">
+                    <h1>Regional Fiscal Resilience Profiles</h1>
+                    <p>
+                        Explore regional and peer-group fiscal resilience diagnostics for Pacific SIDS, including FRI results, shared constraints, thematic vulnerabilities, and policy implications.
+                    </p>
+                </div>
+
+                <div class="country-controls">
+                    <label class="control-label" for="countrySelect">Select regional profile</label>
+                    <select id="countrySelect" onchange="renderCountry()">
+                        <option value="rw">Regional Weighted Average</option>
+                        <option value="ra">Regional Average</option>
+                        <option value="td">Tourism-Dependent</option>
+                        <option value="sw">Sovereign Wealth-Dependent</option>
+                    </select>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="country-content">
+
+            <div class="country-title-row">
+                <h2 id="countryTitle">Regional Weighted Average</h2>
+                <div id="countryBadge" class="country-badge">Composite score: placeholder</div>
+            </div>
+
+            <div class="diagnostic-grid">
+
+                <div class="chart-card">
+                    <img id="spiderChart" src="rw.jpg" alt="Regional spiderweb chart">
+                </div>
+
+                <div class="constraints-card">
+                    <h3>Shared constraints</h3>
+                    <ul id="constraintsList" class="constraints-list"></ul>
+                </div>
+
+            </div>
+
+            <div class="heatmap-card">
+                <img id="heatmapTable" src="rwq.jpg" alt="Regional FRI heatmap table">
+            </div>
+
+            <div class="overview-card">
+                <h3>Regional context and recent trends</h3>
+                <p id="overviewText">
+                    [Placeholder regional overview text.]
+                </p>
+            </div>
+
+            <div id="accordion" class="accordion"></div>
+
+        </div>
+
+    </div>
+
+</section>
+<!-- =========================================================
+     FOOTER WAVE
+========================================================= -->
+
+<div class="footer-wave">
+    <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
+        <path fill="#007a8a" d="M0,48 C180,90 360,90 540,50 C720,10 900,10 1080,48 C1260,86 1350,72 1440,42 L1440,90 L0,90 Z"></path>
+    </svg>
+</div>
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="footer">
+
+    <div class="footer-inner">
+        <div class="footer-sentence">
+            Fiscal resilience for Pacific SIDS is built before the next shock — through shared learning, stronger buffers, and public finance systems that protect communities when they need them most.
+        </div>
+    </div>
+
+</footer>
+
+<script>
+
+/* =========================================================
+   COUNTRY DATA
+   Image naming:
+Regional Weighted Average = rw.jpg / rwq.jpg
+Regional Average = ra.jpg / raq.jpg
+Tourism-Dependent = td.jpg / tdq.jpg
+Sovereign Wealth-Dependent = sw.jpg / swq.jpg
+========================================================= */
+
+const countryProfiles = {"rw": makeCountry("Regional Weighted Average", "Composite score: 0.55", "rw.jpg","rwq.jpg",["The weighted regional picture shows that weak buffers remain the main constraint. Buffers score only 0.29, with fiscal liquidity at 0.06 and expenditure coverage at 0.18, while shock resilience is relatively high at 0.65, reflecting large exposure to external and climate-related shocks. Debt sustainability is moderate at 0.54 and revenue resilience appears stronger at 0.71, partly because larger economies have stronger revenue systems. Policy attention should focus on liquid buffer accumulation, disaster risk financing, and protecting capital spending during adjustment."], "", 
+{"Buffers": `The regional weighted buffer score (0.29) is the weakest pillar across the framework and highlights the limited fiscal space available across much of the PIC-11. Fiscal balances are moderate (0.62), but expenditure coverage remains extremely weak (0.18), while fiscal liquidity is critically low (0.06). This suggests that even where countries maintain moderate fiscal balances, they often lack sufficiently liquid reserves to absorb shocks. The region therefore remains highly exposed to sudden disruptions, with limited short-term financing flexibility.`, 
+"Debt Sustainability": `Debt sustainability (0.54) appears moderate at the regional level, supported largely by concessional financing structures. DSF risk ratings are relatively strong (0.81), while debt-to-GDP (0.33) and debt interest-to-revenue (0.46) reveal considerable variation across countries. Several PICs maintain manageable debt burdens under baseline conditions, but debt resilience weakens significantly once repeated shocks, narrow revenue bases, and weak buffers are considered.`, 
+"Revenue Resilience": `Revenue resilience (0.71) is relatively strong at the weighted regional level, reflecting the influence of larger economies with stronger domestic revenue systems. Revenue volatility (0.71), tax buoyancy (0.70), and domestic revenue strength (0.72) are all comparatively favorable. However, these aggregate results mask substantial differences across countries. Many smaller PICs continue to rely heavily on tourism, grants, fishing revenues, or external transfers, leaving fiscal outcomes highly vulnerable to external shocks.`, 
+"Expenditure Efficiency": `Expenditure efficiency (0.57) is moderate overall. Recurrent-to-capital spending performs strongly (0.89), suggesting that expenditure composition is generally not excessively distorted at the aggregate level. However, rigidities (0.46) and wage pressures (0.37) indicate that many countries still face limited adjustment flexibility. During periods of stress, fiscal adjustment often occurs through cuts to capital expenditure, which can weaken long-term growth and resilience.`, 
+"Shock Resilience": `Shock Resilience (0.65) is the strongest measured regional pressure and highlights the structural vulnerability of the PIC-11. Import dependence is extremely high (0.78), export concentration remains elevated (0.61), and annual disaster-loss resilience is significant (0.57). This reflects the region’s resilience to natural disasters, climate change, commodity and tourism cycles, and external demand conditions. Frequent shocks place persistent pressure on already-limited fiscal buffers.`, 
+"Constraints": `The main regional constraints include critically weak liquid buffers, high resilience to external and climate-related shocks, dependence on narrow revenue sources, and limited expenditure flexibility. Even countries with relatively strong debt indicators remain vulnerable because repeated shocks can quickly erode fiscal space.`, 
+"Policy": `Regional policy priorities include rebuilding liquid fiscal buffers, strengthening disaster risk financing frameworks, improving expenditure flexibility, protecting productive investment during adjustment periods, broadening domestic revenue systems where feasible, and strengthening medium-term fiscal frameworks to better manage repeated shocks and volatility.`}),
+"ra": makeCountry("Regional Average", "Composite score: 0.54", "ra.jpg","raq.jpg",["The simple regional average shows a more balanced but still vulnerable picture. Buffers are moderate at 0.44, debt sustainability is relatively strong at 0.69, revenue resilience is moderate at 0.55, and shock resilience remains only 0.43. This suggests that many smaller PICs maintain better buffers than the GDP-weighted picture implies, but still face limited liquidity relative to repeated shocks. Policy attention should focus on strengthening medium-term fiscal frameworks, improving fiscal liquidity, and reducing adjustment through cuts to productive investment."], "", 
+{"Buffers": `The regional average buffer score (0.44) is notably stronger than the GDP-weighted regional result (0.29), indicating that smaller PICs often maintain somewhat better fiscal cushions than the largest economies. Fiscal balances are relatively strong (0.69), while expenditure coverage (0.32) and fiscal liquidity (0.30) remain only moderate. This suggests that although many PICs maintain prudent fiscal positions in normal periods, liquid reserves are still generally insufficient relative to the scale and frequency of shocks facing the region.`, 
+"Debt Sustainability": `Debt sustainability (0.69) is relatively strong at the regional average level. Debt-to-GDP (0.66) and debt interest-to-revenue (0.85) indicate that many PICs continue to benefit from concessional financing and relatively manageable servicing burdens. However, DSF risk ratings are only moderate (0.55), highlighting that vulnerability remains elevated once repeated shocks, narrow economic bases, and revenue volatility are considered.`, 
+"Revenue Resilience": `Revenue resilience (0.55) is moderate overall but highly uneven across countries. Revenue volatility (0.63) and tax buoyancy (0.61) suggest that revenues are often cyclical and externally sensitive, while domestic revenue strength remains comparatively weak (0.40). Several PICs rely heavily on tourism, fishing revenues, grants, or trust fund income, leaving fiscal performance exposed to changes in external demand and financing conditions.`, 
+"Expenditure Efficiency": `Expenditure efficiency (0.60) is one of the stronger regional pillars. Recurrent-to-capital spending (0.79) is generally favorable, though rigidities (0.57) and wage pressure (0.44) indicate that adjustment flexibility remains constrained in many countries. High fixed costs associated with small scale and geographic dispersion continue to limit expenditure efficiency gains.`, 
+"Shock Resilience": `Shock Resilience (0.43) remains elevated despite being lower than the weighted regional result (0.65). Annual disaster-loss resilience (0.65), import dependence (0.41), and external concentration risks continue to create substantial vulnerability across the region. Frequent natural disasters and external shocks place repeated pressure on already-limited fiscal buffers.`, 
+"Constraints": `Key regional constraints include insufficient liquid buffers, narrow economic structures, high climate and disaster vulnerability, and limited fiscal adjustment flexibility stemming from structural rigidities and dependence on external financing.`, 
+"Policy": `Policy priorities include strengthening fiscal buffers, improving medium-term fiscal frameworks, integrating disaster risk financing more systematically into fiscal planning, protecting productive investment, and broadening domestic revenue capacity where feasible.`}),
+"td": makeCountry("Tourism-Dependent", "Composite score: 0.51", "td.jpg","tdq.jpg",["Tourism-dependent economies face a liquidity and volatility problem. Buffers are moderate at 0.43 and debt sustainability is moderate at 0.64, but fiscal liquidity is extremely weak at 0.03 and expenditure efficiency is only 0.47. Revenue resilience is moderate at 0.58 but remains highly exposed to travel cycles and external demand. Policy attention should focus on rebuilding liquid reserves during recovery periods, diversifying revenue sources beyond tourism, and improving expenditure flexibility before the next downturn."], "", 
+{"Buffers": `The tourism-dependent group records a moderate buffer score (0.43), above the weighted regional average (0.29) but still insufficient given the volatility of tourism-driven economies. Fiscal balances are relatively strong (0.76), and expenditure coverage is somewhat stronger than the regional average (0.50). However, fiscal liquidity is extremely weak (0.03), highlighting a major structural vulnerability. The pandemic demonstrated how rapidly tourism shocks can erode fiscal space and force reliance on borrowing or external support.`, 
+"Debt Sustainability": `Debt sustainability (0.64) is moderate overall. Debt interest-to-revenue performs strongly (0.88), while debt-to-GDP (0.57) is more mixed across countries. DSF risk ratings are only moderate (0.48), reflecting the fact that even concessional debt structures can become vulnerable when tourism revenues collapse for prolonged periods. Weak buffers significantly amplify these risks.`, 
+"Revenue Resilience": `Revenue resilience (0.58) is moderate but structurally fragile. Revenue volatility is relatively high (0.72), while tax buoyancy (0.51) and domestic revenue strength (0.51) are only moderate. Tourism-related taxes, imports, and consumption generate substantial revenues during favorable periods, but fiscal performance remains highly sensitive to external demand conditions, travel disruptions, and global economic cycles.`, 
+"Expenditure Efficiency": `Expenditure efficiency (0.47) is relatively weak compared with the regional average (0.60). While recurrent-to-capital spending remains reasonably strong (0.81), rigidities (0.35) indicate limited expenditure flexibility. Adjustment during shocks often occurs through reductions in public investment rather than durable expenditure reforms, increasing volatility and weakening long-term growth prospects.`, 
+"Shock Resilience": `Shock Resilience (0.41) remains elevated. Import dependence is high (0.59), annual disaster-loss resilience is significant (0.42), and tourism concentration creates additional external vulnerability. Tourism-dependent PICs therefore face a combination of climate resilience and global demand shocks that can simultaneously weaken growth, revenues, and fiscal balances.`, 
+"Constraints": `Key constraints include extremely weak fiscal liquidity, dependence on tourism-linked revenues, limited expenditure flexibility, and high vulnerability to global demand shocks and climate events.`, 
+"Policy": `Policy priorities include rebuilding liquid fiscal buffers, diversifying revenue sources beyond tourism, strengthening disaster risk financing systems, improving expenditure flexibility, and protecting productive investment during downturns.`}),
+"sw": makeCountry("Sovereign Wealth-Dependent", "Composite score: 0.44", "sw.jpg","swq.jpg",["Sovereign wealth-dependent economies face less of a debt problem and more of a revenue-stabilization and governance problem. Buffers are moderate at 0.45 and debt sustainability is around 0.50, but revenue resilience is very weak at 0.31, with domestic revenue strength only 0.20. This reflects dependence on fishing revenues, grants, trust fund returns, and other volatile external income. Policy attention should focus on sovereign fund governance, withdrawal rules, domestic revenue mobilization where feasible, and preventing temporary windfalls from becoming permanent recurrent spending."], "", 
+{"Buffers": `The sovereign wealth-dependent group records a moderate buffer score (0.45), broadly aligned with the simple regional average. Fiscal liquidity (0.46) is significantly stronger than in tourism-dependent economies, reflecting the presence of sovereign funds and accumulated assets. Fiscal balances are moderate (0.63), while expenditure coverage remains relatively limited (0.25). The central challenge is therefore not only accumulating assets, but ensuring that they remain liquid, well-governed, and sustainably integrated into fiscal policy frameworks.`, 
+"Debt Sustainability": `Debt sustainability (0.50) is moderate overall. Debt-to-GDP performs strongly (0.89), and debt interest-to-revenue is exceptionally strong (0.10), reflecting low debt burdens and concessional financing structures. However, DSF risk ratings remain only moderate (0.49), showing that debt sustainability can still deteriorate quickly if volatile revenues weaken or fiscal assets are poorly managed.`, 
+"Revenue Resilience": `Revenue resilience (0.31) is by far the weakest pillar for this group and significantly below both the regional average (0.55) and tourism-dependent economies (0.58). Tax buoyancy (0.20) and domestic revenue strength (0.20) are extremely weak, highlighting limited internally generated fiscal capacity. Fiscal systems remain heavily dependent on fishing revenues, grants, trust fund returns, or other externally determined income streams that can fluctuate substantially over time.`, 
+"Expenditure Efficiency": `Expenditure efficiency (0.59) is close to the regional average. Recurrent-to-capital spending is relatively favorable (0.75), while rigidities (0.60) and wage pressure (0.43) indicate moderate structural constraints. Although sovereign assets provide financing flexibility, expenditure systems often remain dependent on volatile revenue flows and subject to political economy pressures during periods of elevated revenues.`, 
+"Shock Resilience": `Shock Resilience (0.33) is somewhat lower than the regional average (0.43), but structural vulnerability remains high. Annual disaster-loss resilience is significant (0.77), while export concentration (0.08) and import dependence (0.14) reveal narrow and externally dependent economic structures. Climate risks, environmental pressures, and uncertainty surrounding future external financing continue to pose substantial long-term fiscal risks.`, 
+"Constraints": `Key constraints include extremely weak domestic revenue generation, dependence on volatile external income sources, governance risks surrounding sovereign assets, and limited ability to convert financial wealth into durable fiscal resilience.`, 
+"Policy": `Policy priorities include strengthening sovereign wealth fund governance, stabilizing expenditure relative to volatile revenues, improving domestic revenue mobilization where feasible, strengthening medium-term fiscal frameworks, and preserving liquid fiscal buffers to better absorb future shocks.`}),
+};
+
+
+
+function makeCountry(name, score, spider, heatmap, constraints, overview, sections){
+    return {
+        name,
+        score,
+        spider,
+        heatmap,
+        constraints,
+        overview,
+        sections:Object.entries(sections).map(([title, text]) => section(title, text.trim()))
+    };
+}
+
+function section(title, text){
+    return { title, text };
+}
+
+function defaultSections(name){
+    return {
+        "Fiscal context and recent trends": `[Full ${name} text on fiscal context and recent trends.]`,
+        "Resilience profile / FRI results": `[Full ${name} text interpreting the FRI results.]`,
+        "Buffers": `[Full ${name} text on buffers.]`,
+        "Debt sustainability": `[Full ${name} text on debt sustainability.]`,
+        "Revenue resilience": `[Full ${name} text on revenue resilience.]`,
+        "Expenditure efficiency and flexibility": `[Full ${name} text on expenditure efficiency and flexibility.]`,
+        "Shock exposure": `[Full ${name} text on shock exposure.]`,
+        "Policy implications": `[Full ${name} text on policy implications.]`,
+        "Key transmission channels": `[Full ${name} text on key transmission channels.]`
+    };
+}
+function section(title, text){
+    return { title, text };
+}
+
+/* =========================================================
+   RENDERING
+========================================================= */
+
+function renderCountry(){
+
+    const key = document.getElementById("countrySelect").value;
+    const profile = countryProfiles[key];
+
+    document.getElementById("countryTitle").textContent = profile.name;
+    document.getElementById("countryBadge").textContent = profile.score;
+
+    document.getElementById("spiderChart").src = profile.spider;
+    document.getElementById("spiderChart").alt = profile.name + " spiderweb chart";
+
+    document.getElementById("heatmapTable").src = profile.heatmap;
+    document.getElementById("heatmapTable").alt = profile.name + " FRI heatmap table";
+
+    document.getElementById("overviewText").textContent = profile.overview;
+
+    const constraintsList = document.getElementById("constraintsList");
+    constraintsList.innerHTML = "";
+
+    profile.constraints.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        constraintsList.appendChild(li);
+    });
+
+    const accordion = document.getElementById("accordion");
+    accordion.innerHTML = "";
+
+    profile.sections.forEach((item, index) => {
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "accordion-item";
+
+        if(index === 0){
+            wrapper.classList.add("open");
+        }
+
+        const button = document.createElement("button");
+        button.className = "accordion-header";
+        button.onclick = function(){
+            wrapper.classList.toggle("open");
+        };
+
+        const title = document.createElement("span");
+        title.textContent = item.title;
+
+        const arrow = document.createElement("span");
+        arrow.className = "accordion-arrow";
+        arrow.textContent = "▶";
+
+        button.appendChild(title);
+        button.appendChild(arrow);
+
+        const body = document.createElement("div");
+        body.className = "accordion-body";
+
+        const paragraphs = item.text.split("\n");
+
+        paragraphs.forEach(paragraphText => {
+            const p = document.createElement("p");
+            p.textContent = paragraphText;
+            body.appendChild(p);
+        });
+
+        wrapper.appendChild(button);
+        wrapper.appendChild(body);
+
+        accordion.appendChild(wrapper);
+    });
+}
+
+renderCountry();
+
+</script>
+
+</body>
+</html>

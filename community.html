@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FRP - Community</title>
+
+<style>
+
+/* =========================================================
+   GLOBAL DESIGN SYSTEM
+========================================================= */
+
+:root{
+    --deep-ocean:#063a4a;
+    --ocean:#007a8a;
+    --lagoon:#14b8a6;
+    --reef:#34d399;
+    --sun:#f7b538;
+    --coral:#f9735b;
+    --sand:#fff3d6;
+    --cloud:#f8fffb;
+    --ink:#123047;
+    --muted:#557084;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html,
+body{
+    margin:0;
+    height:100vh;
+    overflow:hidden;
+    font-family:Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at top left, rgba(247,181,56,0.20), transparent 28%),
+        radial-gradient(circle at top right, rgba(20,184,166,0.22), transparent 32%),
+        #f8fffb;
+    color:var(--ink);
+}
+
+body{
+    display:grid;
+    grid-template-rows:auto 1fr 26px auto;
+}
+
+a{
+    color:inherit;
+}
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+
+.navbar{
+    position:relative;
+    z-index:1000;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:9px 48px;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(0,122,138,0.12);
+    box-shadow:0 6px 20px rgba(0,80,100,0.07);
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.logo img{
+    height:31px;
+    width:auto;
+    display:block;
+}
+
+.logo-title{
+    font-weight:800;
+    color:var(--deep-ocean);
+    letter-spacing:-0.02em;
+    font-size:15px;
+}
+
+.navlinks{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.navlinks a{
+    text-decoration:none;
+    color:var(--deep-ocean);
+    font-weight:700;
+    padding:7px 13px;
+    border-radius:999px;
+    transition:0.22s;
+    font-size:15px;
+}
+
+.navlinks a:hover,
+.navlinks a.active{
+    background:linear-gradient(135deg, var(--lagoon), var(--ocean));
+    color:white;
+    transform:translateY(-1px);
+}
+
+/* =========================================================
+   SECTION GENERAL
+========================================================= */
+
+.section{
+    min-height:0;
+    padding:10px 48px 4px 48px;
+    overflow:hidden;
+}
+
+/* =========================================================
+   LEFT LIST + RIGHT PANEL LAYOUT
+========================================================= */
+
+.community-layout{
+    display:grid;
+    grid-template-columns:0.82fr 2.18fr;
+    gap:14px;
+    height:100%;
+    min-height:0;
+    align-items:stretch;
+}
+
+.community-list{
+    display:grid;
+    grid-template-rows:repeat(8, 1fr);
+    gap:8px;
+    height:100%;
+    min-height:0;
+}
+
+/* =========================================================
+   LEFT STACKED COMMUNITY CARDS
+========================================================= */
+
+.community-card{
+    position:relative;
+    overflow:hidden;
+    min-height:0;
+    padding:10px 14px;
+    border-radius:18px;
+    background:white;
+    box-shadow:0 8px 20px rgba(0,80,100,0.075);
+    border:1px solid rgba(0,122,138,0.10);
+    transition:0.22s;
+    text-decoration:none;
+    color:inherit;
+    cursor:pointer;
+}
+
+.community-card::before{
+    content:"";
+    position:absolute;
+    right:-58px;
+    top:-60px;
+    width:118px;
+    height:118px;
+    border-radius:50%;
+    background:linear-gradient(135deg, rgba(247,181,56,0.22), rgba(20,184,166,0.18));
+    transition:0.22s;
+}
+
+.community-card::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:5px;
+    background:linear-gradient(90deg, var(--lagoon), var(--sun), var(--coral));
+}
+
+.community-card.active::before{
+    right:-46px;
+    top:-48px;
+    width:140px;
+    height:140px;
+    background:linear-gradient(135deg, rgba(247,181,56,0.78), rgba(20,184,166,0.48));
+    box-shadow:0 0 34px rgba(247,181,56,0.28);
+}
+
+.community-card:hover,
+.community-card.active{
+    transform:translateY(-2px);
+    box-shadow:0 13px 30px rgba(0,80,100,0.13);
+    border-color:rgba(0,122,138,0.34);
+}
+
+.community-card.active{
+    background:linear-gradient(180deg, #ffffff, #f4fbf8);
+}
+
+.community-card-top{
+    position:relative;
+    z-index:2;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.community-card .card-icon{
+    flex:0 0 auto;
+    width:33px;
+    height:33px;
+    border-radius:11px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg, var(--ocean), var(--lagoon));
+    color:white;
+    font-size:16px;
+    box-shadow:0 7px 15px rgba(20,184,166,0.22);
+}
+
+.community-card h3{
+    position:relative;
+    z-index:2;
+    margin:0;
+    font-size:14.5px;
+    line-height:1.14;
+    color:var(--deep-ocean);
+}
+
+.community-card p{
+    position:relative;
+    z-index:2;
+    margin:5px 0 0 43px;
+    color:var(--muted);
+    line-height:1.28;
+    font-size:11.7px;
+}
+
+/* =========================================================
+   LARGE CONTENT PANEL
+========================================================= */
+
+.community-panel{
+    position:relative;
+    overflow:hidden;
+    min-height:0;
+    border-radius:28px;
+    background:white;
+    box-shadow:0 14px 38px rgba(0,80,100,0.10);
+    border:1px solid rgba(0,122,138,0.10);
+    padding:34px 52px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.community-panel::before{
+    content:"";
+    position:absolute;
+    right:-145px;
+    top:-145px;
+    width:330px;
+    height:330px;
+    border-radius:50%;
+    background:linear-gradient(135deg, rgba(247,181,56,0.36), rgba(20,184,166,0.28));
+}
+
+.community-panel::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:8px;
+    background:linear-gradient(90deg, var(--lagoon), var(--sun), var(--coral));
+}
+
+.panel-content{
+    position:relative;
+    z-index:2;
+    max-width:1080px;
+    max-height:100%;
+    overflow:auto;
+    padding-right:10px;
+}
+
+.panel-content::-webkit-scrollbar{
+    width:8px;
+}
+
+.panel-content::-webkit-scrollbar-track{
+    background:rgba(0,122,138,0.08);
+    border-radius:999px;
+}
+
+.panel-content::-webkit-scrollbar-thumb{
+    background:rgba(0,122,138,0.35);
+    border-radius:999px;
+}
+
+.panel-icon{
+    width:64px;
+    height:64px;
+    border-radius:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:22px;
+    background:linear-gradient(135deg, var(--ocean), var(--lagoon));
+    color:white;
+    font-size:31px;
+    box-shadow:0 12px 26px rgba(20,184,166,0.28);
+}
+
+.community-panel h2{
+    margin:0 0 14px 0;
+    font-size:38px;
+    line-height:1.05;
+    color:var(--deep-ocean);
+    letter-spacing:-0.045em;
+}
+
+.community-panel p{
+    margin:0;
+    color:var(--muted);
+    font-size:17px;
+    line-height:1.65;
+}
+
+.panel-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:24px;
+    align-items:center;
+}
+
+.panel-tag{
+    display:inline-block;
+    padding:8px 14px;
+    border-radius:999px;
+    background:#dcf8f2;
+    color:var(--ocean);
+    font-size:13px;
+    font-weight:800;
+}
+
+.panel-link{
+    display:inline-block;
+    padding:12px 19px;
+    border-radius:16px;
+    background:linear-gradient(135deg, var(--sun), #ffd166);
+    color:var(--deep-ocean);
+    font-weight:900;
+    text-decoration:none;
+    font-size:14px;
+    box-shadow:0 10px 24px rgba(247,181,56,0.28);
+    transition:0.22s;
+}
+
+.panel-link:hover{
+    transform:translateY(-2px);
+    box-shadow:0 14px 30px rgba(247,181,56,0.38);
+}
+
+.panel-note{
+    margin-top:26px;
+    padding:16px 20px;
+    border-radius:22px;
+    background:linear-gradient(135deg, rgba(220,248,242,0.75), rgba(255,243,214,0.65));
+    color:var(--deep-ocean);
+    font-size:14px;
+    line-height:1.5;
+    font-weight:600;
+}
+
+.panel-list{
+    margin:22px 0 0 0;
+    padding:0;
+    list-style:none;
+    display:grid;
+    gap:10px;
+}
+
+.panel-list li{
+    position:relative;
+    padding:12px 14px 12px 42px;
+    border-radius:16px;
+    background:linear-gradient(135deg, rgba(220,248,242,0.52), rgba(255,243,214,0.38));
+    color:var(--deep-ocean);
+    font-size:14.5px;
+    line-height:1.45;
+    font-weight:650;
+}
+
+.panel-list li::before{
+    content:"";
+    position:absolute;
+    left:16px;
+    top:18px;
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:linear-gradient(135deg, var(--lagoon), var(--sun));
+}
+
+.panel-list a{
+    color:var(--deep-ocean);
+    text-decoration:none;
+    border-bottom:1px solid rgba(0,122,138,0.25);
+}
+
+.panel-list a:hover{
+    color:var(--ocean);
+    border-bottom-color:var(--ocean);
+}
+
+/* =========================================================
+   FOOTER WAVE
+========================================================= */
+
+.footer-wave{
+    height:26px;
+    min-height:26px;
+    margin-top:0;
+    overflow:hidden;
+}
+
+.footer-wave svg{
+    width:100%;
+    height:100%;
+    display:block;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer{
+    margin-top:0;
+    background:
+        radial-gradient(circle at 12% 15%, rgba(247,181,56,0.42), transparent 28%),
+        linear-gradient(135deg, rgba(0,122,138,0.98), rgba(20,184,166,0.94));
+    padding:8px 48px;
+    border-top:1px solid rgba(255,255,255,0.26);
+    box-shadow:0 -7px 20px rgba(0,80,100,0.08);
+}
+
+.footer-inner{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+.footer-sentence{
+    max-width:1960px;
+    width:100%;
+    color:white;
+    font-size:12.5px;
+    line-height:1.35;
+    font-weight:600;
+    letter-spacing:0.01em;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1100px){
+
+    html,
+    body{
+        height:auto;
+        overflow:auto;
+    }
+
+    body{
+        display:block;
+    }
+
+    .navbar{
+        padding:14px 24px;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:12px;
+    }
+
+    .section{
+        height:auto;
+        min-height:auto;
+        padding:16px 32px 8px 32px;
+        overflow:visible;
+    }
+
+    .community-layout{
+        grid-template-columns:1fr;
+        height:auto;
+    }
+
+    .community-list{
+        grid-template-rows:auto;
+        height:auto;
+    }
+
+    .community-card{
+        min-height:auto;
+    }
+
+    .community-card p{
+        margin-left:43px;
+    }
+
+    .community-panel{
+        min-height:420px;
+        padding:34px;
+    }
+
+    .community-panel h2{
+        font-size:34px;
+    }
+
+    .footer{
+        padding:12px 32px;
+    }
+}
+
+@media(max-width:650px){
+
+    .navbar{
+        padding:12px 20px;
+    }
+
+    .navlinks a{
+        padding:8px 11px;
+        font-size:14px;
+    }
+
+    .logo-title{
+        font-size:14px;
+    }
+
+    .community-card p{
+        display:none;
+    }
+
+    .community-panel{
+        padding:28px 24px;
+    }
+
+    .community-panel h2{
+        font-size:30px;
+    }
+
+    .community-panel p{
+        font-size:16px;
+    }
+
+    .footer-wave{
+        height:24px;
+        min-height:24px;
+    }
+
+    .footer-sentence{
+        font-size:12px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<div class="navbar">
+
+    <div class="logo">
+        <img src="wb_blue.jpg" alt="World Bank Group">
+        <div class="logo-title">Fiscal Resilience Platform</div>
+    </div>
+
+    <div class="navlinks">
+        <a href="index.html">About</a>
+        <a href="region.html">Region</a>
+        <a href="countries.html">Countries</a>
+        <a href="themes.html">Themes</a>
+        <a href="resources.html">Resources</a>
+        <a href="community.html" class="active">Community</a>
+    </div>
+
+</div>
+
+<!-- =========================================================
+     COMMUNITY CONTENT
+========================================================= -->
+
+<section class="section">
+
+    <div class="community-layout">
+
+        <div class="community-list">
+
+            <div class="community-card active" onclick="showCommunity(0)">
+                <div class="community-card-top">
+                    <div class="card-icon">🌋</div>
+                    <h3>Why the Program Exists</h3>
+                </div>
+                <p>Tonga’s shock and the case for preparedness.</p>
+            </div>
+
+            <div class="community-card" onclick="showCommunity(1)">
+                <div class="community-card-top">
+                    <div class="card-icon">🏝️</div>
+                    <h3>The Challenge for Pacific SIDS</h3>
+                </div>
+                <p>Small economies, high exposure, limited resources.</p>
+            </div>
+
+            <div class="community-card" onclick="showCommunity(2)">
+                <div class="community-card-top">
+                    <div class="card-icon">🤝</div>
+                    <h3>Country-Led Support</h3>
+                </div>
+                <p>Countries identify needs and policy gaps.</p>
+            </div>
+
+            <div class="community-card" onclick="showCommunity(3)">
+                <div class="community-card-top">
+                    <div class="card-icon">🌐</div>
+                    <h3>Peer Learning</h3>
+                </div>
+                <p>Shared expertise and collective learning.</p>
+            </div>
+
+            <div class="community-card" onclick="showCommunity(4)">
+                <div class="community-card-top">
+                    <div class="card-icon">🧩</div>
+                    <h3>Practical Collaboration</h3>
+                </div>
+                <p>Solutions for stability and sustainable growth.</p>
+            </div>
+
+            <div class="community-card" onclick="showCommunity(5)">
+                <div class="community-card-top">
+                    <div class="card-icon">🇯🇵</div>
+                    <h3>Funding & Partnerships</h3>
+                </div>
+                <p>PHRD, WBG, and institutional partners.</p>
+            </div>
+
+            <div class="community-card" onclick="showCommunity(6)">
+                <div class="community-card-top">
+                    <div class="card-icon">🗼</div>
+                    <h3>Tokyo High-Level Meeting</h3>
+                </div>
+                <p>March 2025 convening on fiscal resilience.</p>
+            </div>
+
+            <div class="community-card" onclick="showCommunity(7)">
+                <div class="community-card-top">
+                    <div class="card-icon">📄</div>
+                    <h3>Tokyo Outcomes & Materials</h3>
+                </div>
+                <p>Proceedings, agenda, and presentations.</p>
+            </div>
+
+        </div>
+
+        <div class="community-panel">
+
+            <div class="panel-content">
+
+                <div id="panel-icon" class="panel-icon">🌋</div>
+
+                <h2 id="panel-title">
+                    Why the Program Exists
+                </h2>
+
+                <p id="panel-description">
+                    In January 2022, an underwater volcano erupted near Tonga in the Pacific. It caused a tsunami that devastated infrastructure and severely impacted the livelihoods of 85 percent of the island’s population. The disaster caused damage and losses of at least US$90.4 million, or 18.5 percent of Tonga’s GDP. The Fiscal Resilience Program is built around a practical question: how can countries like Tonga protect their economies from this kind of shock?
+                </p>
+
+                <div class="panel-meta">
+                    <div id="panel-tag" class="panel-tag">
+                        Program Story
+                    </div>
+
+                    <a id="panel-link" href="#" class="panel-link">
+                        Open resource
+                    </a>
+                </div>
+
+                <div id="panel-note" class="panel-note">
+                    The program starts from the real fiscal consequences of disasters in Pacific island economies.
+                </div>
+
+                <ul id="panel-list" class="panel-list"></ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================================================
+     FOOTER WAVE
+========================================================= -->
+
+<div class="footer-wave">
+    <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
+        <path fill="#007a8a" d="M0,48 C180,90 360,90 540,50 C720,10 900,10 1080,48 C1260,86 1350,72 1440,42 L1440,90 L0,90 Z"></path>
+    </svg>
+</div>
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="footer">
+
+    <div class="footer-inner">
+        <div class="footer-sentence">
+            Fiscal resilience for Pacific SIDS is built before the next shock — through shared learning, stronger buffers, and public finance systems that protect communities when they need them most.
+        </div>
+    </div>
+
+</footer>
+
+<script>
+const communityItems = [
+    {
+        icon: "🌋",
+        title: "Why the Program Exists",
+        description: "In January 2022, an underwater volcano erupted near Tonga in the Pacific. It caused a tsunami that devastated infrastructure and severely impacted the livelihoods of 85 percent of the island’s population. The disaster caused damage and losses of at least US$90.4 million, or 18.5 percent of Tonga’s GDP. The Fiscal Resilience Program is built around a practical question: how can countries like Tonga protect their economies from this kind of shock?",
+        tag: "Program Story",
+        note: "The program starts from the real fiscal consequences of disasters in Pacific island economies.",
+        link: "#",
+        items: []
+    },
+    {
+        icon: "🏝️",
+        title: "The Challenge for Pacific SIDS",
+        description: "Pacific Small Island Developing States face immense challenges. They are particularly vulnerable to natural disasters, which can cause catastrophic damage. Their small economies have limited resources and can be set back by decades when recovering from a major disaster. For this reason, creating fiscal buffers and strengthening fiscal resilience is critical to the economic future of Pacific SIDS.",
+        tag: "Pacific SIDS",
+        note: "The community dimension matters because many Pacific SIDS face similar risks but have limited individual capacity to manage repeated shocks alone.",
+        link: "#",
+        items: []
+    },
+    {
+        icon: "🤝",
+        title: "Country-Led Support",
+        description: "Through the World Bank Fiscal Resilience Program, Pacific SIDS are identifying their own needs, pinpointing the most pressing fiscal policy gaps, and shaping the kind of support that will be most useful for building fiscal resilience to shocks.",
+        tag: "Country-Led",
+        note: "The program is designed to support country priorities rather than impose a one-size-fits-all reform model.",
+        link: "#",
+        items: []
+    },
+    {
+        icon: "🌐",
+        title: "Global Expertise and Peer Learning",
+        description: "The World Bank Group, with support from the Japan Policy and Human Resources Development Fund, is helping to convene and coordinate global expertise. The goal is to ensure that Pacific SIDS can learn from each other, share best practices, learn from island states with larger economies, and strengthen fiscal resilience collectively.",
+        tag: "Peer Learning",
+        note: "Peer learning helps countries compare practical solutions, avoid repeated mistakes, and adapt lessons to Pacific realities.",
+        link: "#",
+        items: [
+            { text: "Learn from other Pacific SIDS facing similar fiscal and climate risks", url: "#" },
+            { text: "Share practical experience on fiscal buffers, revenue resilience, and shock response", url: "#" },
+            { text: "Connect regional experience with global expertise from larger island economies", url: "#" }
+        ]
+    },
+    {
+        icon: "🧩",
+        title: "Practical Collaboration",
+        description: "Through collaboration, the program aims to promote practical solutions to secure economic stability and unleash long-term, sustainable growth for Pacific SIDS.",
+        tag: "Collaboration",
+        note: "The program’s value comes from combining analysis, country dialogue, partner coordination, and practical implementation support.",
+        link: "#",
+        items: []
+    },
+    {
+        icon: "🇯🇵",
+        title: "Funding and Partnerships",
+        description: "The Fiscal Resilience Program is financed by the Japan Policy and Human Resources Development Fund. Through this partnership, the World Bank Group is committed to supporting Pacific SIDS in building stronger, more resilient economies. The program will further collaborate with regional and international institutions to provide comprehensive fiscal support.",
+        tag: "Partnerships",
+        note: "Partnerships help align financing, technical expertise, and regional cooperation around fiscal resilience priorities.",
+        link: "#",
+        items: [
+            { text: "Japan Policy and Human Resources Development Fund", url: "#" },
+            { text: "World Bank Group", url: "#" },
+            { text: "Asian Development Bank", url: "#" },
+            { text: "International Monetary Fund", url: "#" },
+            { text: "Japan International Cooperation Agency", url: "#" },
+            { text: "Pacific Islands Forum", url: "#" }
+        ]
+    },
+    {
+        icon: "🗼",
+        title: "High-Level Meeting in Tokyo",
+        description: "The Building Fiscal Resilience in SIDS High-Level Meeting, held in Tokyo in March 2025, brought together senior government officials, finance ministers, and global and regional experts to address the economic vulnerabilities of Pacific SIDS. Representatives from the Federated States of Micronesia, Fiji, Kiribati, Nauru, Palau, Republic of the Marshall Islands, Samoa, Solomon Islands, Timor-Leste, and Tuvalu joined development partners, including the IMF, JICA, and Japan’s Ministry of Finance. Tonga and Vanuatu are also part of the initiative but were not able to attend the first high-level meeting.",
+        tag: "Events",
+        note: "The meeting asked how Pacific SIDS can strengthen fiscal resilience, what tools are needed, and why urgent action is needed to protect long-term stability and development.",
+        link: "#",
+        items: [
+            { text: "Federated States of Micronesia", url: "#" },
+            { text: "Fiji", url: "#" },
+            { text: "Kiribati", url: "#" },
+            { text: "Nauru", url: "#" },
+            { text: "Palau", url: "#" },
+            { text: "Republic of the Marshall Islands", url: "#" },
+            { text: "Samoa", url: "#" },
+            { text: "Solomon Islands", url: "#" },
+            { text: "Timor-Leste", url: "#" },
+            { text: "Tuvalu", url: "#" },
+            { text: "Tonga and Vanuatu are also part of the initiative", url: "#" }
+        ]
+    },
+    {
+        icon: "📄",
+        title: "Tokyo Meeting Outcomes and Materials",
+        description: "The Tokyo meeting focused on strengthening fiscal frameworks to promote macroeconomic stability, implementing investment-friendly revenue policies, and developing strategies to manage economic and climate-related shocks. Sessions highlighted practical examples of fiscal innovations, such as the Solomon Islands’ Transport Maintenance Fund, and explored international experiences with fiscal rules, tax policy reforms, and risk-sharing and insurance mechanisms. Participants examined ways to tailor the Fiscal Resilience Program to the region’s unique needs, ensuring that policies and reforms align with national and regional priorities. Iceland’s Ambassador to Japan also shared the experience of a Small Island State’s effort to overcome economic shocks, transform the economy, and become a high-income country. The meeting reinforced the importance of long-term fiscal planning and stronger public financial management systems.",
+        tag: "Materials",
+        note: "Tokyo materials can serve as a reference point for follow-up dialogue, country engagement, and regional peer learning.",
+        link: "#",
+        items: [
+            { text: "Proceedings - Tokyo High Level Meeting on Fiscal Resilience, March 17-19 2025", url: "#" },
+            { text: "Agenda and Event Presentations - Tokyo High Level Meeting on Fiscal Resilience, March 17-19 2025", url: "#" }
+        ]
+    }
+];
+
+function showCommunity(index){
+    const item = communityItems[index];
+
+    document.getElementById("panel-icon").textContent = item.icon;
+    document.getElementById("panel-title").textContent = item.title;
+    document.getElementById("panel-description").textContent = item.description;
+    document.getElementById("panel-tag").textContent = item.tag;
+    document.getElementById("panel-note").textContent = item.note;
+    document.getElementById("panel-link").href = item.link;
+
+    const list = document.getElementById("panel-list");
+    list.innerHTML = "";
+
+    item.items.forEach(entry => {
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = entry.url;
+        a.textContent = entry.text;
+        li.appendChild(a);
+        list.appendChild(li);
+    });
+
+    const cards = document.querySelectorAll(".community-card");
+    cards.forEach(card => card.classList.remove("active"));
+    cards[index].classList.add("active");
+}
+</script>
+
+</body>
+</html>

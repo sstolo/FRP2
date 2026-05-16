@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FRP - Guidance</title>
+
+<style>
+
+/* =========================================================
+   GLOBAL DESIGN SYSTEM
+========================================================= */
+
+:root{
+    --deep-ocean:#063a4a;
+    --ocean:#007a8a;
+    --lagoon:#14b8a6;
+    --reef:#34d399;
+    --sun:#f7b538;
+    --coral:#f9735b;
+    --sand:#fff3d6;
+    --cloud:#f8fffb;
+    --ink:#123047;
+    --muted:#557084;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html,
+body{
+    margin:0;
+    height:100vh;
+    overflow:hidden;
+    font-family:Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at top left, rgba(247,181,56,0.20), transparent 28%),
+        radial-gradient(circle at top right, rgba(20,184,166,0.22), transparent 32%),
+        #f8fffb;
+    color:var(--ink);
+}
+
+body{
+    display:grid;
+    grid-template-rows:auto 1fr 26px auto;
+}
+
+a{
+    color:inherit;
+}
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+
+.navbar{
+    position:relative;
+    z-index:1000;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:9px 48px;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(0,122,138,0.12);
+    box-shadow:0 6px 20px rgba(0,80,100,0.07);
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.logo img{
+    height:31px;
+    width:auto;
+    display:block;
+}
+
+.logo-title{
+    font-weight:800;
+    color:var(--deep-ocean);
+    letter-spacing:-0.02em;
+    font-size:15px;
+}
+
+.navlinks{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.navlinks a{
+    text-decoration:none;
+    color:var(--deep-ocean);
+    font-weight:700;
+    padding:7px 13px;
+    border-radius:999px;
+    transition:0.22s;
+    font-size:15px;
+}
+
+.navlinks a:hover,
+.navlinks a.active{
+    background:linear-gradient(135deg, var(--lagoon), var(--ocean));
+    color:white;
+    transform:translateY(-1px);
+}
+
+/* =========================================================
+   MAIN SECTION
+========================================================= */
+
+.section{
+    min-height:0;
+    padding:10px 48px 4px 48px;
+    overflow:hidden;
+}
+
+/* =========================================================
+   GUIDANCE PANEL
+========================================================= */
+
+.guidance-panel{
+    position:relative;
+    overflow:hidden;
+    height:100%;
+    min-height:0;
+    border-radius:28px;
+    background:white;
+    box-shadow:0 14px 38px rgba(0,80,100,0.10);
+    border:1px solid rgba(0,122,138,0.10);
+    display:grid;
+    grid-template-rows:auto 1fr;
+}
+
+.guidance-panel::before{
+    content:"";
+    position:absolute;
+    right:-145px;
+    top:-145px;
+    width:330px;
+    height:330px;
+    border-radius:50%;
+    background:linear-gradient(135deg, rgba(247,181,56,0.36), rgba(20,184,166,0.28));
+}
+
+.guidance-panel::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:8px;
+    background:linear-gradient(90deg, var(--lagoon), var(--sun), var(--coral));
+}
+
+/* =========================================================
+   UPPER PART: TITLE + TABS
+========================================================= */
+
+.guidance-top{
+    position:relative;
+    z-index:2;
+    padding:26px 42px 18px 42px;
+    border-bottom:1px solid rgba(0,122,138,0.10);
+    background:
+        linear-gradient(135deg, rgba(220,248,242,0.60), rgba(255,243,214,0.45));
+}
+
+.guidance-heading{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:24px;
+    margin-bottom:20px;
+}
+
+.heading-text h1{
+    margin:0 0 8px 0;
+    font-size:38px;
+    line-height:1.05;
+    color:var(--deep-ocean);
+    letter-spacing:-0.045em;
+}
+
+.heading-text p{
+    margin:0;
+    max-width:820px;
+    color:var(--muted);
+    font-size:16px;
+    line-height:1.55;
+}
+
+.heading-badge{
+    flex:0 0 auto;
+    padding:9px 15px;
+    border-radius:999px;
+    background:white;
+    color:var(--ocean);
+    font-size:13px;
+    font-weight:900;
+    box-shadow:0 8px 22px rgba(0,80,100,0.08);
+    border:1px solid rgba(0,122,138,0.10);
+}
+
+.tabs{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:12px;
+}
+
+.tab{
+    position:relative;
+    overflow:hidden;
+    border:0;
+    border-radius:18px;
+    padding:15px 18px;
+    background:white;
+    color:var(--deep-ocean);
+    text-align:left;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(0,80,100,0.07);
+    border:1px solid rgba(0,122,138,0.10);
+    transition:0.22s;
+}
+
+.tab::before{
+    content:"";
+    position:absolute;
+    right:-44px;
+    top:-48px;
+    width:96px;
+    height:96px;
+    border-radius:50%;
+    background:linear-gradient(135deg, rgba(247,181,56,0.18), rgba(20,184,166,0.16));
+    transition:0.22s;
+}
+
+.tab::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:5px;
+    background:linear-gradient(90deg, var(--lagoon), var(--sun), var(--coral));
+    opacity:0.75;
+}
+
+.tab:hover,
+.tab.active{
+    transform:translateY(-2px);
+    box-shadow:0 13px 30px rgba(0,80,100,0.13);
+    border-color:rgba(0,122,138,0.30);
+}
+
+.tab.active::before{
+    right:-36px;
+    top:-38px;
+    width:112px;
+    height:112px;
+    background:linear-gradient(135deg, rgba(247,181,56,0.78), rgba(20,184,166,0.48));
+    box-shadow:0 0 34px rgba(247,181,56,0.28);
+}
+
+.tab-icon{
+    position:relative;
+    z-index:2;
+    width:36px;
+    height:36px;
+    border-radius:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:10px;
+    background:linear-gradient(135deg, var(--ocean), var(--lagoon));
+    color:white;
+    font-size:18px;
+    box-shadow:0 7px 15px rgba(20,184,166,0.22);
+}
+
+.tab-title{
+    position:relative;
+    z-index:2;
+    display:block;
+    font-size:15px;
+    line-height:1.15;
+    font-weight:900;
+}
+
+.tab-subtitle{
+    position:relative;
+    z-index:2;
+    display:block;
+    margin-top:5px;
+    font-size:12px;
+    line-height:1.35;
+    color:var(--muted);
+    font-weight:700;
+}
+
+/* =========================================================
+   LOWER PART: CONTENT
+========================================================= */
+
+.guidance-content{
+    position:relative;
+    z-index:2;
+    min-height:0;
+    overflow:auto;
+    padding:34px 42px 42px 42px;
+}
+
+.guidance-content::-webkit-scrollbar{
+    width:8px;
+}
+
+.guidance-content::-webkit-scrollbar-track{
+    background:rgba(0,122,138,0.08);
+    border-radius:999px;
+}
+
+.guidance-content::-webkit-scrollbar-thumb{
+    background:rgba(0,122,138,0.35);
+    border-radius:999px;
+}
+
+.content-grid{
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    gap:28px;
+    align-items:start;
+}
+
+.content-main{
+    max-width:900px;
+}
+
+.content-icon{
+    width:64px;
+    height:64px;
+    border-radius:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:22px;
+    background:linear-gradient(135deg, var(--ocean), var(--lagoon));
+    color:white;
+    font-size:31px;
+    box-shadow:0 12px 26px rgba(20,184,166,0.28);
+}
+
+.content-main h2{
+    margin:0 0 14px 0;
+    font-size:38px;
+    line-height:1.05;
+    color:var(--deep-ocean);
+    letter-spacing:-0.045em;
+}
+
+.content-main p{
+    margin:0;
+    color:var(--muted);
+    font-size:17px;
+    line-height:1.65;
+}
+
+.content-note{
+    margin-top:26px;
+    padding:16px 20px;
+    border-radius:22px;
+    background:linear-gradient(135deg, rgba(220,248,242,0.75), rgba(255,243,214,0.65));
+    color:var(--deep-ocean);
+    font-size:14px;
+    line-height:1.5;
+    font-weight:650;
+}
+
+.content-side{
+    display:grid;
+    gap:12px;
+}
+
+.side-card{
+    position:relative;
+    overflow:hidden;
+    padding:18px 20px;
+    border-radius:20px;
+    background:linear-gradient(135deg, rgba(220,248,242,0.58), rgba(255,243,214,0.42));
+    border:1px solid rgba(0,122,138,0.10);
+}
+
+.side-card h3{
+    margin:0 0 8px 0;
+    color:var(--deep-ocean);
+    font-size:16px;
+}
+
+.side-card p{
+    margin:0;
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.5;
+}
+
+.guidance-list{
+    margin:22px 0 0 0;
+    padding:0;
+    list-style:none;
+    display:grid;
+    gap:10px;
+}
+
+.guidance-list li{
+    position:relative;
+    padding:12px 14px 12px 42px;
+    border-radius:16px;
+    background:linear-gradient(135deg, rgba(220,248,242,0.52), rgba(255,243,214,0.38));
+    color:var(--deep-ocean);
+    font-size:14.5px;
+    line-height:1.45;
+    font-weight:650;
+}
+
+.guidance-list li::before{
+    content:"";
+    position:absolute;
+    left:16px;
+    top:18px;
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:linear-gradient(135deg, var(--lagoon), var(--sun));
+}
+
+/* =========================================================
+   FOOTER WAVE
+========================================================= */
+
+.footer-wave{
+    height:26px;
+    min-height:26px;
+    margin-top:0;
+    overflow:hidden;
+}
+
+.footer-wave svg{
+    width:100%;
+    height:100%;
+    display:block;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer{
+    margin-top:0;
+    background:
+        radial-gradient(circle at 12% 15%, rgba(247,181,56,0.42), transparent 28%),
+        linear-gradient(135deg, rgba(0,122,138,0.98), rgba(20,184,166,0.94));
+    padding:8px 48px;
+    border-top:1px solid rgba(255,255,255,0.26);
+    box-shadow:0 -7px 20px rgba(0,80,100,0.08);
+}
+
+.footer-inner{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+.footer-sentence{
+    max-width:1960px;
+    width:100%;
+    color:white;
+    font-size:12.5px;
+    line-height:1.35;
+    font-weight:600;
+    letter-spacing:0.01em;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1100px){
+
+    html,
+    body{
+        height:auto;
+        overflow:auto;
+    }
+
+    body{
+        display:block;
+    }
+
+    .navbar{
+        padding:14px 24px;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:12px;
+    }
+
+    .section{
+        height:auto;
+        min-height:auto;
+        padding:16px 32px 8px 32px;
+        overflow:visible;
+    }
+
+    .guidance-panel{
+        height:auto;
+    }
+
+    .guidance-heading{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .tabs{
+        grid-template-columns:repeat(2, 1fr);
+    }
+
+    .content-grid{
+        grid-template-columns:1fr;
+    }
+
+    .guidance-content{
+        overflow:visible;
+    }
+
+    .footer{
+        padding:12px 32px;
+    }
+}
+
+@media(max-width:650px){
+
+    .navbar{
+        padding:12px 20px;
+    }
+
+    .navlinks a{
+        padding:8px 11px;
+        font-size:14px;
+    }
+
+    .logo-title{
+        font-size:14px;
+    }
+
+    .guidance-top{
+        padding:24px 24px 18px 24px;
+    }
+
+    .heading-text h1{
+        font-size:31px;
+    }
+
+    .tabs{
+        grid-template-columns:1fr;
+    }
+
+    .guidance-content{
+        padding:28px 24px 34px 24px;
+    }
+
+    .content-main h2{
+        font-size:30px;
+    }
+
+    .content-main p{
+        font-size:16px;
+    }
+
+    .footer-wave{
+        height:24px;
+        min-height:24px;
+    }
+
+    .footer-sentence{
+        font-size:12px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<div class="navbar">
+
+    <div class="logo">
+        <img src="wb_blue.jpg" alt="World Bank Group">
+        <div class="logo-title">Pacific Fiscal Resilience Platform</div>
+    </div>
+
+    <div class="navlinks">
+        <a href="region.html">Region</a>
+        <a href="countries.html">Countries</a>
+        <a href="themes.html" class="active">Themes</a>
+        <a href="resources.html">Resources</a>
+        <a href="community.html">Community</a>
+    </div>
+
+</div>
+
+<!-- =========================================================
+     GUIDANCE CONTENT
+========================================================= -->
+
+<section class="section">
+
+    <div class="guidance-panel">
+
+        <!-- UPPER PART: TITLE AND TABS -->
+
+        <div class="guidance-top">
+
+
+
+            <div class="tabs">
+
+                <button class="tab active" onclick="showTab(0)">
+                    <span class="tab-icon">🛡️</span>
+                    <span class="tab-title">Buffers</span>
+                    <span class="tab-subtitle">Liquidity, reserves, and shock readiness.</span>
+                </button>
+
+                <button class="tab" onclick="showTab(1)">
+                    <span class="tab-icon">🌊</span>
+                    <span class="tab-title">Debt Sustainability</span>
+                    <span class="tab-subtitle">Stress testing and prudent debt management.</span>
+                </button>
+
+                <button class="tab" onclick="showTab(2)">
+                    <span class="tab-icon">🌺</span>
+                    <span class="tab-title">Revenue Resilience</span>
+                    <span class="tab-subtitle">Diversification and lower volatility.</span>
+                </button>
+
+                <button class="tab" onclick="showTab(3)">
+                    <span class="tab-icon">🧭</span>
+                    <span class="tab-title">Expenditure Efficiency</span>
+                    <span class="tab-subtitle">PFM, budget flexibility, and investment quality.</span>
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- LOWER PART: DYNAMIC CONTENT -->
+
+        <div class="guidance-content">
+
+            <div class="content-grid">
+
+                <div class="content-main">
+
+                    <div id="content-icon" class="content-icon">🛡️</div>
+
+                    <h2 id="content-title">Buffers</h2>
+
+                    <p id="content-description">
+                        Introduce explicit fiscal buffer floors linked to disaster and shock exposure. For Pacific SIDS, buffers are not only a macroeconomic safeguard; they are a practical tool for keeping essential services running after climate, disaster, or external shocks.
+                    </p>
+
+                    <div id="content-note" class="content-note">
+                        Priority guidance: define minimum liquidity and fiscal buffer targets that reflect country-specific exposure to disasters, revenue volatility, and financing constraints.
+                    </div>
+
+                    <ul id="content-list" class="guidance-list">
+                        <li>Set explicit fiscal buffer floors linked to disaster and macroeconomic shock exposure.</li>
+                        <li>Protect liquidity needed for salaries, essential services, and emergency response.</li>
+                        <li>Integrate disaster-risk financing into medium-term fiscal planning.</li>
+                    </ul>
+
+                </div>
+
+                <div class="content-side">
+
+                    <div class="side-card">
+                        <h3 id="side-title-1">Policy focus</h3>
+                        <p id="side-text-1">
+                            Build buffers before shocks occur, rather than relying only on emergency financing after disasters.
+                        </p>
+                    </div>
+
+                    <div class="side-card">
+                        <h3 id="side-title-2">Operational angle</h3>
+                        <p id="side-text-2">
+                            Link fiscal buffers to annual budgets, disaster-risk financing instruments, and medium-term fiscal frameworks.
+                        </p>
+                    </div>
+
+                    <div class="side-card">
+                        <h3 id="side-title-3">Why it matters</h3>
+                        <p id="side-text-3">
+                            Stronger buffers help Pacific SIDS absorb shocks while protecting vulnerable households and essential public services.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================================================
+     FOOTER WAVE
+========================================================= -->
+
+<div class="footer-wave">
+    <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
+        <path fill="#007a8a" d="M0,48 C180,90 360,90 540,50 C720,10 900,10 1080,48 C1260,86 1350,72 1440,42 L1440,90 L0,90 Z"></path>
+    </svg>
+</div>
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="footer">
+
+    <div class="footer-inner">
+        <div class="footer-sentence">
+            Fiscal resilience for Pacific SIDS is built before the next shock — through shared learning, stronger buffers, and public finance systems that protect communities when they need them most.
+        </div>
+    </div>
+
+</footer>
+
+<script>
+const guidanceTabs = [
+    {
+        icon: "🛡️",
+        title: "Buffers",
+        description: "Introduce explicit fiscal buffer floors linked to disaster and shock exposure. For Pacific SIDS, buffers are not only a macroeconomic safeguard; they are a practical tool for keeping essential services running after climate, disaster, or external shocks.",
+        note: "Priority guidance: define minimum liquidity and fiscal buffer targets that reflect country-specific exposure to disasters, revenue volatility, and financing constraints.",
+        items: [
+            "Set explicit fiscal buffer floors linked to disaster and macroeconomic shock exposure.",
+            "Protect liquidity needed for salaries, essential services, and emergency response.",
+            "Integrate disaster-risk financing into medium-term fiscal planning."
+        ],
+        side: [
+            {
+                title: "Policy focus",
+                text: "Build buffers before shocks occur, rather than relying only on emergency financing after disasters."
+            },
+            {
+                title: "Operational angle",
+                text: "Link fiscal buffers to annual budgets, disaster-risk financing instruments, and medium-term fiscal frameworks."
+            },
+            {
+                title: "Why it matters",
+                text: "Stronger buffers help Pacific SIDS absorb shocks while protecting vulnerable households and essential public services."
+            }
+        ]
+    },
+    {
+        icon: "🌊",
+        title: "Debt Sustainability",
+        description: "Strengthen fiscal frameworks through stress testing, prudent borrowing, conservative debt management, and better integration of climate and disaster risks into debt sustainability analysis.",
+        note: "Priority guidance: assess debt sustainability under repeated shock scenarios, not only under central baseline assumptions.",
+        items: [
+            "Use regular stress testing to assess the impact of disasters, growth shocks, and financing changes.",
+            "Preserve concessional financing where possible and manage refinancing risks carefully.",
+            "Integrate contingent liabilities and disaster-related fiscal risks into debt analysis."
+        ],
+        side: [
+            {
+                title: "Policy focus",
+                text: "Move from short-term debt monitoring to forward-looking fiscal risk management."
+            },
+            {
+                title: "Operational angle",
+                text: "Use debt stress tests to inform fiscal anchors, borrowing plans, and investment prioritization."
+            },
+            {
+                title: "Why it matters",
+                text: "Debt sustainability is central for Pacific SIDS because repeated shocks can quickly reduce fiscal space."
+            }
+        ]
+    },
+    {
+        icon: "🌺",
+        title: "Revenue Resilience",
+        description: "Reduce volatility through revenue diversification, tax modernization, stronger compliance, and mechanisms that stabilize revenues when tourism, trade, grants, or commodity-related flows weaken.",
+        note: "Priority guidance: strengthen the predictability and diversity of revenues while protecting growth and investment incentives.",
+        items: [
+            "Broaden the tax base and reduce excessive dependence on a narrow set of volatile revenue sources.",
+            "Modernize tax administration and strengthen compliance using digital tools where feasible.",
+            "Explore stabilization mechanisms for highly volatile or externally dependent revenue streams."
+        ],
+        side: [
+            {
+                title: "Policy focus",
+                text: "Make revenues more stable, predictable, and less dependent on a single sector or external flow."
+            },
+            {
+                title: "Operational angle",
+                text: "Combine tax policy reform with practical administrative improvements and taxpayer services."
+            },
+            {
+                title: "Why it matters",
+                text: "Revenue resilience helps Pacific SIDS sustain essential spending when external conditions worsen."
+            }
+        ]
+    },
+    {
+        icon: "🧭",
+        title: "Expenditure Efficiency",
+        description: "Improve investment management, budget flexibility, public financial management, and resilience-oriented spending so limited fiscal resources generate stronger development and preparedness outcomes.",
+        note: "Priority guidance: improve spending quality and flexibility so budgets can respond to shocks without undermining long-term priorities.",
+        items: [
+            "Strengthen public investment management to ensure resilient, high-value infrastructure spending.",
+            "Improve budget execution, transparency, and monitoring of resilience-related expenditures.",
+            "Build flexibility into budgets so governments can reprioritize during crises while protecting core services."
+        ],
+        side: [
+            {
+                title: "Policy focus",
+                text: "Improve the quality, flexibility, and resilience orientation of public spending."
+            },
+            {
+                title: "Operational angle",
+                text: "Link PFM reforms to investment planning, budget execution, and climate/disaster resilience priorities."
+            },
+            {
+                title: "Why it matters",
+                text: "For Pacific SIDS, limited fiscal resources make efficient and resilient spending especially important."
+            }
+        ]
+    }
+];
+
+function showTab(index){
+
+    const item = guidanceTabs[index];
+
+    document.getElementById("content-icon").textContent = item.icon;
+    document.getElementById("content-title").textContent = item.title;
+    document.getElementById("content-description").textContent = item.description;
+    document.getElementById("content-note").textContent = item.note;
+
+    const list = document.getElementById("content-list");
+    list.innerHTML = "";
+
+    item.items.forEach(text => {
+        const li = document.createElement("li");
+        li.textContent = text;
+        list.appendChild(li);
+    });
+
+    document.getElementById("side-title-1").textContent = item.side[0].title;
+    document.getElementById("side-text-1").textContent = item.side[0].text;
+
+    document.getElementById("side-title-2").textContent = item.side[1].title;
+    document.getElementById("side-text-2").textContent = item.side[1].text;
+
+    document.getElementById("side-title-3").textContent = item.side[2].title;
+    document.getElementById("side-text-3").textContent = item.side[2].text;
+
+    const tabs = document.querySelectorAll(".tab");
+    tabs.forEach(tab => tab.classList.remove("active"));
+    tabs[index].classList.add("active");
+}
+</script>
+
+</body>
+</html>

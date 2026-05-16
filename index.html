@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Fiscal Resilience Platform</title>
+
+<style>
+
+/* =========================================================
+   GLOBAL DESIGN SYSTEM
+========================================================= */
+
+:root{
+    --deep-ocean:#063a4a;
+    --ocean:#007a8a;
+    --lagoon:#14b8a6;
+    --reef:#34d399;
+    --sun:#f7b538;
+    --coral:#f9735b;
+    --sand:#fff3d6;
+    --cloud:#f8fffb;
+    --ink:#123047;
+    --muted:#557084;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at top left, rgba(247,181,56,0.20), transparent 28%),
+        radial-gradient(circle at top right, rgba(20,184,166,0.22), transparent 32%),
+        #f8fffb;
+    color:var(--ink);
+}
+
+a{
+    color:inherit;
+}
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+
+.navbar{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 48px;
+    background:rgba(255,255,255,0.90);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(0,122,138,0.12);
+    box-shadow:0 6px 22px rgba(0,80,100,0.07);
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.logo img{
+    height:32px;
+    width:auto;
+    display:block;
+}
+
+.logo-title{
+    font-weight:800;
+    color:var(--deep-ocean);
+    letter-spacing:-0.02em;
+    font-size:15px;
+}
+
+.navlinks{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.navlinks a{
+    text-decoration:none;
+    color:var(--deep-ocean);
+    font-weight:700;
+    padding:8px 13px;
+    border-radius:999px;
+    transition:0.22s;
+    font-size:15px;
+}
+
+.navlinks a:hover{
+    background:linear-gradient(135deg, var(--lagoon), var(--ocean));
+    color:white;
+    transform:translateY(-1px);
+}
+
+/* =========================================================
+   SECTION GENERAL
+========================================================= */
+
+.section{
+    height:calc(100vh - 146px);
+    min-height:520px;
+    padding:12px 48px 4px 48px;
+}
+
+/* =========================================================
+   PLATFORM IMAGE + THREE-COLUMN LAYOUT
+========================================================= */
+
+.platform-feature-layout{
+    display:grid;
+    grid-template-columns:1.1fr 1.03fr 1.1fr;
+    gap:16px;
+    align-items:stretch;
+    height:100%;
+    margin-top:0;
+}
+
+.card-column{
+    display:grid;
+    grid-template-rows:repeat(3, 1fr);
+    gap:12px;
+    height:100%;
+}
+
+.card-column-right{
+    grid-template-rows:repeat(2, 1fr);
+}
+
+.platform-image-wrap{
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:stretch;
+    justify-content:center;
+    margin:0;
+}
+
+.platform-hero-image{
+    width:100%;
+    height:100%;
+    min-height:0;
+    border-radius:26px;
+    display:block;
+    object-fit:cover;
+    box-shadow:0 16px 42px rgba(0,80,100,0.15);
+    border:5px solid rgba(255,255,255,0.92);
+}
+
+/* =========================================================
+   PLATFORM TILES
+========================================================= */
+
+.card{
+    position:relative;
+    overflow:hidden;
+    min-height:0;
+    padding:18px 24px;
+    border-radius:26px;
+    background:white;
+    box-shadow:0 10px 28px rgba(0,80,100,0.085);
+    border:1px solid rgba(0,122,138,0.10);
+    transition:0.25s;
+    text-decoration:none;
+    color:inherit;
+}
+
+.card::before{
+    content:"";
+    position:absolute;
+    right:-70px;
+    top:-70px;
+    width:145px;
+    height:145px;
+    border-radius:50%;
+    background:linear-gradient(135deg, rgba(247,181,56,0.36), rgba(20,184,166,0.28));
+}
+
+.card::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:7px;
+    background:linear-gradient(90deg, var(--lagoon), var(--sun), var(--coral));
+}
+
+.card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 18px 42px rgba(0,80,100,0.14);
+}
+
+.card-icon{
+    width:44px;
+    height:44px;
+    border-radius:15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:12px;
+    background:linear-gradient(135deg, var(--ocean), var(--lagoon));
+    color:white;
+    font-size:21px;
+    box-shadow:0 8px 18px rgba(20,184,166,0.22);
+}
+
+.card h3{
+    position:relative;
+    z-index:2;
+    margin:0 0 7px 0;
+    font-size:20px;
+    line-height:1.15;
+    color:var(--deep-ocean);
+}
+
+.card p{
+    position:relative;
+    z-index:2;
+    margin:0;
+    color:var(--muted);
+    line-height:1.48;
+    font-size:14px;
+}
+
+/* =========================================================
+   FOOTER WAVE
+========================================================= */
+
+.footer-wave{
+    height:34px;
+    margin-top:0;
+    overflow:hidden;
+}
+
+.footer-wave svg{
+    width:100%;
+    height:100%;
+    display:block;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer{
+    margin-top:-1px;
+    background:
+        radial-gradient(circle at 12% 15%, rgba(247,181,56,0.42), transparent 28%),
+        linear-gradient(135deg, rgba(0,122,138,0.98), rgba(20,184,166,0.94));
+    padding:12px 48px;
+    border-top:1px solid rgba(255,255,255,0.26);
+    box-shadow:0 -8px 24px rgba(0,80,100,0.08);
+}
+
+.footer-inner{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+.footer-sentence{
+    max-width:1960px;
+    width:100%;
+    color:white;
+    font-size:13px;
+    line-height:1.45;
+    font-weight:600;
+    letter-spacing:0.01em;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1100px){
+
+    .navbar{
+        padding:14px 24px;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:12px;
+    }
+
+    .section{
+        height:auto;
+        min-height:auto;
+        padding:16px 32px 8px 32px;
+    }
+
+    .platform-feature-layout{
+        grid-template-columns:1fr;
+        height:auto;
+    }
+
+    .card-column,
+    .card-column-right{
+        grid-template-rows:auto;
+    }
+
+    .platform-hero-image{
+        min-height:auto;
+        max-height:480px;
+        border-radius:26px;
+    }
+
+    .footer{
+        padding:14px 32px;
+    }
+}
+
+@media(max-width:650px){
+
+    .navbar{
+        padding:12px 20px;
+    }
+
+    .navlinks a{
+        padding:8px 11px;
+        font-size:14px;
+    }
+
+    .logo-title{
+        font-size:14px;
+    }
+
+    .card{
+        min-height:auto;
+        padding:18px 22px;
+    }
+
+    .platform-hero-image{
+        max-height:400px;
+    }
+
+    .footer-wave{
+        height:32px;
+    }
+
+    .footer-sentence{
+        font-size:12.5px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<div class="navbar">
+
+    <div class="logo">
+        <img src="wb_blue.jpg" alt="World Bank Group">
+        <div class="logo-title">Fiscal Resilience Platform</div>
+    </div>
+
+    <div class="navlinks">
+        <a href="index.html" class="active">About</a>
+        <a href="region.html">Region</a>
+        <a href="countries.html">Countries</a>
+        <a href="themes.html">Themes</a>
+        <a href="resources.html">Resources</a>
+        <a href="community.html">Community</a>
+    </div>
+
+</div>
+
+<!-- =========================================================
+     PLATFORM CONTENT
+========================================================= -->
+
+<section class="section">
+
+    <div class="platform-feature-layout">
+
+        <div class="card-column">
+
+            <a href="region.html" class="card">
+                <div class="card-icon">🌊</div>
+                <h3>Regional Insights</h3>
+                <p>
+                    Compare countries across peer groups and identify common fiscal resilience patterns across the Pacific.
+                </p>
+            </a>
+
+            <a href="countries.html" class="card">
+                <div class="card-icon">🌴</div>
+                <h3>Country Applications</h3>
+                <p>
+                    Browse country fiscal resilience profiles, diagnostics, and pillar-level results across PIC-11 economies.
+                </p>
+            </a>
+
+            <a href="themes.html" class="card">
+                <div class="card-icon">🧭</div>
+                <h3>Topics</h3>
+                <p>
+                    Explore thematic guidance on fiscal buffers, debt sustainability, revenue resilience, expenditure quality, and shock exposure.
+                </p>
+            </a>
+
+        </div>
+
+        <div class="platform-image-wrap">
+            <img src="weaving.jpg" alt="Pacific palm-leaf weaving" class="platform-hero-image">
+        </div>
+
+        <div class="card-column card-column-right">
+
+            <a href="resources.html" class="card">
+                <div class="card-icon">📊</div>
+                <h3>Tools, Literature, Projects, Data & Resources</h3>
+                <p>
+                    Access indicators, methodology notes, resilience metrics, diagnostic dashboards, project examples, literature, and implementation resources.
+                </p>
+            </a>
+
+            <a href="community.html" class="card">
+                <div class="card-icon">🤝</div>
+                <h3>Community, Events & Partners</h3>
+                <p>
+                    Connect with communities, events, donors, partners, universities, MDBs, ministries, and country counterparts.
+                </p>
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================================================
+     FOOTER WAVE
+========================================================= -->
+
+<div class="footer-wave">
+    <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
+        <path fill="#007a8a" d="M0,48 C180,90 360,90 540,50 C720,10 900,10 1080,48 C1260,86 1350,72 1440,42 L1440,90 L0,90 Z"></path>
+    </svg>
+</div>
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="footer">
+
+    <div class="footer-inner">
+        <div class="footer-sentence">
+            Fiscal resilience in the Pacific is built before the next shock — through shared learning, stronger buffers, and public finance systems that protect communities when they need them most.
+        </div>
+    </div>
+
+</footer>
+
+</body>
+</html>

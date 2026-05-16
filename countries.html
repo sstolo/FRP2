@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FRP - Countries</title>
+
+<style>
+
+/* =========================================================
+   GLOBAL DESIGN SYSTEM
+========================================================= */
+
+:root{
+    --deep-ocean:#063a4a;
+    --ocean:#007a8a;
+    --lagoon:#14b8a6;
+    --reef:#34d399;
+    --sun:#f7b538;
+    --coral:#f9735b;
+    --sand:#fff3d6;
+    --cloud:#f8fffb;
+    --ink:#123047;
+    --muted:#557084;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html,
+body{
+    margin:0;
+    height:100vh;
+    overflow:hidden;
+    font-family:Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at top left, rgba(247,181,56,0.20), transparent 28%),
+        radial-gradient(circle at top right, rgba(20,184,166,0.22), transparent 32%),
+        #f8fffb;
+    color:var(--ink);
+}
+
+body{
+    display:grid;
+    grid-template-rows:auto 1fr 26px auto;
+}
+
+a{
+    color:inherit;
+}
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+
+.navbar{
+    position:relative;
+    z-index:1000;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:9px 48px;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(0,122,138,0.12);
+    box-shadow:0 6px 20px rgba(0,80,100,0.07);
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.logo img{
+    height:31px;
+    width:auto;
+    display:block;
+}
+
+.logo-title{
+    font-weight:800;
+    color:var(--deep-ocean);
+    letter-spacing:-0.02em;
+    font-size:15px;
+}
+
+.navlinks{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.navlinks a{
+    text-decoration:none;
+    color:var(--deep-ocean);
+    font-weight:700;
+    padding:7px 13px;
+    border-radius:999px;
+    transition:0.22s;
+    font-size:15px;
+}
+
+.navlinks a:hover,
+.navlinks a.active{
+    background:linear-gradient(135deg, var(--lagoon), var(--ocean));
+    color:white;
+    transform:translateY(-1px);
+}
+
+/* =========================================================
+   MAIN SECTION
+========================================================= */
+
+.section{
+    min-height:0;
+    padding:10px 48px 4px 48px;
+    overflow:hidden;
+}
+
+/* =========================================================
+   COUNTRY PANEL
+========================================================= */
+
+.country-panel{
+    position:relative;
+    overflow:hidden;
+    height:100%;
+    min-height:0;
+    border-radius:28px;
+    background:white;
+    box-shadow:0 14px 38px rgba(0,80,100,0.10);
+    border:1px solid rgba(0,122,138,0.10);
+    display:grid;
+    grid-template-rows:auto 1fr;
+}
+
+.country-panel::before{
+    content:"";
+    position:absolute;
+    right:-145px;
+    top:-145px;
+    width:330px;
+    height:330px;
+    border-radius:50%;
+    background:linear-gradient(135deg, rgba(247,181,56,0.36), rgba(20,184,166,0.28));
+}
+
+.country-panel::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:8px;
+    background:linear-gradient(90deg, var(--lagoon), var(--sun), var(--coral));
+}
+
+/* =========================================================
+   TOP AREA
+========================================================= */
+
+.country-top{
+    position:relative;
+    z-index:2;
+    padding:20px 42px 16px 42px;
+    border-bottom:1px solid rgba(0,122,138,0.10);
+    background:
+        linear-gradient(135deg, rgba(220,248,242,0.60), rgba(255,243,214,0.45));
+}
+
+.country-heading{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:24px;
+}
+
+.heading-text h1{
+    margin:0 0 7px 0;
+    font-size:36px;
+    line-height:1.05;
+    color:var(--deep-ocean);
+    letter-spacing:-0.045em;
+}
+
+.heading-text p{
+    margin:0;
+    max-width:920px;
+    color:var(--muted);
+    font-size:15.5px;
+    line-height:1.5;
+}
+
+.country-controls{
+    flex:0 0 300px;
+    position:relative;
+    overflow:hidden;
+    border-radius:18px;
+    background:white;
+    box-shadow:0 8px 20px rgba(0,80,100,0.07);
+    border:1px solid rgba(0,122,138,0.10);
+    padding:13px 16px;
+}
+
+.country-controls::before{
+    content:"";
+    position:absolute;
+    right:-44px;
+    top:-48px;
+    width:96px;
+    height:96px;
+    border-radius:50%;
+    background:linear-gradient(135deg, rgba(247,181,56,0.18), rgba(20,184,166,0.16));
+}
+
+.control-label{
+    position:relative;
+    z-index:2;
+    display:block;
+    margin-bottom:7px;
+    font-size:12px;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--ocean);
+}
+
+select{
+    position:relative;
+    z-index:2;
+    width:100%;
+    border:1px solid rgba(0,122,138,0.20);
+    border-radius:14px;
+    padding:11px 12px;
+    background:#f8fffb;
+    color:var(--deep-ocean);
+    font-weight:800;
+    font-size:14px;
+    outline:none;
+}
+
+/* =========================================================
+   SCROLLABLE CONTENT AREA
+========================================================= */
+
+.country-content{
+    position:relative;
+    z-index:2;
+    min-height:0;
+    overflow:auto;
+    padding:28px 42px 38px 42px;
+}
+
+.country-content::-webkit-scrollbar{
+    width:8px;
+}
+
+.country-content::-webkit-scrollbar-track{
+    background:rgba(0,122,138,0.08);
+    border-radius:999px;
+}
+
+.country-content::-webkit-scrollbar-thumb{
+    background:rgba(0,122,138,0.35);
+    border-radius:999px;
+}
+
+/* =========================================================
+   DIAGNOSTIC SUMMARY
+========================================================= */
+
+.country-title-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:18px;
+    margin-bottom:18px;
+}
+
+.country-title-row h2{
+    margin:0;
+    font-size:34px;
+    line-height:1.05;
+    color:var(--deep-ocean);
+    letter-spacing:-0.04em;
+}
+
+.country-badge{
+    display:inline-flex;
+    padding:8px 13px;
+    border-radius:999px;
+    background:#dcf8f2;
+    color:var(--ocean);
+    font-size:13px;
+    font-weight:900;
+    white-space:nowrap;
+}
+
+.diagnostic-grid{
+    display:grid;
+    grid-template-columns:0.95fr 1.05fr;
+    gap:26px;
+    align-items:stretch;
+    margin-bottom:22px;
+}
+
+.chart-card,
+.constraints-card{
+    position:relative;
+    overflow:hidden;
+    border-radius:24px;
+    background:white;
+    box-shadow:0 10px 28px rgba(0,80,100,0.08);
+    border:1px solid rgba(0,122,138,0.10);
+}
+
+.chart-card{
+    padding:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.chart-card img{
+    width:100%;
+    height:auto;
+    max-height:250px;
+    object-fit:contain;
+    display:block;
+    border-radius:18px;
+}
+
+.constraints-card{
+    padding:24px 26px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.constraints-card h3{
+    margin:0 0 14px 0;
+    color:var(--deep-ocean);
+    font-size:19px;
+}
+
+.constraints-list{
+    margin:0;
+    padding:0;
+    list-style:none;
+    display:grid;
+    gap:12px;
+}
+
+.constraints-list li{
+    position:relative;
+    padding-left:22px;
+    color:var(--ink);
+    font-size:15px;
+    line-height:1.45;
+}
+
+.constraints-list li::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:8px;
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:linear-gradient(135deg, var(--lagoon), var(--sun));
+}
+
+/* =========================================================
+   HEATMAP
+========================================================= */
+
+.heatmap-card{
+    position:relative;
+    width:100%;
+    overflow:hidden;
+    border-radius:22px;
+    background:white;
+    box-shadow:0 10px 28px rgba(0,80,100,0.08);
+    border:1px solid rgba(0,122,138,0.10);
+    padding:24px;
+    margin-bottom:32px;
+}
+
+.heatmap-card img{
+    display:block;
+    width:1060px;
+    height:190px;
+    border-radius:0;
+}
+
+
+/* =========================================================
+   OVERVIEW
+========================================================= */
+
+.overview-card{
+    margin-bottom:18px;
+    padding:20px 24px;
+    border-radius:22px;
+    background:linear-gradient(135deg, rgba(220,248,242,0.75), rgba(255,243,214,0.60));
+    border:1px solid rgba(0,122,138,0.10);
+}
+
+.overview-card h3{
+    margin:0 0 10px 0;
+    color:var(--deep-ocean);
+    font-size:19px;
+}
+
+.overview-card p{
+    margin:0;
+    color:var(--muted);
+    font-size:15.5px;
+    line-height:1.6;
+}
+
+/* =========================================================
+   ACCORDION
+========================================================= */
+
+.accordion{
+    display:grid;
+    gap:12px;
+}
+
+.accordion-item{
+    border-radius:20px;
+    background:white;
+    box-shadow:0 8px 22px rgba(0,80,100,0.075);
+    border:1px solid rgba(0,122,138,0.10);
+    overflow:hidden;
+}
+
+.accordion-header{
+    width:100%;
+    border:0;
+    background:white;
+    cursor:pointer;
+    padding:18px 22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    text-align:left;
+    color:var(--deep-ocean);
+    font-size:18px;
+    font-weight:900;
+}
+
+.accordion-header:hover{
+    background:#f8fffb;
+}
+
+.accordion-arrow{
+    font-size:17px;
+    color:var(--ocean);
+    transition:0.2s;
+}
+
+.accordion-item.open .accordion-arrow{
+    transform:rotate(90deg);
+}
+
+.accordion-body{
+    display:none;
+    padding:0 22px 20px 22px;
+    color:var(--muted);
+    font-size:15px;
+    line-height:1.65;
+}
+
+.accordion-item.open .accordion-body{
+    display:block;
+}
+
+.accordion-body p{
+    margin:0 0 13px 0;
+}
+
+.accordion-body p:last-child{
+    margin-bottom:0;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer-wave{
+    height:26px;
+    min-height:26px;
+    margin-top:0;
+    overflow:hidden;
+}
+
+.footer-wave svg{
+    width:100%;
+    height:100%;
+    display:block;
+}
+
+.footer{
+    margin-top:0;
+    background:
+        radial-gradient(circle at 12% 15%, rgba(247,181,56,0.42), transparent 28%),
+        linear-gradient(135deg, rgba(0,122,138,0.98), rgba(20,184,166,0.94));
+    padding:8px 48px;
+    border-top:1px solid rgba(255,255,255,0.26);
+    box-shadow:0 -7px 20px rgba(0,80,100,0.08);
+}
+
+.footer-inner{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+.footer-sentence{
+    max-width:1960px;
+    width:100%;
+    color:white;
+    font-size:12.5px;
+    line-height:1.35;
+    font-weight:600;
+    letter-spacing:0.01em;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1100px){
+
+    html,
+    body{
+        height:auto;
+        overflow:auto;
+    }
+
+    body{
+        display:block;
+    }
+
+    .navbar{
+        padding:14px 24px;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:12px;
+    }
+
+    .section{
+        height:auto;
+        min-height:auto;
+        padding:16px 32px 8px 32px;
+        overflow:visible;
+    }
+
+    .country-panel{
+        height:auto;
+    }
+
+    .country-heading,
+    .country-title-row{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .country-controls{
+        width:100%;
+        flex:0 0 auto;
+    }
+
+    .diagnostic-grid{
+        grid-template-columns:1fr;
+    }
+
+    .country-content{
+        overflow:visible;
+    }
+
+    .footer{
+        padding:12px 32px;
+    }
+}
+
+@media(max-width:650px){
+
+    .navbar{
+        padding:12px 20px;
+    }
+
+    .navlinks a{
+        padding:8px 11px;
+        font-size:14px;
+    }
+
+    .logo-title{
+        font-size:14px;
+    }
+
+    .country-top{
+        padding:24px 24px 18px 24px;
+    }
+
+    .heading-text h1{
+        font-size:31px;
+    }
+
+    .country-content{
+        padding:28px 24px 34px 24px;
+    }
+
+    .country-title-row h2{
+        font-size:30px;
+    }
+
+    .accordion-header{
+        font-size:16px;
+    }
+
+    .footer-wave{
+        height:24px;
+        min-height:24px;
+    }
+
+    .footer-sentence{
+        font-size:12px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<div class="navbar">
+
+    <div class="logo">
+        <img src="wb_blue.jpg" alt="World Bank Group">
+        <div class="logo-title">Pacific Fiscal Resilience Platform</div>
+    </div>
+
+    <div class="navlinks">
+        <a href="index.html">About</a>
+        <a href="region.html">Region</a>
+        <a href="countries.html" class="active">Countries</a>
+        <a href="themes.html">Themes</a>
+        <a href="resources.html">Resources</a>
+        <a href="community.html">Community</a>
+    </div>
+
+</div>
+
+<!-- =========================================================
+     COUNTRIES CONTENT
+========================================================= -->
+
+<section class="section">
+
+    <div class="country-panel">
+
+        <div class="country-top">
+
+            <div class="country-heading">
+
+                <div class="heading-text">
+                    <h1>Country Fiscal Resilience Profiles</h1>
+                    <p>
+                        Explore country-level fiscal resilience diagnostics for Pacific SIDS, including FRI results, binding constraints, thematic vulnerabilities, and policy implications.
+                    </p>
+                </div>
+
+                <div class="country-controls">
+                    <label class="control-label" for="countrySelect">Select country</label>
+                    <select id="countrySelect" onchange="renderCountry()">
+                        <option value="fi">Fiji</option>
+                        <option value="ki">Kiribati</option>
+                        <option value="mi">Marshall Islands</option>
+                        <option value="fs">Micronesia</option>
+                        <option value="na">"Nauru</option>
+                        <option value="pa">Palau</option>
+                        <option value="sa">Samoa</option>
+                        <option value="si">Solomon Islands</option>
+                        <option value="to">Tonga</option>
+                        <option value="tu">Tuvalu</option>
+                        <option value="va">Vanuatu</option>
+                    </select>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="country-content">
+
+            <div class="country-title-row">
+                <h2 id="countryTitle">Fiji</h2>
+                <div id="countryBadge" class="country-badge">Composite score: placeholder</div>
+            </div>
+
+            <div class="diagnostic-grid">
+
+                <div class="chart-card">
+                    <img id="spiderChart" src="a.jpg" alt="Spiderweb chart">
+                </div>
+
+                <div class="constraints-card">
+                    <h3>Binding constraints</h3>
+                    <ul id="constraintsList" class="constraints-list"></ul>
+                </div>
+
+            </div>
+
+            <div class="heatmap-card">
+                <img id="heatmapTable" src="aq.jpg" alt="FRI heatmap table">
+            </div>
+
+            <div class="overview-card">
+                <h3>Fiscal context and recent trends</h3>
+                <p id="overviewText">
+                    [Placeholder overview text.]
+                </p>
+            </div>
+
+            <div id="accordion" class="accordion"></div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================================================
+     FOOTER WAVE
+========================================================= -->
+
+<div class="footer-wave">
+    <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
+        <path fill="#007a8a" d="M0,48 C180,90 360,90 540,50 C720,10 900,10 1080,48 C1260,86 1350,72 1440,42 L1440,90 L0,90 Z"></path>
+    </svg>
+</div>
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="footer">
+
+    <div class="footer-inner">
+        <div class="footer-sentence">
+            Fiscal resilience for Pacific SIDS is built before the next shock — through shared learning, stronger buffers, and public finance systems that protect communities when they need them most.
+        </div>
+    </div>
+
+</footer>
+
+<script>
+
+/* =========================================================
+   COUNTRY DATA
+   Image naming:
+   Fiji = a.jpg / aq.jpg
+   Kiribati = b.jpg / bq.jpg
+   Marshall Islands = c.jpg / cq.jpg
+   Micronesia = d.jpg / dq.jpg
+   Nauru = e.jpg / eq.jpg
+   Palau = f.jpg / fq.jpg
+   Samoa = g.jpg / gq.jpg
+   Solomon Islands = h.jpg / hq.jpg
+   Tonga = i.jpg / iq.jpg
+   Tuvalu = j.jpg / jq.jpg
+   Vanuatu = k.jpg / kq.jpg
+========================================================= */
+
+const countryProfiles = {"fi": makeCountry("Fiji", "Composite score: 0.55", "fi.jpg","fiq.jpg",["Key constraints are concentrated in very weak buffers and debt vulnerability rather than revenue performance. Buffers score only 0.19, with fiscal liquidity at 0.00 and cash buffers at 0.02, while debt sustainability is also weak at 0.33, with debt-to-GDP and interest-to-revenue both at 0.00. By contrast, revenue resilience is strong at 0.82 and shock resilience is high at 0.87. Policy attention should therefore focus on rebuilding liquid buffers, reducing debt vulnerabilities, and protecting investment quality while using Fiji’s relatively strong revenue base to create fiscal space."], "Fiji entered the COVID-19 pandemic with elevated fiscal deficits (â€“4 to â€“6 percent of GDP), reflecting sustained public investment. The pandemic triggered a severe contraction (over 15 percent cumulative GDP decline in 2020â€“2021), driven by the collapse in tourism (35â€“40 percent of GDP). Fiscal deficits widened to around â€“10 percent and debt rose from ~50 to over 80 percent of GDP. Recovery has been strong with tourism returning, but debt remains high and buffers limited.", 
+{"Buffers": `Buffer performance (0.19) is the weakest component of Fiji’s fiscal resilience profile and significantly below both the regional weighted average (0.29) and the tourism-dependent average (0.43). While fiscal balances are moderate (0.56), expenditure coverage is extremely weak (0.02), and fiscal liquidity is effectively absent (0.00). This indicates that Fiji operates with very limited immediately available fiscal space relative to the scale of potential shocks. The post-pandemic recovery improved revenues and headline fiscal outcomes, but operational buffers remain thin and vulnerable to renewed external or climate-related disruptions.`, 
+"Debt Sustainability": `Debt sustainability (0.33) is among the weakest in the region despite continued access to concessional financing. Fiji performs very poorly on debt-to-GDP (0.00) and debt interest-to-revenue (0.00), although the DSF risk rating remains strong (1.00). This reflects the tension between relatively favorable formal debt assessments and elevated underlying debt burdens following the pandemic period. Weak buffers and high financing needs mean that even moderate shocks could quickly generate renewed borrowing pressures.`, 
+"Revenue Resilience": `Revenue resilience (0.82) is exceptionally strong and one of the highest in the PIC-11. Fiji performs strongly on revenue volatility (0.67), tax buoyancy (0.79), and especially domestic revenue strength (1.00). This reflects the comparatively diversified and developed domestic revenue base relative to other PICs, supported by tourism recovery, consumption taxes, and broader economic activity. However, despite these strengths, revenues remain highly exposed to tourism cycles and global demand conditions.`, 
+"Expenditure Efficiency": `Expenditure efficiency (0.56) is close to the weighted regional average (0.57), but the underlying indicators show a mixed picture. Fiji performs extremely strongly on recurrent-to-capital spending (0.95), while rigidities (0.33) remain relatively weak and wage pressure is moderate (0.39). This suggests that although expenditure composition is relatively favorable, flexibility within the spending structure remains constrained. During periods of stress, adjustment has often relied heavily on compressing investment spending.`, 
+"Shock Resilience": `Shock Resilience (0.87) is the highest in the region and far above both regional averages. Fiji records extremely high resilience through export concentration (1.00) and import dependence (1.00), while annual disaster-loss resilience is also elevated (0.61). The economy remains highly vulnerable to tourism downturns, climate events, commodity price shifts, and global external conditions. Given the limited liquid buffers available, large shocks can rapidly transmit into fiscal stress.`, 
+"Constraints": `Key constraints include critically weak operational buffers, elevated debt vulnerabilities, extremely high resilience to external and climate-related shocks, and limited expenditure flexibility despite comparatively strong revenue performance.`, 
+"Policy": `Policy priorities include rebuilding liquid fiscal buffers, gradually reducing debt vulnerabilities, strengthening disaster risk financing arrangements, improving expenditure flexibility, protecting productive investment during adjustment periods, and reducing overreliance on highly shock-sensitive sectors and external demand conditions.`}),
+"si": makeCountry("Solomon Islands", "Composite score: 0.67", "si.jpg","siq.jpg",["Solomon Islands combines strong debt and expenditure scores with weak operational buffers and continued exposure to shocks. Debt sustainability is strong at 0.85 and expenditure efficiency is high at 0.81, while revenue resilience is also solid at 0.75. However, buffers remain weak at 0.24, driven by very low fiscal liquidity and limited cash coverage. Policy attention should focus on rebuilding liquid buffers, preparing for declining logging revenues, and ensuring that strong expenditure performance translates into better public investment and resilience outcomes."], "Solomon Islands entered the pandemic with rising fiscal pressures from infrastructure spending and declining logging revenues. Deficits averaged â€“2 to â€“4 percent of GDP pre-pandemic. Debt increased from 10â€“15 percent to around 25â€“35 percent of GDP. Recovery has been uneven, with continued vulnerability due to weak buffers and declining resource revenues.", 
+{"Buffers": `Buffer performance (0.36) is above the regional weighted average (0.29) but remains relatively weak given the country’s resilience to repeated shocks and volatile revenues. Fiscal balances are moderate (0.58), but expenditure coverage remains limited (0.13), indicating relatively low immediately available reserves. Fiscal liquidity (0.36) is somewhat stronger than the regional average (0.30), but still insufficient to provide substantial shock absorption capacity during prolonged downturns or external disruptions.`, 
+"Debt Sustainability": `Debt sustainability (0.85) is strong and well above the regional average (0.69). Solomon Islands performs strongly on DSF risk rating (1.00), debt-to-GDP (0.64), and debt interest-to-revenue (0.90), reflecting low debt servicing pressures and continued access to concessional financing. However, resilience remains vulnerable because strong debt indicators coexist with weak buffers and a highly concentrated revenue structure.`, 
+"Revenue Resilience": `Revenue resilience (0.75) is relatively strong and significantly above the regional average (0.55). Revenue volatility performs exceptionally well (0.98), while tax buoyancy (0.71) and domestic revenue strength (0.55) are also comparatively favorable. Nevertheless, the revenue base remains heavily dependent on logging and commodity-related activity. As traditional logging revenues decline over time, maintaining current revenue performance will become increasingly difficult without diversification.`, 
+"Expenditure Efficiency": `Expenditure efficiency (0.81) is among the strongest in the region. Solomon Islands performs strongly on recurrent-to-capital spending (0.91) and rigidities (1.00), while wage pressure remains moderate (0.51). This suggests comparatively strong expenditure flexibility relative to peers. However, implementation capacity constraints and weaknesses in public investment execution continue to limit the effectiveness of spending.`, 
+"Shock Resilience": `Shock Resilience (0.57) is elevated and above the regional average (0.43). Annual disaster-loss resilience is significant (0.55), while import dependence is very high (0.83). Export concentration (0.33) also indicates continued reliance on a narrow economic base. The country therefore remains vulnerable to both climate-related shocks and fluctuations in commodity markets and external demand.`, 
+"Constraints": `Key constraints include declining logging revenues, limited liquid buffers, high import dependence, and vulnerability to external and climate-related shocks despite comparatively strong expenditure performance.`, 
+"Policy": `Policy priorities include rebuilding fiscal buffers, diversifying the revenue base beyond logging, improving public investment management, strengthening medium-term fiscal frameworks, and protecting expenditure quality during adjustment periods.`}),
+"sa": makeCountry("Samoa", "Composite score: 0.67", "sa.jpg","saq.jpg",["Samoa’s main constraint is not fiscal space, but expenditure flexibility. Buffers are exceptionally strong at 1.00 and debt sustainability is also very strong at 0.90, giving Samoa one of the strongest fiscal starting points in the region. However, expenditure efficiency is weak at 0.35, with rigidities scoring 0.00, while shock resilience remains moderate at 0.53. Policy attention should focus on preserving buffers, improving expenditure flexibility, and ensuring that recurrent spending pressures do not weaken Samoa’s ability to respond to future disasters."], "Samoa entered the pandemic with relatively strong buffers and moderate debt (45â€“55 percent of GDP). COVID-19 caused contraction due to tourism collapse. Debt rose to 60â€“70 percent. Recovery is gradual, but repeated natural disasters continue to strain fiscal space.", 
+{"Buffers": `Buffer performance (1.00) is the strongest in the region and substantially above all regional comparators. Fiscal balances (1.00), expenditure coverage (1.00), and fiscal liquidity (1.00) all perform exceptionally strongly, indicating substantial short-term financing capacity and comparatively strong reserve positions. Samoa stands out regionally for maintaining meaningful fiscal cushions despite repeated shocks. However, given the country’s high resilience to natural disasters and tourism-related volatility, maintaining these buffers remains critical.`, 
+"Debt Sustainability": `Debt sustainability (0.90) is also very strong. Samoa performs strongly across DSF risk rating (1.00), debt-to-GDP (0.76), and debt interest-to-revenue (0.94), reflecting relatively manageable debt burdens and concessional financing conditions. Nevertheless, repeated shocks can still place significant pressure on debt sustainability over time if buffers weaken or growth slows.`, 
+"Revenue Resilience": `Revenue resilience (0.59) is moderate and broadly aligned with the tourism-dependent average (0.58). Revenue volatility is somewhat elevated (0.73), tax buoyancy is relatively weak (0.21), but domestic revenue strength is comparatively strong (0.82). This indicates that Samoa has a relatively effective domestic revenue system by regional standards, though revenues remain vulnerable to external tourism and remittance-related fluctuations.`, 
+"Expenditure Efficiency": `Expenditure efficiency (0.35) is the weakest pillar in Samoa’s resilience profile and well below the regional average (0.60). Although recurrent-to-capital spending is relatively strong (0.81), rigidities are extremely weak (0.00), indicating very limited expenditure flexibility. Wage pressure is moderate (0.24). This suggests that despite strong buffers, adjustment capacity within the expenditure structure itself remains constrained.`, 
+"Shock Resilience": `Shock Resilience (0.53) is elevated and above the regional average (0.43). Annual disaster-loss resilience is high (0.74), and import dependence remains significant (0.61). Samoa therefore remains highly vulnerable to cyclones, climate events, and external economic shocks despite comparatively strong fiscal fundamentals.`, 
+"Constraints": `Key constraints include limited expenditure flexibility, vulnerability to repeated natural disasters, dependence on external demand conditions, and maintaining buffers over time in the face of recurring shocks.`, 
+"Policy": `Policy priorities include preserving strong fiscal buffers, improving expenditure flexibility, protecting productive investment, strengthening disaster risk financing mechanisms, and maintaining prudent debt management strategies.`}),
+"va": makeCountry("Vanuatu", "Composite score: 0.42", "va.jpg","vaq.jpg",["Vanuatu’s fiscal resilience is constrained by weak buffers, weak debt sustainability, and high shock exposure. Buffers score only 0.35, debt sustainability is weak at 0.39, and expenditure efficiency is also weak at 0.39. Shock resilience is low at 0.35, reflecting the repeated fiscal impact of cyclones, earthquakes, and other disasters. Policy attention should focus on institutionalizing buffer accumulation, strengthening disaster risk financing, maintaining conservative borrowing, and improving public investment execution and maintenance."], "Vanuatuâ€™s fiscal system is shaped by repeated disasters and a narrow economic base. Pre-pandemic deficits were moderate, but repeated shocks have disrupted recovery and limited buffer rebuilding.", 
+{"Buffers": `Buffer performance (0.35) remains weak relative to the scale and recurrence of shocks faced by Vanuatu, although it is slightly above the regional weighted average (0.29). While fiscal balances perform moderately (0.51) and fiscal liquidity is somewhat stronger than in several peers (0.54), expenditure coverage remains extremely weak (0.00), indicating very limited immediate liquidity available to absorb shocks. Repeated cyclones, earthquakes, and reconstruction needs have repeatedly depleted available reserves before meaningful replenishment could occur. This contributes to a fiscal system characterized by recurring drawdowns and limited ability to smooth adjustment over time.`, 
+"Debt Sustainability": `Debt sustainability (0.39) remains significantly weaker than both the regional weighted average (0.54) and tourism-dependent average (0.64). Debt distress indicators remain weak, with DSF risk rating (0.00), debt-to-GDP (0.39), and debt servicing pressures (0.78) all reflecting increasing vulnerability under repeated disaster scenarios. Although much of Vanuatu’s debt remains concessional, the country’s debt trajectory remains highly sensitive to repeated borrowing needs generated by disasters and reconstruction pressures. Fiscal fragility therefore stems less from immediate debt servicing burdens and more from the frequency with which shocks generate new financing needs before previous adjustment efforts can be consolidated.`, 
+"Revenue Resilience": `Revenue resilience (0.63) is moderately above both the tourism-dependent average (0.58) and regional mean (0.55). Revenue volatility remains elevated (0.64), although tax buoyancy (0.71) is relatively strong, reflecting moderate responsiveness of revenues during recovery periods. Domestic revenue strength (0.52) remains constrained by the narrow formal sector and relatively small domestic tax base. Revenues remain heavily exposed to external demand conditions, tourism activity, and donor-related flows, while repeated disasters continue to disrupt economic activity and weaken revenue predictability.`, 
+"Expenditure Efficiency": `Expenditure efficiency (0.39) remains weak relative to regional averages. Recurrent-to-capital spending composition (0.78) appears moderately favorable, but rigidities (0.40) and wage pressures (0.00) reflect structural spending constraints associated with high service delivery costs across geographically dispersed islands. Reconstruction and emergency spending requirements repeatedly place pressure on expenditure systems, while investment execution and maintenance planning challenges reduce the efficiency and durability of public investment. Fiscal adjustment frequently occurs through delays or reductions in capital spending, even though reconstruction needs require sustained investment.`, 
+"Shock Resilience": `Shock Resilience (0.35) understates the scale of Vanuatu’s structural vulnerability. While import dependence (0.77) remains extremely high, the country performs very poorly on disaster risk coverage (0.00), reflecting some of the highest resilience to natural disasters in the Pacific. Cyclones, earthquakes, volcanic activity, and climate-related risks generate recurrent fiscal pressures and repeated disruptions to growth and infrastructure. This level of resilience fundamentally increases the level of buffers, institutional strength, and precautionary fiscal management required to sustain stability.`, 
+"Constraints": `The key constraints include persistently weak liquidity buffers, fragile debt dynamics under repeated disaster conditions, limited expenditure flexibility, and extremely high resilience to natural disasters and climate shocks. These vulnerabilities interact in ways that repeatedly undermine fiscal adjustment before resilience gains can be sustained.`, 
+"Policy": `Policy priorities include rebuilding and institutionalizing fiscal buffers, strengthening disaster risk financing frameworks, maintaining highly conservative borrowing strategies, and improving public investment management, project execution, and maintenance planning to enhance the resilience and effectiveness of public spending.`}),
+"pa": makeCountry("Palau", "Composite score: 0.59", "pa.jpg","paq.jpg",["Palau’s core vulnerability is its dependence on tourism and external demand, despite relatively strong buffers and debt indicators. Buffers score 0.65 and debt sustainability is strong at 0.73, while expenditure efficiency is also relatively strong at 0.70. However, revenue resilience is only moderate at 0.50 and shock resilience is weak at 0.36, reflecting exposure to tourism cycles and travel disruptions. Policy attention should focus on saving more during tourism recovery periods, diversifying revenue sources, and avoiding renewed debt accumulation during downturns."], "Palau is highly tourism-dependent (40â€“50 percent of GDP), making it extremely vulnerable to external demand shocks. COVID-19 caused a contraction of over 15â€“20 percent of GDP and large fiscal deficits exceeding â€“10 percent. Debt rose from 20â€“30 percent to around 60â€“70 percent of GDP. Recovery has been slower due to delayed tourism normalization, leaving fiscal space constrained and buffers only partially rebuilt.", 
+{"Buffers": `Buffer performance (0.65) is relatively strong compared to most tourism-dependent peers and significantly exceeds both the regional weighted average (0.29) and tourism-dependent average (0.43). Fiscal balances (0.84), expenditure coverage (0.64), and fiscal liquidity (0.46) all indicate stronger reserve positions than in many neighboring economies. However, the rapid depletion of reserves during the pandemic demonstrated that even relatively strong buffers can prove insufficient under severe tourism shocks. This reflects the scale of Palau’s dependence on external demand and the volatility of tourism-related fiscal revenues.`, 
+"Debt Sustainability": `Debt sustainability (0.73) is stronger than both the regional weighted average (0.54) and tourism-dependent average (0.64). Palau performs strongly on DSF risk rating (1.00) and debt servicing pressures (0.82), although debt-to-GDP performance (0.38) remains weaker following the sharp increase in borrowing during the pandemic. While concessional financing has supported debt sustainability under baseline conditions, debt dynamics remain sensitive to tourism recovery, global demand conditions, and the pace of fiscal consolidation.`, 
+"Revenue Resilience": `Revenue resilience (0.50) remains below both regional weighted (0.71) and tourism-dependent averages (0.58). Revenue volatility (0.62) remains elevated due to heavy dependence on tourism-related taxes and fees, while domestic revenue strength (0.11) is among the weakest in the region. Tax buoyancy (0.79) remains relatively strong, indicating that revenues respond rapidly during recovery periods, but this also reinforces procyclicality during downturns. Fiscal performance therefore remains highly exposed to fluctuations in international travel and external demand conditions.`, 
+"Expenditure Efficiency": `Expenditure efficiency (0.70) is significantly above regional averages and among the stronger performers in the tourism-dependent group. Palau performs relatively strongly on recurrent-to-capital spending composition (0.81), rigidities (0.72), and expenditure management more broadly. Nevertheless, wage pressures (0.56) and relatively rigid recurrent expenditures continue to constrain adjustment flexibility. During periods of stress, fiscal adjustment has often required increased borrowing to sustain recurrent spending and core public services.`, 
+"Shock Resilience": `Shock Resilience (0.36) appears moderate relative to some disaster-prone economies, but this understates Palau’s broader vulnerability profile. While disaster-related losses (0.76) are less severe than in some Pacific peers, the country remains highly exposed to tourism demand shocks and external economic cycles. Export concentration (0.07) and relatively lower import dependence (0.23) provide some mitigation, but the economy’s narrow dependence on international tourism continues to generate substantial macro-fiscal volatility.`, 
+"Constraints": `The main constraints include structurally volatile tourism-related revenues, insufficient buffers relative to the scale of shocks, and strong dependence on external demand conditions and international travel flows.`, 
+"Policy": `Policy priorities include strengthening fiscal buffers during recovery periods, diversifying revenue sources beyond tourism, embedding disaster risk financing within broader fiscal frameworks, and maintaining prudent debt strategies that prioritize resilience-enhancing investment over recurrent expenditure financing.`}),
+"ki": makeCountry("Kiribati", "Composite score: 0.40", "ki.jpg","kiq.jpg",["Kiribati’s binding constraint is weak revenue resilience and very weak operational buffers despite the presence of sovereign assets. Buffers score only 0.08, the weakest in the group, while revenue resilience is also very weak at 0.24, driven by high volatility and limited domestic revenue strength. Debt sustainability is moderate at 0.64, so the problem is less immediate debt pressure and more the weak conversion of volatile revenues and sovereign assets into usable fiscal resilience. Policy attention should focus on sovereign fund governance, withdrawal rules, expenditure discipline, and better stabilization of fishing and external revenues."], "Kiribatiâ€™s fiscal system is driven by external revenues including fishing licenses, grants, and sovereign wealth fund returns. While this has supported strong fiscal positions in favorable periods, it creates significant volatility. Increased spending and uncertain revenues have recently led to deficits and increased reliance on fund withdrawals.", 
+{"Buffers": `Buffer performance (0.08) is the weakest in the PIC-11 and substantially below both the regional weighted average (0.29) and sovereign wealth-dependent average (0.45). This is particularly notable given Kiribati’s large sovereign assets and trust fund holdings. Fiscal balances (0.00), expenditure coverage (0.04), and fiscal liquidity (0.20) all point to extremely limited effective liquidity and stabilization capacity relative to the scale of risks faced. Large sovereign assets have not translated into strong operational buffers due to repeated drawdowns, weak anchoring within fiscal frameworks, and resilience of fund values to external market volatility.`, 
+"Debt Sustainability": `Debt sustainability (0.64) is moderate and above the regional weighted average (0.54), reflecting low debt burdens and highly concessional financing conditions. Debt-to-GDP (0.92) and debt servicing pressures (1.00) perform strongly, indicating limited immediate debt servicing risks. However, debt sustainability is not the central determinant of resilience in Kiribati’s case. Fiscal vulnerability is driven much more by revenue volatility, recurrent spending pressures, and the governance of sovereign assets than by debt dynamics themselves.`, 
+"Revenue Resilience": `Revenue resilience (0.24) is among the weakest in the region and significantly below both the regional weighted average (0.71) and sovereign wealth-dependent average (0.31). Revenue volatility (0.00) is exceptionally weak, reflecting the country’s heavy dependence on volatile fishing license revenues, grants, and externally determined flows. Domestic revenue strength (0.15) remains extremely limited due to the small size of the domestic economy and tax base. While tax buoyancy (0.57) is moderate, the overall structure of revenues remains highly unstable and difficult to forecast, contributing to repeated fiscal volatility.`, 
+"Expenditure Efficiency": `Expenditure efficiency (0.63) is moderately above the regional weighted average (0.57). Kiribati performs strongly on recurrent-to-capital spending composition (1.00), while wage pressures (0.19) remain relatively contained. However, rigidities (0.69) remain elevated, and recurrent expenditure pressures continue to increase during periods of strong revenue inflows. This creates a structural tendency for temporary windfalls to translate into persistent recurrent spending commitments, weakening long-term fiscal flexibility.`, 
+"Shock Resilience": `Shock Resilience (0.39) reflects substantial vulnerability to long-term climate and environmental risks. Disaster-related losses (0.98) are among the highest in the region, underscoring the country’s resilience to sea-level rise, coastal erosion, and broader environmental stress. Although import dependence (0.08) and export concentration (0.10) appear relatively favorable numerically, the country’s extreme geographic isolation and climate vulnerability continue to generate persistent fiscal pressures over time.`, 
+"Constraints": `The central constraints include extremely weak revenue resilience, insufficiently anchored and weakly integrated fiscal buffers, and rising recurrent spending pressures tied to volatile external revenues. These weaknesses leave the fiscal system highly exposed to fluctuations in external financing conditions and sovereign rent performance.`, 
+"Policy": `Policy priorities include strengthening sovereign wealth fund governance, embedding clear withdrawal and savings rules within medium-term fiscal frameworks, stabilizing the use of volatile revenues, strengthening expenditure discipline during revenue upturns, and gradually improving domestic revenue mobilization where feasible.`}),
+"to": makeCountry("Tonga", "Composite score: 0.53", "to.jpg","toq.jpg",["Tonga’s fiscal system is constrained by the interaction of repeated shocks, limited buffers, and debt vulnerability. Buffers are moderate at 0.52, but still insufficient relative to the scale of disaster exposure, while debt sustainability is only 0.53 and the DSF risk rating is 0.00. Revenue resilience is moderate at 0.59, but domestic revenue strength is very weak at 0.06. Policy attention should focus on rebuilding precautionary buffers, strengthening disaster risk financing, maintaining concessional borrowing discipline, and reducing reliance on remittances and external flows."], "Tongaâ€™s fiscal system is shaped by repeated natural disasters, external dependence, and a narrow economic base. Events such as cyclones and the 2022 volcanic eruption have imposed large fiscal costs. While debt remains manageable, the challenge lies in rebuilding buffers in a high-shock environment.", 
+{"Buffers": `Buffer performance (0.52) is above both the regional weighted average (0.29) and tourism-dependent average (0.43), reflecting relatively stronger fiscal balances (0.68) and moderate fiscal liquidity (0.56). However, expenditure coverage remains limited (0.32), indicating that available reserves remain insufficient relative to the scale and frequency of shocks faced by Tonga. Successive crises—including cyclones and the Hunga Tonga–Hunga Ha’apai eruption—have repeatedly depleted fiscal space before buffers could be meaningfully rebuilt. While Tonga performs better than several regional peers on operational liquidity, precautionary savings remain inadequate for the country’s exceptionally high Shock Resilience.`, 
+"Debt Sustainability": `Debt sustainability (0.53) is broadly aligned with the regional weighted average (0.54), but weaker than the tourism-dependent average (0.64). Tonga performs strongly on debt servicing pressures (0.96) and moderately on debt-to-GDP (0.62), reflecting concessional financing and favorable repayment terms. However, the DSF risk rating (0.00) highlights persistent vulnerability under stress scenarios. Debt sustainability therefore remains highly dependent on continued concessional financing, stable external support, and the country’s ability to rebuild buffers between shocks.`, 
+"Revenue Resilience": `Revenue resilience (0.59) is moderate and slightly above the tourism-dependent average (0.58). Tonga performs strongly on revenue volatility (0.91) and tax buoyancy (0.79), suggesting relatively responsive revenue performance during periods of economic recovery. However, domestic revenue strength (0.06) is among the weakest in the region, underscoring heavy dependence on remittances, imports, and external assistance rather than broad domestic taxation. This leaves fiscal outcomes vulnerable to external conditions and fluctuations in global demand and migration-related flows.`, 
+"Expenditure Efficiency": `Expenditure efficiency (0.72) is among the stronger performers in the PIC-11 and significantly above both regional weighted (0.57) and tourism-dependent averages (0.47). Tonga performs relatively strongly on recurrent-to-capital expenditure composition (0.89) and rigidities (0.77), although wage pressures (0.51) remain moderately elevated. Despite relatively favorable expenditure management indicators, the fiscal system continues to face structural spending rigidities associated with high service delivery costs and reconstruction needs. During periods of fiscal stress, maintaining public investment remains particularly challenging.`, 
+"Shock Resilience": `Shock Resilience (0.30) is substantially weaker than the regional weighted average (0.65), reflecting Tonga’s extremely high vulnerability to natural disasters and external shocks. Disaster-related losses (0.34) only partially capture the scale of risks associated with cyclones, tsunamis, volcanic activity, and climate-related pressures. Import dependence (0.41) and resilience to remittance fluctuations further amplify macro-fiscal vulnerability. The scale of recent disasters demonstrates that even moderate fiscal weaknesses can rapidly translate into severe fiscal stress.`, 
+"Constraints": `The key constraints include insufficient buffers relative to Shock Resilience, high dependence on external and remittance-related flows, and debt dynamics that remain vulnerable under repeated disaster conditions. Tonga’s fiscal system remains heavily shaped by the interaction between recurrent shocks and limited fiscal space.`, 
+"Policy": `Policy priorities include institutionalizing buffer accumulation within fiscal frameworks, integrating disaster risk financing instruments more systematically into fiscal management, maintaining highly conservative borrowing strategies, and strengthening public investment planning to improve resilience and reduce reconstruction-related fiscal volatility.`}),
+"fs": makeCountry("FSM", "Composite score: 0.63", "fs.jpg","fsq.jpg",["FSM’s headline fiscal position is strong, but its key vulnerability is structural dependence on external transfers. Buffers are strong at 0.74 and debt sustainability is very strong at 0.97, while revenue resilience is moderate at 0.57. However, domestic revenue strength is weak at 0.17 and expenditure structures remain closely tied to Compact-related financing. Policy attention should focus on trust fund governance, medium-term expenditure planning, and gradually strengthening domestic revenue capacity to reduce dependence on external financing."], "FSMâ€™s fiscal system is supported by Compact-related transfers and external financing, providing stability but creating dependence. The main challenge is medium-term sustainability as Compact transfers decline.", 
+{"Buffers": `Buffer performance (0.74) is among the strongest in the region and significantly above both the regional weighted average (0.29) and sovereign wealth-dependent average (0.45). FSM performs particularly strongly on fiscal liquidity (1.00), fiscal balances (0.78), and expenditure coverage (0.43), reflecting relatively stable fiscal positions and accumulated trust fund assets. These buffers provide substantially greater short-term shock absorption capacity than in most Pacific peers. However, the effectiveness of buffers remains closely tied to trust fund governance, future Compact-related financing arrangements, and long-term investment performance.`, 
+"Debt Sustainability": `Debt sustainability (0.97) is the strongest in the PIC-11. FSM performs exceptionally well across all debt indicators, including DSF risk rating (1.00), debt-to-GDP (0.92), and debt servicing pressures (0.99). Public debt levels remain low, borrowing is highly concessional, and financing needs have historically been limited due to strong external transfers and trust fund resources. However, current debt strength partly reflects reliance on external financing arrangements rather than broad-based domestic fiscal resilience.`, 
+"Revenue Resilience": `Revenue resilience (0.57) is moderate and broadly aligned with the regional average (0.55). Revenue volatility (0.56) remains moderate, while tax buoyancy (1.00) is among the strongest in the region. However, domestic revenue strength (0.17) remains weak, reflecting the country’s heavy dependence on Compact-related transfers and grants. Fiscal revenues therefore appear stable in the near term but remain structurally vulnerable to changes in external financing arrangements and trust fund performance.`, 
+"Expenditure Efficiency": `Expenditure efficiency (0.60) is broadly aligned with regional averages. FSM performs moderately on recurrent-to-capital spending composition (0.74), rigidities (0.77), and wage pressures (0.29). While expenditure systems are relatively stable compared to many peers, spending structures remain heavily linked to externally financed public sector activity. This creates medium-term risks if future financing levels decline and expenditure commitments prove difficult to adjust.`, 
+"Shock Resilience": `Shock Resilience (0.26) is among the lowest in the PIC-11, significantly below the regional weighted average (0.65). Disaster-related risks (0.58) remain present, particularly from climate-related environmental pressures and sea-level rise, but the country is less exposed to large cyclonic disasters than several neighboring states. Import dependence (0.15) and export concentration (0.04) also remain relatively low compared to many Pacific peers. Nevertheless, FSM remains highly vulnerable to institutional and financing shocks associated with external transfer arrangements.`, 
+"Constraints": `The key constraints include structural dependence on Compact-related transfers, uncertainty regarding long-term trust fund performance, and expenditure structures that remain closely tied to externally financed revenue levels.`, 
+"Policy": `Policy priorities include strengthening medium-term fiscal frameworks, reinforcing trust fund governance and withdrawal rules, gradually strengthening domestic revenue mobilization, and aligning recurrent expenditure commitments with realistic long-term financing scenarios.`}),
+"mi": makeCountry("RMI", "Composite score: 0.44", "mi.jpg","miq.jpg",["RMI’s main constraint is weak domestic revenue capacity and dependence on external transfers. Debt sustainability is moderate at 0.61 and buffers are also moderate at 0.46, but revenue resilience is weak at 0.33, with tax buoyancy and domestic revenue strength both at 0.00. Expenditure efficiency is also only 0.51, reflecting limited flexibility. Policy attention should focus on domestic revenue mobilization, long-term fiscal planning, trust fund governance, and aligning recurrent spending with sustainable financing assumptions."], "RMI relies heavily on Compact transfers and external grants, with limited domestic revenue. Fiscal stability masks underlying vulnerability to future financing changes.", 
+{"Buffers": `Buffer performance (0.46) is slightly above both the regional weighted average (0.29) and the sovereign wealth-dependent average (0.45). Fiscal balances are relatively strong (0.85), and fiscal liquidity is moderate (0.53), suggesting some near-term financing capacity. However, expenditure coverage is extremely weak (0.00), indicating that immediately available liquid reserves remain limited relative to spending needs. While trust fund assets and external support provide an important cushion, the operational availability and predictability of those resources remain uncertain under stress scenarios.`, 
+"Debt Sustainability": `Debt sustainability (0.61) is moderate and somewhat above the regional weighted average (0.54). Debt-to-GDP performs strongly (0.84), and debt interest-to-revenue is also very strong (0.98), reflecting low servicing burdens and continued reliance on concessional financing. However, the DSF risk rating score is weak (0.00), highlighting vulnerability under adverse scenarios. Debt itself is therefore not the immediate source of fiscal fragility, but changing external financing conditions could quickly alter the sustainability outlook.`, 
+"Revenue Resilience": `Revenue resilience (0.33) is weak and remains below the regional mean (0.55). Revenue volatility is very strong (1.00), but this largely reflects the stabilizing role of external transfers rather than a diversified domestic revenue base. Tax buoyancy is the weakest possible score (0.00), and domestic revenue strength is also extremely weak (0.00), indicating very limited internally generated fiscal capacity. Fiscal performance therefore remains highly dependent on external grants, Compact-related flows, and externally driven financing arrangements.`, 
+"Expenditure Efficiency": `Expenditure efficiency (0.51) is below the regional average (0.60). RMI performs relatively strongly on recurrent-to-capital spending (0.88), but rigidities are weak (0.10), while wage pressure is moderate (0.55). This suggests that although expenditure composition is not excessively distorted, true adjustment flexibility remains limited. Public spending structures remain closely tied to external financing patterns and institutional constraints associated with small scale and geographic dispersion.`, 
+"Shock Resilience": `Shock Resilience (0.29) is among the weaker scores in the region and below the regional average (0.43). Annual disaster-loss resilience is moderate (0.70), while export concentration (0.07) and import dependence (0.10) indicate significant structural vulnerability. In addition to climate risks, RMI faces long-term resilience related to external financing transitions, migration pressures, and uncertainty surrounding future grant arrangements.`, 
+"Constraints": `Key constraints include very weak domestic revenue mobilization, dependence on external transfers, limited expenditure flexibility, and uncertainty surrounding future financing arrangements and trust fund performance.`, 
+"Policy": `Policy priorities include strengthening domestic revenue systems, improving long-term fiscal planning, reinforcing trust fund governance, preserving liquid buffers, and gradually aligning expenditure commitments with more sustainable medium-term financing assumptions.`}),
+"na": makeCountry("Nauru", "Composite score: 0.71", "na.jpg","naq.jpg",["Nauru shows strong current fiscal indicators, but the key risk is concentration and durability. Buffers are strong at 0.72, debt sustainability is very strong at 0.95, and revenue resilience is high at 0.81. However, expenditure efficiency is only moderate at 0.61 and the economy remains small and highly dependent on a narrow set of revenue sources. Policy attention should focus on preserving accumulated buffers, avoiding permanent spending increases during favorable revenue periods, and strengthening fiscal rules around volatile revenues."], "Nauruâ€™s fiscal system is supported by externally linked revenues and sovereign rents rather than domestic taxation. While fiscal outcomes are currently strong, the system remains highly concentrated and vulnerable.", 
+{"Buffers": `Buffer performance (0.72) is very strong, well above both the regional weighted average (0.29) and the sovereign wealth-dependent average (0.45). Fiscal balances are very strong (0.94), and expenditure coverage is moderate (0.50), reflecting accumulated fiscal assets and recent favorable fiscal outcomes. Fiscal liquidity is not reported in the current indicator set, so the buffer assessment should be read with some caution. The main issue is not immediate fiscal weakness, but whether accumulated resources are preserved and governed in a way that protects their stabilizing role over time.`, 
+"Debt Sustainability": `Debt sustainability (0.95) is among the strongest in the PIC-11. Nauru performs very strongly on DSF risk rating (1.00), debt-to-GDP (0.84), and debt interest-to-revenue (1.00), indicating low debt pressures and limited servicing burdens. This creates substantial fiscal room compared with more indebted peers. However, strong debt indicators do not eliminate resilience risks where the revenue base remains narrow and externally dependent.`, 
+"Revenue Resilience": `Revenue resilience (0.81) is very strong, significantly above the regional average (0.55) and the sovereign wealth-dependent average (0.31). Nauru performs well on revenue volatility (0.79), tax buoyancy (0.93), and domestic revenue strength (0.71). This suggests that current revenue performance is comparatively robust. However, the underlying revenue structure remains concentrated and linked to a small number of external or quasi-external sources, making the fiscal position vulnerable if those flows weaken.`, 
+"Expenditure Efficiency": `Expenditure efficiency (0.61) is close to the regional mean (0.60). The indicator mix is uneven: recurrent-to-capital spending performs very weakly (0.00), while rigidities (0.83) and wage pressure (1.00) are strong. This suggests that Nauru’s expenditure position is not dominated by wage pressure, but the composition of spending may still limit growth-enhancing investment. The key risk is that favorable revenue periods could translate into permanent recurrent spending commitments.`, 
+"Shock Resilience": `Shock Resilience (0.49) is somewhat above the regional mean (0.43), reflecting a moderate overall resilience profile. Nauru performs strongly on disaster-loss resilience (1.00), but remains vulnerable through export concentration (0.13), import dependence (0.33), and very small economic scale. Even shocks that are modest in absolute terms can have large fiscal consequences because adjustment margins are narrow.`, 
+"Constraints": `Key constraints include revenue concentration, the need to preserve accumulated buffers, small economic scale, and the risk that favorable current fiscal conditions generate complacency or permanent spending pressures.`, 
+"Policy": `Policy priorities include maintaining conservative fiscal discipline, protecting accumulated buffers, preserving the strong debt position, managing revenue concentration risks, and ensuring that temporary revenue gains are not converted into rigid long-term spending.`}),
+"tu": makeCountry("Tuvalu", "Composite score: 0.47", "tu.jpg","tuq.jpg",["Tuvalu’s key constraint is weak revenue resilience despite relatively strong debt and expenditure indicators. Revenue resilience is very weak at 0.22, while buffers are moderate at 0.44 and debt sustainability is relatively strong at 0.66. Fiscal liquidity remains weak at 0.11, and shock resilience is low at 0.30, reflecting climate and external vulnerability. Policy attention should focus on stabilizing fishing and trust fund revenues, protecting liquid buffers, strengthening sovereign asset governance, and converting volatile income into predictable fiscal resilience."], "Tuvalu relies on fishing revenues, grants, and sovereign assets. While fiscal indicators appear strong, the system is highly exposed to volatility and long-term climate risks.", 
+{"Buffers": `Buffer performance (0.44) is broadly in line with the regional mean (0.44) and slightly below the sovereign wealth-dependent average (0.45). Fiscal balances are relatively strong (0.79), and expenditure coverage is moderate (0.43), but fiscal liquidity remains weak (0.11). This means that Tuvalu’s headline financial position is stronger than its immediately available operational liquidity. Sovereign assets provide an important cushion, but their stabilizing value depends on disciplined withdrawal rules, strong governance, and integration into medium-term fiscal planning.`, 
+"Debt Sustainability": `Debt sustainability (0.66) is moderately strong and above the regional weighted average (0.54). Debt-to-GDP is very strong (1.00), and debt interest-to-revenue is also very strong (0.98), indicating low debt and limited servicing pressure. However, the DSF risk rating score is weak (0.00), showing that vulnerability remains high under stress. Debt is therefore not the immediate pressure point, but it could become more relevant if volatile revenues weaken and buffers are drawn down.`, 
+"Revenue Resilience": `Revenue resilience (0.22) is one of the weakest in the PIC-11 and below the sovereign wealth-dependent average (0.31). Revenue volatility is extremely weak (0.07), tax buoyancy is low (0.21), and domestic revenue strength is modest (0.37). This reflects heavy dependence on fishing license fees, grants, trust fund income, and other externally determined flows. Revenues can be large relative to GDP in favorable years, but they are difficult to forecast and weakly linked to domestic economic activity.`, 
+"Expenditure Efficiency": `Expenditure efficiency (0.73) is strong, above both the regional mean (0.60) and sovereign wealth-dependent average (0.59). Tuvalu performs well on recurrent-to-capital spending (0.87), rigidities (0.70), and wage pressure (0.62). This suggests comparatively strong expenditure management. However, small scale, geographic dispersion, and high fixed costs still limit true flexibility. Even with strong scores, spending must remain closely aligned with sustainable revenue expectations.`, 
+"Shock Resilience": `Shock Resilience (0.30) is weak and below the regional mean (0.43). Tuvalu performs well on measured annual disaster-loss resilience (0.91), but very weakly on export concentration (0.00) and import dependence (0.00). This points to a highly exposed economic structure, especially through climate vulnerability, import dependence, and narrow revenue channels. Long-term climate and environmental risks create persistent fiscal pressures even when annual disaster losses appear manageable.`, 
+"Constraints": `Key constraints include very weak revenue resilience, weak fiscal liquidity, high dependence on volatile external income, and long-term climate resilience. The main challenge is converting large but volatile fiscal resources into predictable and durable resilience.`, 
+"Policy": `Policy priorities include stabilizing the use of volatile revenues, strengthening sovereign fund governance, protecting liquid buffers, improving medium-term fiscal planning, and clearly separating temporary revenue windfalls from sustainable spending capacity.`}),
+"rw": makeCountry("Regional Weighted Average", "Composite score: 0.55", "rw.jpg","rwq.jpg",["The weighted regional picture shows that weak buffers remain the main constraint. Buffers score only 0.29, with fiscal liquidity at 0.06 and expenditure coverage at 0.18, while shock resilience is relatively high at 0.65, reflecting large exposure to external and climate-related shocks. Debt sustainability is moderate at 0.54 and revenue resilience appears stronger at 0.71, partly because larger economies have stronger revenue systems. Policy attention should focus on liquid buffer accumulation, disaster risk financing, and protecting capital spending during adjustment."], "", 
+{"Buffers": `The regional weighted buffer score (0.29) is the weakest pillar across the framework and highlights the limited fiscal space available across much of the PIC-11. Fiscal balances are moderate (0.62), but expenditure coverage remains extremely weak (0.18), while fiscal liquidity is critically low (0.06). This suggests that even where countries maintain moderate fiscal balances, they often lack sufficiently liquid reserves to absorb shocks. The region therefore remains highly exposed to sudden disruptions, with limited short-term financing flexibility.`, 
+"Debt Sustainability": `Debt sustainability (0.54) appears moderate at the regional level, supported largely by concessional financing structures. DSF risk ratings are relatively strong (0.81), while debt-to-GDP (0.33) and debt interest-to-revenue (0.46) reveal considerable variation across countries. Several PICs maintain manageable debt burdens under baseline conditions, but debt resilience weakens significantly once repeated shocks, narrow revenue bases, and weak buffers are considered.`, 
+"Revenue Resilience": `Revenue resilience (0.71) is relatively strong at the weighted regional level, reflecting the influence of larger economies with stronger domestic revenue systems. Revenue volatility (0.71), tax buoyancy (0.70), and domestic revenue strength (0.72) are all comparatively favorable. However, these aggregate results mask substantial differences across countries. Many smaller PICs continue to rely heavily on tourism, grants, fishing revenues, or external transfers, leaving fiscal outcomes highly vulnerable to external shocks.`, 
+"Expenditure Efficiency": `Expenditure efficiency (0.57) is moderate overall. Recurrent-to-capital spending performs strongly (0.89), suggesting that expenditure composition is generally not excessively distorted at the aggregate level. However, rigidities (0.46) and wage pressures (0.37) indicate that many countries still face limited adjustment flexibility. During periods of stress, fiscal adjustment often occurs through cuts to capital expenditure, which can weaken long-term growth and resilience.`, 
+"Shock Resilience": `Shock Resilience (0.65) is the strongest measured regional pressure and highlights the structural vulnerability of the PIC-11. Import dependence is extremely high (0.78), export concentration remains elevated (0.61), and annual disaster-loss resilience is significant (0.57). This reflects the region’s resilience to natural disasters, climate change, commodity and tourism cycles, and external demand conditions. Frequent shocks place persistent pressure on already-limited fiscal buffers.`, 
+"Constraints": `The main regional constraints include critically weak liquid buffers, high resilience to external and climate-related shocks, dependence on narrow revenue sources, and limited expenditure flexibility. Even countries with relatively strong debt indicators remain vulnerable because repeated shocks can quickly erode fiscal space.`, 
+"Policy": `Regional policy priorities include rebuilding liquid fiscal buffers, strengthening disaster risk financing frameworks, improving expenditure flexibility, protecting productive investment during adjustment periods, broadening domestic revenue systems where feasible, and strengthening medium-term fiscal frameworks to better manage repeated shocks and volatility.`}),
+"ra": makeCountry("Regional Average", "Composite score: 0.54", "ra.jpg","raq.jpg",["The simple regional average shows a more balanced but still vulnerable picture. Buffers are moderate at 0.44, debt sustainability is relatively strong at 0.69, revenue resilience is moderate at 0.55, and shock resilience remains only 0.43. This suggests that many smaller PICs maintain better buffers than the GDP-weighted picture implies, but still face limited liquidity relative to repeated shocks. Policy attention should focus on strengthening medium-term fiscal frameworks, improving fiscal liquidity, and reducing adjustment through cuts to productive investment."], "", 
+{"Buffers": `The regional average buffer score (0.44) is notably stronger than the GDP-weighted regional result (0.29), indicating that smaller PICs often maintain somewhat better fiscal cushions than the largest economies. Fiscal balances are relatively strong (0.69), while expenditure coverage (0.32) and fiscal liquidity (0.30) remain only moderate. This suggests that although many PICs maintain prudent fiscal positions in normal periods, liquid reserves are still generally insufficient relative to the scale and frequency of shocks facing the region.`, 
+"Debt Sustainability": `Debt sustainability (0.69) is relatively strong at the regional average level. Debt-to-GDP (0.66) and debt interest-to-revenue (0.85) indicate that many PICs continue to benefit from concessional financing and relatively manageable servicing burdens. However, DSF risk ratings are only moderate (0.55), highlighting that vulnerability remains elevated once repeated shocks, narrow economic bases, and revenue volatility are considered.`, 
+"Revenue Resilience": `Revenue resilience (0.55) is moderate overall but highly uneven across countries. Revenue volatility (0.63) and tax buoyancy (0.61) suggest that revenues are often cyclical and externally sensitive, while domestic revenue strength remains comparatively weak (0.40). Several PICs rely heavily on tourism, fishing revenues, grants, or trust fund income, leaving fiscal performance exposed to changes in external demand and financing conditions.`, 
+"Expenditure Efficiency": `Expenditure efficiency (0.60) is one of the stronger regional pillars. Recurrent-to-capital spending (0.79) is generally favorable, though rigidities (0.57) and wage pressure (0.44) indicate that adjustment flexibility remains constrained in many countries. High fixed costs associated with small scale and geographic dispersion continue to limit expenditure efficiency gains.`, 
+"Shock Resilience": `Shock Resilience (0.43) remains elevated despite being lower than the weighted regional result (0.65). Annual disaster-loss resilience (0.65), import dependence (0.41), and external concentration risks continue to create substantial vulnerability across the region. Frequent natural disasters and external shocks place repeated pressure on already-limited fiscal buffers.`, 
+"Constraints": `Key regional constraints include insufficient liquid buffers, narrow economic structures, high climate and disaster vulnerability, and limited fiscal adjustment flexibility stemming from structural rigidities and dependence on external financing.`, 
+"Policy": `Policy priorities include strengthening fiscal buffers, improving medium-term fiscal frameworks, integrating disaster risk financing more systematically into fiscal planning, protecting productive investment, and broadening domestic revenue capacity where feasible.`}),
+"td": makeCountry("Tourism-Dependent", "Composite score: 0.51", "td.jpg","tdq.jpg",["Tourism-dependent economies face a liquidity and volatility problem. Buffers are moderate at 0.43 and debt sustainability is moderate at 0.64, but fiscal liquidity is extremely weak at 0.03 and expenditure efficiency is only 0.47. Revenue resilience is moderate at 0.58 but remains highly exposed to travel cycles and external demand. Policy attention should focus on rebuilding liquid reserves during recovery periods, diversifying revenue sources beyond tourism, and improving expenditure flexibility before the next downturn."], "", 
+{"Buffers": `The tourism-dependent group records a moderate buffer score (0.43), above the weighted regional average (0.29) but still insufficient given the volatility of tourism-driven economies. Fiscal balances are relatively strong (0.76), and expenditure coverage is somewhat stronger than the regional average (0.50). However, fiscal liquidity is extremely weak (0.03), highlighting a major structural vulnerability. The pandemic demonstrated how rapidly tourism shocks can erode fiscal space and force reliance on borrowing or external support.`, 
+"Debt Sustainability": `Debt sustainability (0.64) is moderate overall. Debt interest-to-revenue performs strongly (0.88), while debt-to-GDP (0.57) is more mixed across countries. DSF risk ratings are only moderate (0.48), reflecting the fact that even concessional debt structures can become vulnerable when tourism revenues collapse for prolonged periods. Weak buffers significantly amplify these risks.`, 
+"Revenue Resilience": `Revenue resilience (0.58) is moderate but structurally fragile. Revenue volatility is relatively high (0.72), while tax buoyancy (0.51) and domestic revenue strength (0.51) are only moderate. Tourism-related taxes, imports, and consumption generate substantial revenues during favorable periods, but fiscal performance remains highly sensitive to external demand conditions, travel disruptions, and global economic cycles.`, 
+"Expenditure Efficiency": `Expenditure efficiency (0.47) is relatively weak compared with the regional average (0.60). While recurrent-to-capital spending remains reasonably strong (0.81), rigidities (0.35) indicate limited expenditure flexibility. Adjustment during shocks often occurs through reductions in public investment rather than durable expenditure reforms, increasing volatility and weakening long-term growth prospects.`, 
+"Shock Resilience": `Shock Resilience (0.41) remains elevated. Import dependence is high (0.59), annual disaster-loss resilience is significant (0.42), and tourism concentration creates additional external vulnerability. Tourism-dependent PICs therefore face a combination of climate resilience and global demand shocks that can simultaneously weaken growth, revenues, and fiscal balances.`, 
+"Constraints": `Key constraints include extremely weak fiscal liquidity, dependence on tourism-linked revenues, limited expenditure flexibility, and high vulnerability to global demand shocks and climate events.`, 
+"Policy": `Policy priorities include rebuilding liquid fiscal buffers, diversifying revenue sources beyond tourism, strengthening disaster risk financing systems, improving expenditure flexibility, and protecting productive investment during downturns.`}),
+"sw": makeCountry("Sovereign Wealth-Dependent", "Composite score: 0.44", "sw.jpg","swq.jpg",["Sovereign wealth-dependent economies face less of a debt problem and more of a revenue-stabilization and governance problem. Buffers are moderate at 0.45 and debt sustainability is around 0.50, but revenue resilience is very weak at 0.31, with domestic revenue strength only 0.20. This reflects dependence on fishing revenues, grants, trust fund returns, and other volatile external income. Policy attention should focus on sovereign fund governance, withdrawal rules, domestic revenue mobilization where feasible, and preventing temporary windfalls from becoming permanent recurrent spending."], "", 
+{"Buffers": `The sovereign wealth-dependent group records a moderate buffer score (0.45), broadly aligned with the simple regional average. Fiscal liquidity (0.46) is significantly stronger than in tourism-dependent economies, reflecting the presence of sovereign funds and accumulated assets. Fiscal balances are moderate (0.63), while expenditure coverage remains relatively limited (0.25). The central challenge is therefore not only accumulating assets, but ensuring that they remain liquid, well-governed, and sustainably integrated into fiscal policy frameworks.`, 
+"Debt Sustainability": `Debt sustainability (0.50) is moderate overall. Debt-to-GDP performs strongly (0.89), and debt interest-to-revenue is exceptionally strong (0.10), reflecting low debt burdens and concessional financing structures. However, DSF risk ratings remain only moderate (0.49), showing that debt sustainability can still deteriorate quickly if volatile revenues weaken or fiscal assets are poorly managed.`, 
+"Revenue Resilience": `Revenue resilience (0.31) is by far the weakest pillar for this group and significantly below both the regional average (0.55) and tourism-dependent economies (0.58). Tax buoyancy (0.20) and domestic revenue strength (0.20) are extremely weak, highlighting limited internally generated fiscal capacity. Fiscal systems remain heavily dependent on fishing revenues, grants, trust fund returns, or other externally determined income streams that can fluctuate substantially over time.`, 
+"Expenditure Efficiency": `Expenditure efficiency (0.59) is close to the regional average. Recurrent-to-capital spending is relatively favorable (0.75), while rigidities (0.60) and wage pressure (0.43) indicate moderate structural constraints. Although sovereign assets provide financing flexibility, expenditure systems often remain dependent on volatile revenue flows and subject to political economy pressures during periods of elevated revenues.`, 
+"Shock Resilience": `Shock Resilience (0.33) is somewhat lower than the regional average (0.43), but structural vulnerability remains high. Annual disaster-loss resilience is significant (0.77), while export concentration (0.08) and import dependence (0.14) reveal narrow and externally dependent economic structures. Climate risks, environmental pressures, and uncertainty surrounding future external financing continue to pose substantial long-term fiscal risks.`, 
+"Constraints": `Key constraints include extremely weak domestic revenue generation, dependence on volatile external income sources, governance risks surrounding sovereign assets, and limited ability to convert financial wealth into durable fiscal resilience.`, 
+"Policy": `Policy priorities include strengthening sovereign wealth fund governance, stabilizing expenditure relative to volatile revenues, improving domestic revenue mobilization where feasible, strengthening medium-term fiscal frameworks, and preserving liquid fiscal buffers to better absorb future shocks.`}),
+};
+
+
+
+function makeCountry(name, score, spider, heatmap, constraints, overview, sections){
+    return {
+        name,
+        score,
+        spider,
+        heatmap,
+        constraints,
+        overview,
+        sections:Object.entries(sections).map(([title, text]) => section(title, text.trim()))
+    };
+}
+
+function section(title, text){
+    return { title, text };
+}
+
+function defaultSections(name){
+    return {
+        "Fiscal context and recent trends": `[Full ${name} text on fiscal context and recent trends.]`,
+        "Resilience profile / FRI results": `[Full ${name} text interpreting the FRI results.]`,
+        "Buffers": `[Full ${name} text on buffers.]`,
+        "Debt sustainability": `[Full ${name} text on debt sustainability.]`,
+        "Revenue resilience": `[Full ${name} text on revenue resilience.]`,
+        "Expenditure efficiency and flexibility": `[Full ${name} text on expenditure efficiency and flexibility.]`,
+        "Shock exposure": `[Full ${name} text on shock exposure.]`,
+        "Policy implications": `[Full ${name} text on policy implications.]`,
+        "Key transmission channels": `[Full ${name} text on key transmission channels.]`
+    };
+}
+function section(title, text){
+    return { title, text };
+}
+
+/* =========================================================
+   RENDERING
+========================================================= */
+
+function renderCountry(){
+
+    const key = document.getElementById("countrySelect").value;
+    const profile = countryProfiles[key];
+
+    document.getElementById("countryTitle").textContent = profile.name;
+    document.getElementById("countryBadge").textContent = profile.score;
+
+    document.getElementById("spiderChart").src = profile.spider;
+    document.getElementById("spiderChart").alt = profile.name + " spiderweb chart";
+
+    document.getElementById("heatmapTable").src = profile.heatmap;
+    document.getElementById("heatmapTable").alt = profile.name + " FRI heatmap table";
+
+    document.getElementById("overviewText").textContent = profile.overview;
+
+    const constraintsList = document.getElementById("constraintsList");
+    constraintsList.innerHTML = "";
+
+    profile.constraints.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        constraintsList.appendChild(li);
+    });
+
+    const accordion = document.getElementById("accordion");
+    accordion.innerHTML = "";
+
+    profile.sections.forEach((item, index) => {
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "accordion-item";
+
+        if(index === 0){
+            wrapper.classList.add("open");
+        }
+
+        const button = document.createElement("button");
+        button.className = "accordion-header";
+        button.onclick = function(){
+            wrapper.classList.toggle("open");
+        };
+
+        const title = document.createElement("span");
+        title.textContent = item.title;
+
+        const arrow = document.createElement("span");
+        arrow.className = "accordion-arrow";
+        arrow.textContent = "▶";
+
+        button.appendChild(title);
+        button.appendChild(arrow);
+
+        const body = document.createElement("div");
+        body.className = "accordion-body";
+
+        const paragraphs = item.text.split("\n");
+
+        paragraphs.forEach(paragraphText => {
+            const p = document.createElement("p");
+            p.textContent = paragraphText;
+            body.appendChild(p);
+        });
+
+        wrapper.appendChild(button);
+        wrapper.appendChild(body);
+
+        accordion.appendChild(wrapper);
+    });
+}
+
+renderCountry();
+
+</script>
+
+</body>
+</html>
