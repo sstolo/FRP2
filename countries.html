@@ -8,22 +8,27 @@
 <title>FRP - Countries</title>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800;900&display=swap');
 
 /* =========================================================
    GLOBAL DESIGN SYSTEM
 ========================================================= */
 
 :root{
-    --deep-ocean:#063a4a;
-    --ocean:#007a8a;
-    --lagoon:#14b8a6;
-    --reef:#34d399;
-    --sun:#f7b538;
-    --coral:#f9735b;
-    --sand:#fff3d6;
-    --cloud:#f8fffb;
-    --ink:#123047;
-    --muted:#557084;
+    --deep-ocean:#00324a;
+    --ocean:#006f82;
+    --lagoon:#009e96;
+    --reef:#00a88f;
+    --sun:#ffc400;
+    --coral:#00a6df;
+    --sand:#f5f1e7;
+    --cloud:#f4f7f5;
+    --ink:#00324a;
+    --muted:#4f6673;
+
+    --logo-box-width:270px;
+    --logo-fade-width:64px;
+    --title-box-width:360px;
 }
 
 *{
@@ -35,11 +40,11 @@ body{
     margin:0;
     height:100vh;
     overflow:hidden;
-    font-family:Arial, Helvetica, sans-serif;
+    font-family:'Nunito Sans', Arial, Helvetica, sans-serif;
     background:
-        radial-gradient(circle at top left, rgba(247,181,56,0.20), transparent 28%),
-        radial-gradient(circle at top right, rgba(20,184,166,0.22), transparent 32%),
-        #f8fffb;
+        radial-gradient(circle at top left, rgba(255,196,0,0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(0,166,223,0.20), transparent 32%),
+        linear-gradient(180deg, #00324a 0%, #00445c 38%, #f4f7f5 38%);
     color:var(--ink);
 }
 
@@ -56,70 +61,114 @@ a{
    NAVBAR
 ========================================================= */
 
-.navbar {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 48px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(14px);
-    border-bottom: 1px solid rgba(0, 122, 138, 0.12);
-    box-shadow: 0 6px 22px rgba(0, 80, 100, 0.07);
-    max-height: 70px;
-    overflow-x: auto;
+.navbar{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    display:grid;
+    grid-template-columns:240px 450px 1fr;
+    align-items:center;
+    min-height:68px;
+    background:#00324a;
+    border-bottom:1px solid rgba(255,255,255,0.10);
+    box-shadow:0 6px 22px rgba(0,40,60,0.22);
+
 }
 
-.logo{
+.logo-box{
+    position:relative;
     display:flex;
     align-items:center;
-    gap:12px;
+    justify-content:flex-start;
+    background:white;
+    height:68px;
+    padding:10px 18px 10px 24px;
+    z-index:2;
 }
 
-.logo img{
-    height:31px;
+.logo-box::after{
+    content:"";
+    position:absolute;
+    top:0;
+    right:calc(-1 * var(--logo-fade-width));
+    width:var(--logo-fade-width);
+    height:100%;
+    background:linear-gradient(
+        to right,
+        #ffffff 0%,
+        rgba(255,255,255,0.76) 34%,
+        rgba(255,255,255,0.00) 100%
+    );
+    pointer-events:none;
+}
+
+.logo-box img{
+    height:36px;
     width:auto;
     display:block;
 }
 
-.logo-title{
-    font-weight:800;
-    color:var(--deep-ocean);
-    letter-spacing:-0.02em;
+.platform-title{
+    position:relative;
+    z-index:3;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:68px;
+    padding:0 24px;
     font-size:15px;
+    font-weight:900;
+    letter-spacing:-0.02em;
+    white-space:nowrap;
+    color:#dff9ff;
+    text-shadow:
+        0 1px 2px rgba(0,0,0,0.48),
+        0 0 10px rgba(0,166,223,0.48);
+}
+
+.platform-title::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:17px;
+    transform:translateX(-50%);
+    width:70%;
+    height:2px;
+    border-radius:999px;
+    background:linear-gradient(90deg, transparent, var(--coral), var(--sun), transparent);
+    opacity:0.55;
 }
 
 .navlinks{
+    min-width:0;
     display:flex;
-    gap:8px;
-    flex-wrap:wrap;
+    justify-content:flex-end;
+    align-items:center;
+    gap:10px;
+    flex-wrap:nowrap;
+    padding-right:24px;
+    overflow:hidden;
 }
 
 .navlinks a{
     text-decoration:none;
-    color:var(--deep-ocean);
-    font-weight:700;
-    padding:7px 13px;
-    border-radius:999px;
-    transition:0.22s;
-    font-size:15px;
-}
-
-
-.navlinks a:hover{
-    background:linear-gradient(135deg,var(--lagoon),var(--ocean));
     color:white;
-    transform: translateY(-1px);
+    font-weight:800;
+    padding:8px 12px;
+    border-radius:999px;
+    transition:0.25s;
+    font-size:14px;
+    white-space:nowrap;
 }
 
-.navlinks a.active {
-    background: linear-gradient(135deg, var(--lagoon), var(--ocean));
-    color: white;
-    box-shadow: 0 4px 12px rgba(0, 80, 100, 0.15);
-    transform: translateY(-1px);
+.navlinks a.active,
+.navlinks a:hover{
+    background:linear-gradient(90deg, var(--lagoon), var(--coral), var(--sun));
+    color:#00324a;
+    box-shadow:0 4px 12px rgba(0,80,100,0.18);
+    transform:translateY(-1px);
 }
+
 /* =========================================================
    MAIN SECTION
 ========================================================= */
@@ -155,7 +204,7 @@ a{
     width:330px;
     height:330px;
     border-radius:50%;
-    background:linear-gradient(135deg, rgba(247,181,56,0.36), rgba(20,184,166,0.28));
+    background:linear-gradient(135deg, rgba(255,196,0,0.20), rgba(0,166,223,0.16));
 }
 
 .country-panel::after{
@@ -165,7 +214,7 @@ a{
     bottom:0;
     width:100%;
     height:8px;
-    background:linear-gradient(90deg, var(--lagoon), var(--sun), var(--coral));
+    background:linear-gradient(90deg, var(--lagoon), var(--coral), var(--sun));
 }
 
 /* =========================================================
@@ -176,9 +225,9 @@ a{
     position:relative;
     z-index:2;
     padding:20px 42px 16px 42px;
-    border-bottom:1px solid rgba(0,122,138,0.10);
+    border-bottom:1px solid rgba(255,255,255,0.12);
     background:
-        linear-gradient(135deg, rgba(220,248,242,0.60), rgba(255,243,214,0.45));
+        linear-gradient(135deg, rgba(0,50,74,0.96), rgba(0,111,130,0.88));
 }
 
 .country-heading{
@@ -192,16 +241,21 @@ a{
     margin:0 0 7px 0;
     font-size:36px;
     line-height:1.05;
-    color:var(--deep-ocean);
+    color:white;
     letter-spacing:-0.045em;
+    font-weight:900;
 }
 
 .heading-text p{
     margin:0;
     max-width:920px;
-    color:var(--muted);
+    color:rgba(255,255,255,0.82);
     font-size:15.5px;
     line-height:1.5;
+}
+
+h1, h2, h3, .platform-title, .navlinks a, .country-badge, .control-label{
+    font-family:'Nunito Sans', Arial, Helvetica, sans-serif;
 }
 
 .country-controls{
@@ -292,10 +346,11 @@ select{
 
 .country-title-row h2{
     margin:0;
-    font-size:34px;
-    line-height:1.05;
+    font-size:38px;
+    line-height:1.02;
     color:var(--deep-ocean);
-    letter-spacing:-0.04em;
+    letter-spacing:-0.055em;
+    font-weight:900;
 }
 
 .country-badge{
@@ -380,9 +435,8 @@ select{
     width:9px;
     height:9px;
     border-radius:50%;
-    background:linear-gradient(135deg, var(--lagoon), var(--sun));
+    background:linear-gradient(90deg, var(--lagoon), var(--coral), var(--sun));
 }
-
 
 /* =========================================================
    COMPACT TOP BANNER
@@ -394,7 +448,7 @@ select{
 
 .compact-heading{
     display:grid;
-    grid-template-columns: 1fr 320px;
+    grid-template-columns:1fr 320px;
     align-items:center;
     gap:20px;
 }
@@ -410,28 +464,35 @@ select{
     margin:0;
     font-size:14px;
     line-height:1.4;
-    color:var(--muted);
+    color:rgba(255,255,255,0.82);
     max-width:700px;
 }
 
 .compact-controls{
-    padding:10px 14px;
-    border-radius:16px;
+    background:transparent;
+    box-shadow:none;
+    border:0;
+    padding:0;
+}
+
+.compact-controls::before{
+    display:none;
 }
 
 .compact-controls .control-label{
-    margin-bottom:5px;
-    font-size:11px;
+    color:white;
+    opacity:0.9;
+    margin-bottom:7px;
+    font-size:12px;
+    font-weight:900;
     letter-spacing:0.06em;
 }
 
 .compact-controls select{
-    padding:10px 12px;
-    height:44px;
-    font-size:14px;
-    border-radius:14px;
-    font-weight:800;
+    background:white;
+    color:#00324a;
 }
+
 /* =========================================================
    HEATMAP
 ========================================================= */
@@ -454,7 +515,6 @@ select{
     height:190px;
     border-radius:0;
 }
-
 
 /* =========================================================
    OVERVIEW
@@ -551,41 +611,42 @@ select{
    FOOTER
 ========================================================= */
 
-.footer-wave {
-    height: 34px;
-    margin-top: 0;
-    overflow: hidden;
-}
-.footer-wave svg {
-    width: 100%;
-    height: 100%;
-    display: block;
+.footer-wave{
+    height:34px;
+    margin-top:0;
+    overflow:hidden;
 }
 
-.footer {
+.footer-wave svg{
+    width:100%;
+    height:100%;
+    display:block;
+}
+
+.footer{
     background:
-        radial-gradient(circle at 12% 15%, rgba(247,181,56,0.42), transparent 28%),
-        linear-gradient(135deg, rgba(0,122,138,0.98), rgba(20,184,166,0.94));
-    padding: 12px 48px;
-    border-top: 1px solid rgba(255,255,255,0.26);
-    box-shadow: 0 -8px 24px rgba(0,80,100,0.08);
+        radial-gradient(circle at 12% 15%, rgba(255,196,0,0.34), transparent 28%),
+        linear-gradient(135deg, #00324a, #006f82);
+    padding:12px 48px;
+    border-top:1px solid rgba(255,255,255,0.26);
+    box-shadow:0 -8px 24px rgba(0,80,100,0.08);
 }
 
-.footer-inner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+.footer-inner{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
 }
 
-.footer-sentence {
-    max-width: 1960px;
-    width: 100%;
-    color: white;
-    font-size: 13px;
-    line-height: 1.45;
-    font-weight: 600;
-    letter-spacing: 0.01em;
+.footer-sentence{
+    max-width:1960px;
+    width:100%;
+    color:white;
+    font-size:13px;
+    line-height:1.45;
+    font-weight:600;
+    letter-spacing:0.01em;
 }
 
 /* =========================================================
@@ -605,10 +666,48 @@ select{
     }
 
     .navbar{
-        padding:14px 24px;
+        display:flex;
         flex-direction:column;
         align-items:flex-start;
-        gap:12px;
+        min-height:auto;
+        padding:0;
+        overflow-x:visible;
+    }
+
+    .logo-box{
+        width:100%;
+        height:62px;
+        padding:10px 18px;
+    }
+
+    .logo-box::after{
+        display:none;
+    }
+
+    .platform-title{
+        width:100%;
+        height:48px;
+        justify-content:flex-start;
+        padding:0 18px;
+        font-size:14px;
+        background:#00324a;
+    }
+
+    .platform-title::after{
+        left:18px;
+        transform:none;
+        width:260px;
+        bottom:10px;
+    }
+
+    .navlinks{
+        width:100%;
+        flex-wrap:wrap;
+        justify-content:flex-start;
+        gap:10px;
+        padding:12px 18px 14px 18px;
+        margin-left:0;
+        overflow:visible;
     }
 
     .section{
@@ -628,23 +727,23 @@ select{
         align-items:flex-start;
     }
 
-.country-controls {
-    display: flex;
-    align-items: center;
-    gap: 12px; /* space between label and dropdown */
-    justify-content: flex-start; /* optional */
-}
+    .country-controls{
+        display:flex;
+        align-items:center;
+        gap:12px;
+        justify-content:flex-start;
+    }
 
-.country-controls .control-label {
-    margin-bottom: 0;  /* remove vertical spacing */
-    white-space: nowrap; /* keep label on one line */
-    font-size: 0.85rem; /* optional smaller font */
-}
+    .country-controls .control-label{
+        margin-bottom:0;
+        white-space:nowrap;
+        font-size:0.85rem;
+    }
 
-.country-controls select {
-    min-width: 200px;
-    max-width: 300px;
-}
+    .country-controls select{
+        min-width:200px;
+        max-width:300px;
+    }
 
     .diagnostic-grid{
         grid-template-columns:1fr;
@@ -661,16 +760,12 @@ select{
 
 @media(max-width:650px){
 
-    .navbar{
-        padding:12px 20px;
+    .logo-box img{
+        height:31px;
     }
 
     .navlinks a{
         padding:8px 11px;
-        font-size:14px;
-    }
-
-    .logo-title{
         font-size:14px;
     }
 
@@ -704,6 +799,21 @@ select{
     }
 }
 
+.country-title-with-flag{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.country-flag{
+    width:48px;
+    height:36px;
+    object-fit:cover;
+    border-radius:6px;
+    box-shadow:0 4px 12px rgba(0,50,74,0.18);
+    border:1px solid rgba(0,50,74,0.10);
+}
+
 </style>
 </head>
 
@@ -713,22 +823,24 @@ select{
      NAVBAR
 ========================================================= -->
 
-
 <div class="navbar">
-    <div class="logo">
+
+    <div class="logo-box">
         <img src="wb_blue.jpg" alt="World Bank Group">
-        <div class="logo-title">Pacific Fiscal Resilience Platform</div>
     </div>
+
+    <div class="platform-title">Pacific Fiscal Resilience Platform</div>
+
     <div class="navlinks">
         <a href="index.html" title="Platform overview, purpose, and context">About</a>
-        <a href="region.html"title="Regional insights across Pacific Island Countries">Regional Insights</a>
-        <a href="countries.html"  class="active" title="Country-level fiscal resilience profiles and diagnostics">Country Applications</a>
+        <a href="region.html" title="Regional insights across Pacific Island Countries">Regional Insights</a>
+        <a href="countries.html" class="active" title="Country-level fiscal resilience profiles and diagnostics">Country Applications</a>
         <a href="themes.html" title="Explore fiscal resilience pillars and thematic guidance">Resilience Pillars</a>
         <a href="resources.html" title="Access tools, literature, dashboards, and practical resources">Resources</a>
         <a href="community.html" title="Connect with partners, events, and communities">Community&Partners</a>
     </div>
-</div>
 
+</div>
 
 <!-- =========================================================
      REGIONAL CONTENT
@@ -743,85 +855,94 @@ select{
     <div class="country-heading compact-heading">
 
         <div class="heading-text compact-heading-text">
-                    <h1>Country Fiscal Resilience Profiles</h1>
-                    <p>
-                        Explore country-level fiscal resilience diagnostics for Pacific SIDS, including FRI results, binding constraints, thematic vulnerabilities, and policy implications.
-                    </p>
+            <h1>Country Fiscal Resilience Profiles</h1>
+            <p>
+                Explore country-level fiscal resilience diagnostics for Pacific SIDS, including FRI results, binding constraints, thematic vulnerabilities, and policy implications.
+            </p>
         </div>
 
         <div class="compact-controls">
             <label class="control-label" for="countrySelect">Select country:</label>
             <select id="countrySelect" onchange="renderCountry()">
-                        <option value="fi">Fiji</option>
-                        <option value="ki">Kiribati</option>
-                        <option value="mi">Marshall Islands</option>
-                        <option value="fs">Micronesia</option>
-                        <option value="na">Nauru</option>
-                        <option value="pa">Palau</option>
-                        <option value="sa">Samoa</option>
-                        <option value="si">Solomon Islands</option>
-                        <option value="to">Tonga</option>
-                        <option value="tu">Tuvalu</option>
-                        <option value="va">Vanuatu</option>            </select>
+                <option value="fi">Fiji</option>
+                <option value="ki">Kiribati</option>
+                <option value="mi">Marshall Islands</option>
+                <option value="fs">Micronesia</option>
+                <option value="na">Nauru</option>
+                <option value="pa">Palau</option>
+                <option value="sa">Samoa</option>
+                <option value="si">Solomon Islands</option>
+                <option value="to">Tonga</option>
+                <option value="tu">Tuvalu</option>
+                <option value="va">Vanuatu</option>
+            </select>
         </div>
 
     </div>
 
 </div>
 
-    <div class="country-content">
+<div class="country-content">
 
-        <div class="country-title-row">
-            <h2 id="countryTitle">Regional Weighted Average</h2>
-            <div id="countryBadge" class="country-badge">Composite score: placeholder</div>
+    <div class="country-title-row">
+        <h2 class="country-title-with-flag">
+            <img id="countryFlag" class="country-flag" src="rw.webp" alt="Regional flag">
+            <span id="countryTitle">Regional Weighted Average</span>
+        </h2>
+        <div id="countryBadge" class="country-badge">Composite score: placeholder</div>
+    </div>
+
+    <div class="diagnostic-grid">
+
+        <div class="chart-card">
+            <img id="spiderChart" src="rw.jpg" alt="Regional spiderweb chart">
         </div>
 
-        <div class="diagnostic-grid">
-
-            <div class="chart-card">
-                <img id="spiderChart" src="rw.jpg" alt="Regional spiderweb chart">
-            </div>
-
-            <div class="constraints-card">
-                <h3>Shared constraints</h3>
-                <ul id="constraintsList" class="constraints-list"></ul>
-            </div>
-
+        <div class="constraints-card">
+            <h3>Shared constraints</h3>
+            <ul id="constraintsList" class="constraints-list"></ul>
         </div>
-
-        <div class="heatmap-card">
-            <img id="heatmapTable" src="rwq.jpg" alt="Regional FRI heatmap table">
-        </div>
-
-        <div class="overview-card">
-            <h3>Regional context and recent trends</h3>
-            <p id="overviewText">
-                [Placeholder regional overview text.]
-            </p>
-        </div>
-
-        <div id="accordion" class="accordion"></div>
 
     </div>
+
+    <div class="heatmap-card">
+        <img id="heatmapTable" src="rwq.jpg" alt="Regional FRI heatmap table">
+    </div>
+
+    <div class="overview-card">
+        <h3>Regional context and recent trends</h3>
+        <p id="overviewText">
+            [Placeholder regional overview text.]
+        </p>
+    </div>
+
+    <div id="accordion" class="accordion"></div>
+
+</div>
 
 </div>
 </section>
+
 <!-- =========================================================
      FOOTER WAVE
 ========================================================= -->
 
 <div class="footer-wave">
     <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
-        <path fill="#007a8a" d="M0,48 C180,90 360,90 540,50 C720,10 900,10 1080,48 C1260,86 1350,72 1440,42 L1440,90 L0,90 Z"></path>
+        <path fill="#00324a" d="M0,48 C180,90 360,90 540,50 C720,10 900,10 1080,48 C1260,86 1350,72 1440,42 L1440,90 L0,90 Z"></path>
     </svg>
 </div>
 
 <footer class="footer">
     <div class="footer-inner">
         <div class="footer-sentence">
-    Together, we are building stronger fiscal resilience in the Pacific — sharing knowledge, empowering SIDS, and preparing for the next shock with solidarity and innovation.        </div>
+            Together, we are building stronger fiscal resilience in the Pacific — sharing knowledge, empowering SIDS, and preparing for the next shock with solidarity and innovation.
+        </div>
     </div>
 </footer>
+
+</body>
+</html>
 
 <script>
 
@@ -1008,6 +1129,10 @@ function renderCountry(){
     const profile = countryProfiles[key];
 
     document.getElementById("countryTitle").textContent = profile.name;
+
+    document.getElementById("countryFlag").src = `${key}.webp`;
+    document.getElementById("countryFlag").alt = profile.name + " flag";
+
     document.getElementById("countryBadge").textContent = profile.score;
 
     document.getElementById("spiderChart").src = profile.spider;
@@ -1074,7 +1199,6 @@ function renderCountry(){
 }
 
 renderCountry();
-
 </script>
 
 </body>

@@ -8,22 +8,27 @@
 <title>FRP - Resources</title>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800;900&display=swap');
 
 /* =========================================================
    GLOBAL DESIGN SYSTEM
 ========================================================= */
 
 :root{
-    --deep-ocean:#063a4a;
-    --ocean:#007a8a;
-    --lagoon:#14b8a6;
-    --reef:#34d399;
-    --sun:#f7b538;
-    --coral:#f9735b;
-    --sand:#fff3d6;
-    --cloud:#f8fffb;
-    --ink:#123047;
-    --muted:#557084;
+    --deep-ocean:#00324a;
+    --ocean:#006f82;
+    --lagoon:#009e96;
+    --reef:#00a88f;
+    --sun:#ffc400;
+    --coral:#00a6df;
+    --sand:#f5f1e7;
+    --cloud:#f4f7f5;
+    --ink:#00324a;
+    --muted:#4f6673;
+
+    --logo-box-width:270px;
+    --logo-fade-width:64px;
+    --title-box-width:360px;
 }
 
 *{
@@ -35,11 +40,11 @@ body{
     margin:0;
     height:100vh;
     overflow:hidden;
-    font-family:Arial, Helvetica, sans-serif;
+    font-family:'Nunito Sans', Arial, Helvetica, sans-serif;
     background:
-        radial-gradient(circle at top left, rgba(247,181,56,0.20), transparent 28%),
-        radial-gradient(circle at top right, rgba(20,184,166,0.22), transparent 32%),
-        #f8fffb;
+        radial-gradient(circle at top left, rgba(255,196,0,0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(0,166,223,0.20), transparent 32%),
+        linear-gradient(180deg, #00324a 0%, #00445c 38%, #f4f7f5 38%);
     color:var(--ink);
 }
 
@@ -57,57 +62,110 @@ a{
 ========================================================= */
 
 .navbar{
-    position:relative;
+    position:sticky;
+    top:0;
     z-index:1000;
-    display:flex;
-    justify-content:space-between;
+    display:grid;
+    grid-template-columns:var(--logo-box-width) var(--title-box-width) minmax(0, 1fr);
     align-items:center;
-    padding:9px 48px;
-    background:rgba(255,255,255,0.92);
-    backdrop-filter:blur(14px);
-    border-bottom:1px solid rgba(0,122,138,0.12);
-    box-shadow:0 6px 20px rgba(0,80,100,0.07);
+    min-height:68px;
+    background:#00324a;
+    border-bottom:1px solid rgba(255,255,255,0.10);
+    box-shadow:0 6px 22px rgba(0,40,60,0.22);
+    overflow:hidden;
 }
 
-.logo{
+.logo-box{
+    position:relative;
     display:flex;
     align-items:center;
-    gap:12px;
+    justify-content:flex-start;
+    background:white;
+    height:68px;
+    padding:10px 18px 10px 24px;
+    z-index:2;
 }
 
-.logo img{
-    height:31px;
+.logo-box::after{
+    content:"";
+    position:absolute;
+    top:0;
+    right:calc(-1 * var(--logo-fade-width));
+    width:var(--logo-fade-width);
+    height:100%;
+    background:linear-gradient(
+        to right,
+        #ffffff 0%,
+        rgba(255,255,255,0.76) 34%,
+        rgba(255,255,255,0.00) 100%
+    );
+    pointer-events:none;
+}
+
+.logo-box img{
+    height:36px;
     width:auto;
     display:block;
 }
 
-.logo-title{
-    font-weight:800;
-    color:var(--deep-ocean);
-    letter-spacing:-0.02em;
+.platform-title{
+    position:relative;
+    z-index:3;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:68px;
+    padding:0 24px;
     font-size:15px;
+    font-weight:900;
+    letter-spacing:-0.02em;
+    white-space:nowrap;
+    color:#dff9ff;
+    text-shadow:
+        0 1px 2px rgba(0,0,0,0.48),
+        0 0 10px rgba(0,166,223,0.48);
+}
+
+.platform-title::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:17px;
+    transform:translateX(-50%);
+    width:70%;
+    height:2px;
+    border-radius:999px;
+    background:linear-gradient(90deg, transparent, var(--coral), var(--sun), transparent);
+    opacity:0.55;
 }
 
 .navlinks{
+    min-width:0;
     display:flex;
-    gap:8px;
-    flex-wrap:wrap;
+    justify-content:flex-end;
+    align-items:center;
+    gap:10px;
+    flex-wrap:nowrap;
+    padding-right:24px;
+    overflow:hidden;
 }
 
 .navlinks a{
     text-decoration:none;
-    color:var(--deep-ocean);
-    font-weight:700;
-    padding:7px 13px;
+    color:white;
+    font-weight:800;
+    padding:8px 12px;
     border-radius:999px;
-    transition:0.22s;
-    font-size:15px;
+    transition:0.25s;
+    font-size:14px;
+    white-space:nowrap;
 }
 
-.navlinks a:hover,
-.navlinks a.active{
-    background:linear-gradient(135deg, var(--lagoon), var(--ocean));
-    color:white;
+.navlinks a.active,
+.navlinks a:hover{
+    background:linear-gradient(90deg, var(--lagoon), var(--coral), var(--sun));
+    color:#00324a;
+    box-shadow:0 4px 12px rgba(0,80,100,0.18);
     transform:translateY(-1px);
 }
 
@@ -153,15 +211,14 @@ a{
     padding:10px 14px;
     border-radius:18px;
     background:white;
-    box-shadow:0 8px 20px rgba(0,80,100,0.075);
-    border:1px solid rgba(0,122,138,0.10);
+    box-shadow:0 8px 20px rgba(0,50,74,0.075);
+    border:1px solid rgba(0,50,74,0.10);
     transition:0.22s;
     text-decoration:none;
     color:inherit;
     cursor:pointer;
 }
 
-/* default upper-right corner */
 .resource-card::before{
     content:"";
     position:absolute;
@@ -170,11 +227,10 @@ a{
     width:118px;
     height:118px;
     border-radius:50%;
-    background:linear-gradient(135deg, rgba(247,181,56,0.22), rgba(20,184,166,0.18));
+    background:linear-gradient(135deg, rgba(255,196,0,0.20), rgba(0,166,223,0.16));
     transition:0.22s;
 }
 
-/* bottom stripe */
 .resource-card::after{
     content:"";
     position:absolute;
@@ -182,24 +238,23 @@ a{
     bottom:0;
     width:100%;
     height:5px;
-    background:linear-gradient(90deg, var(--lagoon), var(--sun), var(--coral));
+    background:linear-gradient(90deg, var(--lagoon), var(--coral), var(--sun));
 }
 
-/* active card highlight */
 .resource-card.active::before{
     right:-46px;
     top:-48px;
     width:140px;
     height:140px;
-    background:linear-gradient(135deg, rgba(247,181,56,0.78), rgba(20,184,166,0.48));
-    box-shadow:0 0 34px rgba(247,181,56,0.28);
+    background:linear-gradient(135deg, rgba(255,196,0,0.72), rgba(0,166,223,0.40));
+    box-shadow:0 0 34px rgba(255,196,0,0.24);
 }
 
 .resource-card:hover,
 .resource-card.active{
     transform:translateY(-2px);
-    box-shadow:0 13px 30px rgba(0,80,100,0.13);
-    border-color:rgba(0,122,138,0.34);
+    box-shadow:0 13px 30px rgba(0,50,74,0.13);
+    border-color:rgba(0,111,130,0.30);
 }
 
 .resource-card.active{
@@ -225,7 +280,7 @@ a{
     background:linear-gradient(135deg, var(--ocean), var(--lagoon));
     color:white;
     font-size:16px;
-    box-shadow:0 7px 15px rgba(20,184,166,0.22);
+    box-shadow:0 7px 15px rgba(0,166,223,0.22);
 }
 
 .resource-card h3{
@@ -235,6 +290,7 @@ a{
     font-size:14.5px;
     line-height:1.14;
     color:var(--deep-ocean);
+    font-weight:900;
 }
 
 .resource-card p{
@@ -244,6 +300,7 @@ a{
     color:var(--muted);
     line-height:1.28;
     font-size:11.7px;
+    font-weight:650;
 }
 
 /* =========================================================
@@ -272,7 +329,7 @@ a{
     width:330px;
     height:330px;
     border-radius:50%;
-    background:linear-gradient(135deg, rgba(247,181,56,0.36), rgba(20,184,166,0.28));
+    background:linear-gradient(135deg, rgba(255,196,0,0.20), rgba(0,166,223,0.16));
 }
 
 .resource-panel::after{
@@ -282,7 +339,7 @@ a{
     bottom:0;
     width:100%;
     height:8px;
-    background:linear-gradient(90deg, var(--lagoon), var(--sun), var(--coral));
+    background:linear-gradient(90deg, var(--lagoon), var(--coral), var(--sun));
 }
 
 .panel-content{
@@ -319,7 +376,23 @@ a{
     background:linear-gradient(135deg, var(--ocean), var(--lagoon));
     color:white;
     font-size:31px;
-    box-shadow:0 12px 26px rgba(20,184,166,0.28);
+    box-shadow:0 12px 26px rgba(0,166,223,0.28);
+}
+
+.panel-heading{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin-bottom:18px;
+}
+
+.panel-icon{
+    margin-bottom:0;
+    flex:0 0 auto;
+}
+
+.resource-panel h2{
+    margin:0;
 }
 
 .resource-panel h2{
@@ -328,6 +401,7 @@ a{
     line-height:1.05;
     color:var(--deep-ocean);
     letter-spacing:-0.045em;
+    font-weight:900;
 }
 
 .resource-panel p{
@@ -335,6 +409,7 @@ a{
     color:var(--muted);
     font-size:17px;
     line-height:1.65;
+    font-weight:600;
 }
 
 .panel-meta{
@@ -352,36 +427,36 @@ a{
     background:#dcf8f2;
     color:var(--ocean);
     font-size:13px;
-    font-weight:800;
+    font-weight:900;
 }
 
 .panel-link{
     display:inline-block;
     padding:12px 19px;
     border-radius:16px;
-    background:linear-gradient(135deg, var(--sun), #ffd166);
+    background:linear-gradient(90deg, var(--coral), var(--sun));
     color:var(--deep-ocean);
     font-weight:900;
     text-decoration:none;
     font-size:14px;
-    box-shadow:0 10px 24px rgba(247,181,56,0.28);
+    box-shadow:0 10px 24px rgba(255,196,0,0.28);
     transition:0.22s;
 }
 
 .panel-link:hover{
     transform:translateY(-2px);
-    box-shadow:0 14px 30px rgba(247,181,56,0.38);
+    box-shadow:0 14px 30px rgba(255,196,0,0.38);
 }
 
 .panel-note{
     margin-top:26px;
     padding:16px 20px;
     border-radius:22px;
-    background:linear-gradient(135deg, rgba(220,248,242,0.75), rgba(255,243,214,0.65));
+    background:linear-gradient(135deg, rgba(220,248,242,0.75), rgba(255,244,207,0.65));
     color:var(--deep-ocean);
     font-size:14px;
     line-height:1.5;
-    font-weight:600;
+    font-weight:700;
 }
 
 .panel-list{
@@ -396,7 +471,7 @@ a{
     position:relative;
     padding:12px 14px 12px 42px;
     border-radius:16px;
-    background:linear-gradient(135deg, rgba(220,248,242,0.52), rgba(255,243,214,0.38));
+    background:linear-gradient(135deg, rgba(220,248,242,0.52), rgba(255,244,207,0.38));
     color:var(--deep-ocean);
     font-size:14.5px;
     line-height:1.45;
@@ -411,7 +486,7 @@ a{
     width:9px;
     height:9px;
     border-radius:50%;
-    background:linear-gradient(135deg, var(--lagoon), var(--sun));
+    background:linear-gradient(90deg, var(--lagoon), var(--coral), var(--sun));
 }
 
 .panel-list a{
@@ -423,6 +498,16 @@ a{
 .panel-list a:hover{
     color:var(--ocean);
     border-bottom-color:var(--ocean);
+}
+
+.resilience-diagram{
+    width:100%;
+    max-width:980px;
+    display:block;
+    margin:24px auto 0 auto;
+    border-radius:22px;
+    box-shadow:0 14px 34px rgba(0,50,74,0.14);
+    border:1px solid rgba(0,122,138,0.14);
 }
 
 /* =========================================================
@@ -449,8 +534,8 @@ a{
 .footer{
     margin-top:0;
     background:
-        radial-gradient(circle at 12% 15%, rgba(247,181,56,0.42), transparent 28%),
-        linear-gradient(135deg, rgba(0,122,138,0.98), rgba(20,184,166,0.94));
+        radial-gradient(circle at 12% 15%, rgba(255,196,0,0.34), transparent 28%),
+        linear-gradient(135deg, #00324a, #006f82);
     padding:8px 48px;
     border-top:1px solid rgba(255,255,255,0.26);
     box-shadow:0 -7px 20px rgba(0,80,100,0.08);
@@ -490,10 +575,48 @@ a{
     }
 
     .navbar{
-        padding:14px 24px;
+        display:flex;
         flex-direction:column;
         align-items:flex-start;
-        gap:12px;
+        min-height:auto;
+        padding:0;
+        overflow-x:visible;
+    }
+
+    .logo-box{
+        width:100%;
+        height:62px;
+        padding:10px 18px;
+    }
+
+    .logo-box::after{
+        display:none;
+    }
+
+    .platform-title{
+        width:100%;
+        height:48px;
+        justify-content:flex-start;
+        padding:0 18px;
+        font-size:14px;
+        background:#00324a;
+    }
+
+    .platform-title::after{
+        left:18px;
+        transform:none;
+        width:260px;
+        bottom:10px;
+    }
+
+    .navlinks{
+        width:100%;
+        flex-wrap:wrap;
+        justify-content:flex-start;
+        gap:10px;
+        padding:12px 18px 14px 18px;
+        margin-left:0;
+        overflow:visible;
     }
 
     .section{
@@ -537,16 +660,12 @@ a{
 
 @media(max-width:650px){
 
-    .navbar{
-        padding:12px 20px;
+    .logo-box img{
+        height:31px;
     }
 
     .navlinks a{
         padding:8px 11px;
-        font-size:14px;
-    }
-
-    .logo-title{
         font-size:14px;
     }
 
@@ -586,10 +705,13 @@ a{
 ========================================================= -->
 
 <div class="navbar">
-    <div class="logo">
+
+    <div class="logo-box">
         <img src="wb_blue.jpg" alt="World Bank Group">
-        <div class="logo-title">Pacific Fiscal Resilience Platform</div>
     </div>
+
+    <div class="platform-title">Pacific Fiscal Resilience Platform</div>
+
     <div class="navlinks">
         <a href="index.html" title="Platform overview, purpose, and context">About</a>
         <a href="region.html" title="Regional insights across Pacific Island Countries">Regional Insights</a>
@@ -598,8 +720,8 @@ a{
         <a href="resources.html" class="active" title="Access tools, literature, dashboards, and practical resources">Resources</a>
         <a href="community.html" title="Connect with partners, events, and communities">Community&Partners</a>
     </div>
-</div>
 
+</div>
 
 <!-- =========================================================
      RESOURCES CONTENT
@@ -681,31 +803,22 @@ a{
 
             <div class="panel-content">
 
-                <div id="panel-icon" class="panel-icon">🌊</div>
+<div class="panel-heading">
+    <div id="panel-icon" class="panel-icon">🌊</div>
 
-                <h2 id="panel-title">
-                    Fiscal Resilience Explained
-                </h2>
+    <h2 id="panel-title">
+        Fiscal Resilience in a (nut)Shell
+    </h2>
+</div>
 
                 <p id="panel-description">
                     Fiscal resilience is the capacity of a government to effectively manage its fiscal resources in the face of economic shocks, disasters, and other unforeseen events. It involves maintaining fiscal stability and sustainability while being able to respond to and recover from adverse situations.
                 </p>
 
-                <div class="panel-meta">
-                    <div id="panel-tag" class="panel-tag">
-                        Fiscal Resilience
-                    </div>
-
-                    <a id="panel-link" href="#" class="panel-link">
-                        Open resource
-                    </a>
-                </div>
-
-                <div id="panel-note" class="panel-note">
-                    Fiscal resilience links fiscal stability, shock response, and long-term sustainability.
-                </div>
 
                 <ul id="panel-list" class="panel-list"></ul>
+
+                <img id="panel-image" class="resilience-diagram" src="diagram.jpg" alt="Fiscal resilience dynamics diagram">
 
             </div>
 
@@ -721,7 +834,7 @@ a{
 
 <div class="footer-wave">
     <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
-        <path fill="#007a8a" d="M0,48 C180,90 360,90 540,50 C720,10 900,10 1080,48 C1260,86 1350,72 1440,42 L1440,90 L0,90 Z"></path>
+        <path fill="#00324a" d="M0,48 C180,90 360,90 540,50 C720,10 900,10 1080,48 C1260,86 1350,72 1440,42 L1440,90 L0,90 Z"></path>
     </svg>
 </div>
 
@@ -734,7 +847,6 @@ a{
     <div class="footer-inner">
         <div class="footer-sentence">
            Together, we are building stronger fiscal resilience in the Pacific — sharing knowledge, empowering SIDS, and preparing for the next shock with solidarity and innovation.
-
         </div>
     </div>
 
@@ -749,6 +861,8 @@ const resources = [
         tag: "Fiscal Resilience",
         note: "Fiscal resilience links fiscal stability, shock response, and long-term sustainability.",
         link: "#",
+        image: "resilience.jpg",
+        imageAlt: "Fiscal resilience dynamics diagram",
         items: []
     },
     {
@@ -860,6 +974,18 @@ function showResource(index){
 
     const list = document.getElementById("panel-list");
     list.innerHTML = "";
+
+    const image = document.getElementById("panel-image");
+
+    if(item.image){
+        image.src = item.image;
+        image.alt = item.imageAlt || item.title;
+        image.style.display = "block";
+    } else {
+        image.src = "";
+        image.alt = "";
+        image.style.display = "none";
+    }
 
     item.items.forEach(entry => {
         const li = document.createElement("li");

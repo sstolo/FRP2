@@ -5,51 +5,51 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>FRP - Guidance</title>
+<title>Fiscal Resilience | Pacific Fiscal Resilience Platform</title>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800;900&display=swap');
 
 /* =========================================================
    GLOBAL DESIGN SYSTEM
 ========================================================= */
 
 :root{
-    --deep-ocean:#063a4a;
-    --ocean:#007a8a;
-    --lagoon:#14b8a6;
-    --reef:#34d399;
-    --sun:#f7b538;
-    --coral:#f9735b;
-    --sand:#fff3d6;
-    --cloud:#f8fffb;
-    --ink:#123047;
-    --muted:#557084;
+    --deep-ocean:#0b3f52;
+    --ocean:#2f7f96;
+    --lagoon:#68c3d4;
+    --reef:#8fd7df;
+    --sky:#eaf7fb;
+    --mist:#f6fbfd;
+    --white:#ffffff;
+
+    --ink:#123746;
+    --muted:#5e7884;
+    --line:rgba(47,127,150,0.18);
 }
 
-*{
-    box-sizing:border-box;
+*{ 
+    box-sizing:border-box; 
 }
 
 html,
 body{
     margin:0;
-    height:100vh;
-    overflow:hidden;
-    font-family:Arial, Helvetica, sans-serif;
+    min-height:100%;
+    font-family:'Nunito Sans', Arial, Helvetica, sans-serif;
     background:
-        radial-gradient(circle at top left, rgba(247,181,56,0.20), transparent 28%),
-        radial-gradient(circle at top right, rgba(20,184,166,0.22), transparent 32%),
-        #f8fffb;
+        radial-gradient(circle at 85% 20%, rgba(143,215,223,0.35), transparent 30%),
+        radial-gradient(circle at 15% 80%, rgba(104,195,212,0.22), transparent 35%),
+        linear-gradient(180deg, #f6fbfd 0%, #eaf7fb 48%, #dff3f8 100%);
     color:var(--ink);
 }
 
 body{
-    display:grid;
-    grid-template-rows:auto 1fr 26px auto;
+    overflow:auto;
 }
 
-a{
-    color:inherit;
+a{ 
+    color:inherit; 
 }
 
 /* =========================================================
@@ -57,495 +57,901 @@ a{
 ========================================================= */
 
 .navbar{
-    position:relative;
+    position:sticky;
+    top:0;
     z-index:1000;
-    display:flex;
-    justify-content:space-between;
+    display:grid;
+    grid-template-columns:240px 450px 1fr;
     align-items:center;
-    padding:9px 48px;
-    background:rgba(255,255,255,0.92);
-    backdrop-filter:blur(14px);
-    border-bottom:1px solid rgba(0,122,138,0.12);
-    box-shadow:0 6px 20px rgba(0,80,100,0.07);
+    min-height:68px;
+    background:rgba(255,255,255,0.94);
+    border-bottom:1px solid var(--line);
+    box-shadow:0 8px 24px rgba(18,55,70,0.08);
+    backdrop-filter:blur(10px);
 }
 
-.logo{
+.logo-box{
+    position:relative;
     display:flex;
     align-items:center;
-    gap:12px;
+    justify-content:flex-start;
+    background:white;
+    height:68px;
+    padding:10px 18px 10px 24px;
+    z-index:2;
 }
 
-.logo img{
-    height:31px;
+.logo-box::after{
+    content:"";
+    position:absolute;
+    top:0;
+    right:-76px;
+    width:76px;
+    height:100%;
+    background:linear-gradient(
+        to right,
+        #ffffff 0%,
+        rgba(255,255,255,0.86) 38%,
+        rgba(255,255,255,0.00) 100%
+    );
+    pointer-events:none;
+}
+
+.logo-box img{
+    height:36px;
     width:auto;
     display:block;
 }
 
-.logo-title{
-    font-weight:800;
-    color:var(--deep-ocean);
-    letter-spacing:-0.02em;
+.platform-title{
+    position:relative;
+    z-index:3;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:68px;
+    padding:0 26px;
     font-size:15px;
+    font-weight:900;
+    letter-spacing:-0.02em;
+    white-space:nowrap;
+    color:var(--deep-ocean);
+    text-shadow:none;
+}
+
+.platform-title::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:17px;
+    transform:translateX(-50%);
+    width:62%;
+    height:2px;
+    border-radius:999px;
+    background:linear-gradient(90deg, transparent, var(--reef), var(--lagoon), transparent);
+    opacity:0.75;
 }
 
 .navlinks{
     display:flex;
-    gap:8px;
-    flex-wrap:wrap;
+    justify-content:flex-end;
+    align-items:center;
+    gap:12px;
+    flex-wrap:nowrap;
+    padding-right:32px;
 }
 
 .navlinks a{
     text-decoration:none;
     color:var(--deep-ocean);
-    font-weight:700;
-    padding:7px 13px;
+    font-weight:800;
+    padding:8px 14px;
     border-radius:999px;
-    transition:0.22s;
-    font-size:15px;
+    transition:0.25s;
+    font-size:14px;
+    white-space:nowrap;
 }
 
-.navlinks a:hover,
-.navlinks a.active{
-    background:linear-gradient(135deg, var(--lagoon), var(--ocean));
-    color:white;
-    transform:translateY(-1px);
-}
-
-/* =========================================================
-   MAIN SECTION
-========================================================= */
-
-.section{
-    min-height:0;
-    padding:10px 48px 4px 48px;
-    overflow:hidden;
-}
-
-/* =========================================================
-   GUIDANCE PANEL
-========================================================= */
-
-.guidance-panel{
-    position:relative;
-    overflow:hidden;
-    height:100%;
-    min-height:0;
-    border-radius:28px;
-    background:white;
-    box-shadow:0 14px 38px rgba(0,80,100,0.10);
-    border:1px solid rgba(0,122,138,0.10);
-    display:grid;
-    grid-template-rows:auto 1fr;
-}
-
-.guidance-panel::before{
-    content:"";
-    position:absolute;
-    right:-145px;
-    top:-145px;
-    width:330px;
-    height:330px;
-    border-radius:50%;
-    background:linear-gradient(135deg, rgba(247,181,56,0.36), rgba(20,184,166,0.28));
-}
-
-.guidance-panel::after{
-    content:"";
-    position:absolute;
-    left:0;
-    bottom:0;
-    width:100%;
-    height:0px;
-    background:linear-gradient(90deg, var(--lagoon), var(--sun), var(--coral));
-}
-
-/* =========================================================
-   UPPER PART: TITLE + TABS
-========================================================= */
-
-.guidance-top{
-    position:relative;
-    z-index:2;
-    padding:26px 42px 18px 42px;
-    border-bottom:1px solid rgba(0,122,138,0.10);
-    background:
-        linear-gradient(135deg, rgba(220,248,242,0.60), rgba(255,243,214,0.45));
-}
-
-.guidance-heading{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-end;
-    gap:24px;
-    margin-bottom:20px;
-}
-
-.heading-text h1{
-    margin:0 0 8px 0;
-    font-size:38px;
-    line-height:1.05;
+.navlinks a.active,
+.navlinks a:hover{
+    background:#dff3f8;
     color:var(--deep-ocean);
-    letter-spacing:-0.045em;
+    box-shadow:none;
+    transform:none;
 }
 
-.heading-text p{
-    margin:0;
-    max-width:820px;
-    color:var(--muted);
-    font-size:16px;
-    line-height:1.55;
-}
+/* =========================================================
+   WHAT'S NEW
+========================================================= */
 
-.heading-badge{
-    flex:0 0 auto;
-    padding:9px 15px;
+#whats-new-stamp{
+    position:fixed;
+    top:88px;
+    right:32px;
+    left:auto;
+    background:#dff3f8;
+    color:var(--deep-ocean);
+    padding:10px 16px;
     border-radius:999px;
-    background:white;
-    color:var(--ocean);
-    font-size:13px;
     font-weight:900;
-    box-shadow:0 8px 22px rgba(0,80,100,0.08);
-    border:1px solid rgba(0,122,138,0.10);
+    font-size:0.9rem;
+    box-shadow:0 6px 18px rgba(18,55,70,0.10);
+    border:1px solid var(--line);
+    z-index:1001;
+    text-align:center;
+    transform:none;
+    cursor:pointer;
 }
 
-.tabs{
+#whats-new-tooltip{
+    position:fixed;
+    top:132px;
+    right:32px;
+    left:auto;
+    width:280px;
+    background-color:white;
+    border-radius:14px;
+    padding:14px;
+    box-shadow:0 10px 28px rgba(18,55,70,0.14);
+    border:1px solid var(--line);
+    font-size:0.85rem;
+    color:var(--muted);
+    display:none;
+    opacity:1;
+    z-index:1002;
+    font-weight:600;
+}
+
+/* =========================================================
+   PAGE SHELL
+========================================================= */
+
+.page-shell{
+    position:relative; 
+    min-height:calc(100vh - 68px); 
+    overflow:hidden;
+    padding-bottom:90px;
+}
+
+.weaving-panel{
+    position:fixed;
+    top:0;
+    right:0;
+    width:42%;
+    height:100%;
+    pointer-events:none;
+    z-index:0;
+}
+
+.weaving-panel img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    mask-image:linear-gradient(to left, rgba(0,0,0,1) 64%, rgba(0,0,0,0) 100%);
+    -webkit-mask-image:linear-gradient(to left, rgba(0,0,0,1) 64%, rgba(0,0,0,0) 100%);
+    opacity:0.16;
+    filter:saturate(0.88) brightness(1.06);
+}
+
+.main-text-panel{
+    position:relative; 
+    width:min(1180px, calc(100% - 60px));
+    margin:0 auto;
+    min-height:calc(100vh - 140px);
+    overflow:visible;
+    padding:24px 28px 110px 28px;
+    z-index:2;
+    background:
+        linear-gradient(90deg, rgba(246,251,253,0.97), rgba(246,251,253,0.92), rgba(246,251,253,0.74));
+    border-left:1px solid rgba(47,127,150,0.10);
+    border-right:1px solid rgba(47,127,150,0.10);
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero-title-block{
+    width:calc(100% - 28px);
+    max-width:calc(100% - 28px);
+    margin:4px auto 20px auto;
+}
+
+.hero-greeting{
+    font-family:'Nunito Sans', Arial, Helvetica, sans-serif;
+    font-size:2.35rem;
+    font-weight:900;
+    color:var(--ocean);
+    background:none;
+    -webkit-background-clip:initial;
+    -webkit-text-fill-color:initial;
+    margin:0 0 4px 0;
+    text-align:left;
+    letter-spacing:-0.05em;
+}
+
+.welcome-strip{
+    display:block;
+    width:fit-content;
+    max-width:100%;
+    margin:-2px auto 0 0;
+    padding:0 18px 6px 0;
+    background:transparent;
+    border:none;
+    border-bottom:2px solid rgba(104,195,212,0.65);
+    border-radius:0;
+    color:#2f7f96;
+    font-size:0.84rem;
+    font-weight:800;
+    text-align:left;
+    box-shadow:none;
+}
+
+.resilience-intro{
+    width:calc(100% - 28px);
+    max-width:calc(100% - 28px);
+    margin:0 auto 20px auto;
+    text-align:justify;
+}
+
+.resilience-intro p{
+    color:var(--ink);
+    font-size:15px;
+    line-height:1.45;
+    font-weight:700;
+    margin:0;
+    text-align:justify;
+    text-align-last:left;
+}
+
+/* =========================================================
+   DIAGRAM SECTION
+========================================================= */
+
+.diagram-section{
+    margin:22px 0 12px 0;
+}
+
+.diagram-section h2{
+    margin:0 0 6px 0;
+    text-align:center;
+    color:var(--deep-ocean);
+    font-size:1.35rem;
+    font-weight:900;
+    letter-spacing:-0.03em;
+}
+
+.diagram-section .section-note{
+    margin:0 auto 16px auto;
+    max-width:820px;
+    text-align:center;
+    color:var(--muted);
+    font-size:0.92rem;
+    font-weight:700;
+    line-height:1.35;
+}
+
+.diagram-card{
+    background:rgba(255,255,255,0.78);
+    border:1px solid var(--line);
+    border-radius:22px;
+    padding:14px;
+    box-shadow:0 12px 34px rgba(18,55,70,0.10);
+    margin-bottom:0;
+}
+.diagram-wrapper{
+    position:relative;
+    width:100%;
+    margin:0 auto;
+    overflow:hidden;
+    border-radius:18px;
+}
+
+.diagram-wrapper img{
+    width:100%;
+    display:block;
+    border-radius:18px;
+}
+
+/* Post-it instruction */
+.diagram-postit{
+    position:absolute;
+    top:0%;
+    left:2%;
+    transform:rotate(-1deg);
+    width:390px;
+    max-width:36%;
+    padding:12px 15px;
+    background:rgba(255,245,185,0.78);
+    border:1px solid rgba(199,154,40,0.35);
+    border-radius:12px;
+    box-shadow:0 10px 24px rgba(80,60,10,0.16);
+    color:#5a4a12;
+    font-size:0.86rem;
+    line-height:1.32;
+    font-weight:800;
+    z-index:6;
+    pointer-events:none;
+    transition:opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* Modern CSS: hide post-it when hovering or focusing any clickable chart box */
+.diagram-wrapper:has(.chart-hotspot:hover) .diagram-postit,
+.diagram-wrapper:has(.chart-hotspot:focus) .diagram-postit{
+    opacity:0;
+    transform:translateY(-4px) rotate(-1deg);
+}
+
+/* Transparent clickable boxes */
+.chart-hotspot{
+    position:absolute;
+    background:rgba(255,255,255,0.00);
+    border:4px solid transparent;
+    border-radius:16px;
+    cursor:pointer;
+    transition:0.18s ease;
+}
+
+.chart-hotspot:hover,
+.chart-hotspot:focus{
+    background:rgba(104,195,212,0.10);
+    border:4px solid rgba(11,63,82,0.85);
+    box-shadow:
+        0 0 0 3px rgba(255,255,255,0.70),
+        0 0 18px rgba(11,63,82,0.22);
+    outline:none;
+}
+
+/* Approximate hotspot positions for diagram.jpg, 1574x999 */
+.hotspot-external{
+    top:12.5%;
+    left:1.0%;
+    width:13.2%;
+    height:76.0%;
+}
+
+
+.pillar-detail-card p{
+    margin:0 0 12px 0;
+    color:var(--ink);
+    font-size:0.96rem;
+    line-height:1.5;
+    font-weight:650;
+    text-align:justify;
+}
+
+.pillar-detail-card ul{
+    margin:4px 0 14px 20px;
+    padding:0;
+    color:var(--muted);
+    font-size:0.93rem;
+    line-height:1.45;
+    font-weight:700;
+}
+
+.pillar-detail-card li{
+    margin-bottom:5px;
+}
+
+.pillar-detail-card .pillar-subhead{
+    margin:14px 0 6px 0;
+    color:var(--deep-ocean);
+    font-size:0.98rem;
+    font-weight:900;
+}
+
+/* top row */
+.hotspot-pressures{
+    top:16.5%;
+    left:20.4%;
+    width:15.2%;
+    height:29.2%;
+}
+
+.hotspot-stress{
+    top:16.5%;
+    left:39.8%;
+    width:15.2%;
+    height:29.2%;
+}
+
+.hotspot-adjustment{
+    top:16.5%;
+    left:59.1%;
+    width:15.2%;
+    height:29.2%;
+}
+
+.hotspot-lowgrowth{
+    top:16.5%;
+    left:78.7%;
+    width:15.2%;
+    height:29.2%;
+}
+
+/* bottom row */
+.hotspot-capacity{
+    top:63.6%;
+    left:20.2%;
+    width:16.1%;
+    height:30.1%;
+}
+
+.hotspot-absorption{
+    top:64.0%;
+    left:39.9%;
+    width:15.3%;
+    height:28.5%;
+}
+
+.hotspot-protected{
+    top:64.0%;
+    left:58.2%;
+    width:15.3%;
+    height:28.5%;
+}
+
+.hotspot-stronggrowth{
+    top:64.0%;
+    left:76.4%;
+    width:15.2%;
+    height:28.5%;
+}
+
+.diagram-hint{
+    margin:8px 4px 0 4px;
+    color:var(--muted);
+    font-size:0.86rem;
+    line-height:1.35;
+    font-weight:700;
+    text-align:center;
+}
+
+/* =========================================================
+   FIVE FOCUS CARDS
+========================================================= */
+
+.focus-section{
+    width:calc(100% - 28px);
+    max-width:calc(100% - 28px);
+    margin:14px auto 24px auto;
+    padding:0;
+}
+
+.focus-section h2{
+    margin:0 0 6px 0;
+    text-align:center;
+    color:var(--deep-ocean);
+    font-size:1.35rem;
+    font-weight:900;
+    letter-spacing:-0.03em;
+}
+
+.focus-section .section-note{
+    margin:0 auto 14px auto;
+    max-width:760px;
+    text-align:center;
+    color:var(--muted);
+    font-size:0.92rem;
+    font-weight:700;
+    line-height:1.35;
+}
+
+.focus-cards-grid{
+    width:100%;
     display:grid;
-    grid-template-columns:repeat(4, 1fr);
+    grid-template-columns:repeat(5, minmax(0, 1fr));
     gap:12px;
 }
 
-.tab{
-    position:relative;
-    overflow:hidden;
-    border:0;
-    border-radius:18px;
-    padding:15px 18px;
-    background:white;
-    color:var(--deep-ocean);
-    text-align:left;
-    cursor:pointer;
-    box-shadow:0 8px 20px rgba(0,80,100,0.07);
-    border:1px solid rgba(0,122,138,0.10);
-    transition:0.22s;
-}
-
-.tab::before{
-    content:"";
-    position:absolute;
-    right:-44px;
-    top:-48px;
-    width:96px;
-    height:96px;
-    border-radius:50%;
-    background:linear-gradient(135deg, rgba(247,181,56,0.18), rgba(20,184,166,0.16));
-    transition:0.22s;
-}
-
-.tab::after{
-    content:"";
-    position:absolute;
-    left:0;
-    bottom:0;
-    width:100%;
-    height:5px;
-    background:linear-gradient(90deg, var(--lagoon), var(--sun), var(--coral));
-    opacity:0.75;
-}
-
-.tab:hover,
-.tab.active{
-    transform:translateY(-2px);
-    box-shadow:0 13px 30px rgba(0,80,100,0.13);
-    border-color:rgba(0,122,138,0.30);
-}
-
-.tab.active::before{
-    right:-36px;
-    top:-38px;
-    width:112px;
-    height:112px;
-    background:linear-gradient(135deg, rgba(247,181,56,0.78), rgba(20,184,166,0.48));
-    box-shadow:0 0 34px rgba(247,181,56,0.28);
-}
-
-.tab-icon{
-    position:relative;
-    z-index:2;
-    width:36px;
-    height:36px;
-    border-radius:13px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin-bottom:10px;
-    background:linear-gradient(135deg, var(--ocean), var(--lagoon));
-    color:white;
-    font-size:18px;
-    box-shadow:0 7px 15px rgba(20,184,166,0.22);
-}
-
-.tab-title{
-    position:relative;
-    z-index:2;
+.focus-card{
     display:block;
-    font-size:15px;
+    text-decoration:none;
+    color:inherit;
+    background:rgba(255,255,255,0.84);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:15px 14px;
+    box-shadow:0 8px 22px rgba(18,55,70,0.07);
+    transition:0.25s ease;
+    min-height:138px;
+}
+
+.focus-card:hover{
+    animation:softShake 0.45s ease-in-out;
+    transform:translateY(-2px);
+    box-shadow:0 12px 28px rgba(18,55,70,0.12);
+    border-color:rgba(47,127,150,0.32);
+    background:rgba(255,255,255,0.96);
+}
+
+.focus-card h3{
+    margin:0 0 8px 0;
+    color:var(--deep-ocean);
+    font-size:0.98rem;
     line-height:1.15;
     font-weight:900;
 }
 
-.tab-subtitle{
-    position:relative;
-    z-index:2;
-    display:block;
-    margin-top:5px;
-    font-size:12px;
-    line-height:1.35;
+.focus-card p{
+    margin:0;
     color:var(--muted);
+    font-size:12.6px;
+    line-height:1.34;
     font-weight:700;
 }
 
-/* =========================================================
-   LOWER PART: CONTENT
-========================================================= */
-
-.guidance-content{
-    position:relative;
-    z-index:2;
-    min-height:0;
-    overflow:auto;
-    padding:34px 42px 42px 42px;
+.pillar-trigger{
+    font-family:inherit;
+    text-align:left;
+    border:1px solid var(--line);
+    cursor:pointer;
 }
 
-.guidance-content::-webkit-scrollbar{
-    width:8px;
+.pillar-trigger.active-pillar{
+    border:2px solid rgba(11,63,82,0.75);
+    background:rgba(255,255,255,0.98);
+    box-shadow:0 14px 30px rgba(18,55,70,0.14);
 }
 
-.guidance-content::-webkit-scrollbar-track{
-    background:rgba(0,122,138,0.08);
-    border-radius:999px;
+.pillar-detail-card{
+    width:100%;
+    margin:16px 0 0 0;
+    padding:22px 24px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.86);
+    border:1px solid var(--line);
+    box-shadow:0 12px 32px rgba(18,55,70,0.09);
 }
 
-.guidance-content::-webkit-scrollbar-thumb{
-    background:rgba(0,122,138,0.35);
-    border-radius:999px;
-}
-
-.content-grid{
-    display:grid;
-    grid-template-columns:1.1fr 0.9fr;
-    gap:28px;
-    align-items:start;
-}
-
-.content-main{
-    max-width:900px;
-}
-
-.content-icon{
-    width:64px;
-    height:64px;
-    border-radius:22px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin-bottom:22px;
-    background:linear-gradient(135deg, var(--ocean), var(--lagoon));
-    color:white;
-    font-size:31px;
-    box-shadow:0 12px 26px rgba(20,184,166,0.28);
-}
-
-.content-main h2{
-    margin:0 0 14px 0;
-    font-size:38px;
-    line-height:1.05;
+.pillar-detail-card h3{
+    margin:0 0 8px 0;
     color:var(--deep-ocean);
-    letter-spacing:-0.045em;
+    font-size:1.25rem;
+    font-weight:900;
 }
 
-.content-main p{
+.pillar-detail-card p{
     margin:0;
-    color:var(--muted);
-    font-size:17px;
-    line-height:1.65;
-}
-
-.content-note{
-    margin-top:26px;
-    padding:16px 20px;
-    border-radius:22px;
-    background:linear-gradient(135deg, rgba(220,248,242,0.75), rgba(255,243,214,0.65));
-    color:var(--deep-ocean);
-    font-size:14px;
-    line-height:1.5;
+    color:var(--ink);
+    font-size:0.98rem;
+    line-height:1.48;
     font-weight:650;
 }
 
-.content-side{
-    display:grid;
-    gap:12px;
+@keyframes softShake{
+    0%{ transform:translateY(-2px) translateX(0); }
+    25%{ transform:translateY(-2px) translateX(-2px); }
+    50%{ transform:translateY(-2px) translateX(2px); }
+    75%{ transform:translateY(-2px) translateX(-1px); }
+    100%{ transform:translateY(-2px) translateX(0); }
 }
 
-.side-card{
-    position:relative;
-    overflow:hidden;
-    padding:18px 20px;
+
+/* =========================================================
+   PILLAR DETAIL CARD WITH CHARTS
+========================================================= */
+
+.pillar-detail-card{
+    width:100%;
+    margin:16px 0 0 0;
+    padding:22px 24px;
     border-radius:20px;
-    background:linear-gradient(135deg, rgba(220,248,242,0.58), rgba(255,243,214,0.42));
-    border:1px solid rgba(0,122,138,0.10);
+    background:rgba(255,255,255,0.88);
+    border:1px solid var(--line);
+    box-shadow:0 12px 32px rgba(18,55,70,0.09);
 }
 
-.side-card h3{
+.pillar-detail-card h3{
+    margin:0 0 10px 0;
+    color:var(--deep-ocean);
+    font-size:1.35rem;
+    font-weight:900;
+}
+
+.pillar-detail-card p{
+    margin:0 0 12px 0;
+    color:var(--ink);
+    font-size:0.96rem;
+    line-height:1.5;
+    font-weight:650;
+    text-align:justify;
+}
+
+.pillar-detail-card ul{
+    margin:4px 0 16px 20px;
+    padding:0;
+    color:var(--muted);
+    font-size:0.93rem;
+    line-height:1.45;
+    font-weight:700;
+}
+
+.pillar-detail-card li{
+    margin-bottom:5px;
+}
+
+.pillar-subhead{
+    margin:14px 0 6px 0;
+    color:var(--deep-ocean);
+    font-size:0.98rem;
+    font-weight:900;
+}
+
+.pillar-chart-grid{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:16px;
+    margin:18px 0 8px 0;
+}
+
+.pillar-chart-card{
+    background:rgba(246,251,253,0.92);
+    border:1px solid rgba(47,127,150,0.16);
+    border-radius:16px;
+    padding:12px;
+    box-shadow:0 8px 20px rgba(18,55,70,0.06);
+}
+
+.pillar-chart-title{
     margin:0 0 8px 0;
     color:var(--deep-ocean);
-    font-size:16px;
+    font-size:0.92rem;
+    line-height:1.25;
+    font-weight:900;
 }
 
-.side-card p{
-    margin:0;
+.pillar-chart-card img{
+    width:100%;
+    display:block;
+    border-radius:10px;
+    background:white;
+}
+
+.pillar-chart-source{
+    margin:8px 0 0 0;
     color:var(--muted);
-    font-size:14px;
-    line-height:1.5;
+    font-size:0.72rem;
+    line-height:1.3;
+    font-weight:700;
 }
 
-.guidance-list{
-    margin:22px 0 0 0;
-    padding:0;
-    list-style:none;
-    display:grid;
-    gap:10px;
+.chart-placeholder{
+    min-height:180px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:10px;
+    background:rgba(223,243,248,0.52);
+    border:1px dashed rgba(47,127,150,0.35);
+    color:var(--muted);
+    font-size:0.86rem;
+    font-weight:800;
+    text-align:center;
+    padding:18px;
 }
 
-.guidance-list li{
+@media(max-width:900px){
+    .pillar-chart-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+/* =========================================================
+   MODALS
+========================================================= */
+
+.info-modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(10,35,50,0.42);
+    z-index:3000;
+    justify-content:center;
+    align-items:center;
+    padding:24px;
+}
+
+.info-modal-content{
+    width:min(680px, 94%);
+    background:white;
+    border-radius:20px;
+    padding:24px 26px 22px 26px;
+    box-shadow:0 22px 52px rgba(18,55,70,0.24);
     position:relative;
-    padding:12px 14px 12px 42px;
-    border-radius:16px;
-    background:linear-gradient(135deg, rgba(220,248,242,0.52), rgba(255,243,214,0.38));
+    border:1px solid rgba(47,127,150,0.20);
+}
+
+.info-modal-content h3{
+    margin:0 36px 10px 0;
     color:var(--deep-ocean);
-    font-size:14.5px;
+    font-size:1.25rem;
+    line-height:1.2;
+    font-weight:900;
+}
+
+.info-modal-content p{
+    margin:0 0 12px 0;
+    color:var(--ink);
+    font-size:0.98rem;
     line-height:1.45;
     font-weight:650;
 }
 
-.guidance-list li::before{
-    content:"";
+.info-modal-content ul{
+    margin:8px 0 0 18px;
+    padding:0;
+    color:var(--muted);
+    font-size:0.94rem;
+    line-height:1.45;
+    font-weight:700;
+}
+
+.close-modal{
     position:absolute;
-    left:16px;
-    top:18px;
-    width:9px;
-    height:9px;
-    border-radius:50%;
-    background:linear-gradient(135deg, var(--lagoon), var(--sun));
-}
-
-/* =========================================================
-   FOOTER WAVE
-========================================================= */
-
-.footer-wave{
-    height:26px;
-    min-height:26px;
-    margin-top:0;
-    overflow:hidden;
-}
-
-.footer-wave svg{
-    width:100%;
-    height:100%;
-    display:block;
+    top:12px;
+    right:14px;
+    border:none;
+    background:#eaf7fb;
+    color:var(--deep-ocean);
+    width:32px;
+    height:32px;
+    border-radius:999px;
+    font-size:1.3rem;
+    line-height:1;
+    cursor:pointer;
+    font-weight:900;
 }
 
 /* =========================================================
    FOOTER
 ========================================================= */
 
-.footer{
-    margin-top:0;
-    background:
-        radial-gradient(circle at 12% 15%, rgba(247,181,56,0.42), transparent 28%),
-        linear-gradient(135deg, rgba(0,122,138,0.98), rgba(20,184,166,0.94));
-    padding:8px 48px;
-    border-top:1px solid rgba(255,255,255,0.26);
-    box-shadow:0 -7px 20px rgba(0,80,100,0.08);
-}
-
-.footer-inner{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-}
-
-.footer-sentence{
-    max-width:1960px;
+.fixed-footer-wave{
+    position:fixed;
+    bottom:40px;
+    left:0;
     width:100%;
+    height:34px;
+    overflow:hidden;
+    z-index:2;
+    pointer-events:none;
+}
+
+.fixed-footer-wave svg{
+    width:100%;
+    height:100%;
+    display:block;
+}
+
+.fixed-footer-wave svg path{
+    fill:#cfeef5;
+}
+
+.fixed-footer{
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:40px; 
+    background:#0b3f52;
     color:white;
-    font-size:12.5px;
-    line-height:1.35;
-    font-weight:600;
-    letter-spacing:0.01em;
+    text-align:center;
+    font-size:0.8rem;
+    font-weight:700;
+    z-index:3;
+    padding-top:10px;
 }
 
 /* =========================================================
    RESPONSIVE
 ========================================================= */
 
-@media(max-width:1100px){
-
-    html,
-    body{
-        height:auto;
-        overflow:auto;
-    }
-
-    body{
-        display:block;
-    }
+@media(max-width:1250px){
 
     .navbar{
-        padding:14px 24px;
-        flex-direction:column;
-        align-items:flex-start;
-        gap:12px;
+        grid-template-columns:280px 330px 1fr;
     }
 
-    .section{
-        height:auto;
+    .platform-title{
+        font-size:14px;
+        padding:0 18px;
+    }
+
+    .navlinks{
+        gap:8px;
+        padding-right:20px;
+    }
+
+    .navlinks a{
+        font-size:13px;
+        padding:7px 11px;
+    }
+
+    .focus-cards-grid{
+        grid-template-columns:repeat(3, 1fr);
+    }
+}
+
+@media(max-width:900px){
+
+    .navbar{
+        display:flex;
+        flex-direction:column;
+        align-items:flex-start;
         min-height:auto;
-        padding:16px 32px 8px 32px;
-        overflow:visible;
     }
 
-    .guidance-panel{
-        height:auto;
+    .logo-box{
+        width:100%;
+        height:62px;
+        padding:10px 18px;
     }
 
-    .guidance-heading{
-        flex-direction:column;
-        align-items:flex-start;
+    .logo-box::after{
+        display:none;
     }
 
-    .tabs{
-        grid-template-columns:repeat(2, 1fr);
+    .platform-title{
+        width:100%;
+        height:48px;
+        justify-content:flex-start;
+        padding:0 18px;
+        font-size:14px;
+        background:white;
     }
 
-    .content-grid{
+    .platform-title::after{
+        left:18px;
+        transform:none;
+        width:260px;
+        bottom:10px;
+    }
+
+    .navlinks{
+        width:100%;
+        flex-wrap:wrap;
+        justify-content:flex-start;
+        gap:10px;
+        padding:12px 18px 14px 18px;
+        background:white;
+    }
+
+    .main-text-panel{
+        width:100%;
+        padding:28px 22px 110px 22px;
+    }
+
+    .hero-title-block{
+        width:100%;
+        margin:4px 0 20px 0;
+    }
+
+    .welcome-strip{
+        margin:-2px 0 0 auto;
+        text-align:right;
+        padding-left:18px;
+    }
+
+    .focus-cards-grid{
         grid-template-columns:1fr;
     }
 
-    .guidance-content{
-        overflow:visible;
+    #whats-new-stamp{
+        top:150px;
+        right:18px;
     }
 
-    .footer{
-        padding:12px 32px;
+    #whats-new-tooltip{
+        top:194px;
+        right:18px;
     }
 }
 
 @media(max-width:650px){
 
-    .navbar{
-        padding:12px 20px;
+    .logo-box img{
+        height:31px;
     }
 
     .navlinks a{
@@ -553,41 +959,41 @@ a{
         font-size:14px;
     }
 
-    .logo-title{
-        font-size:14px;
+    .hero-greeting{
+        font-size:2rem;
+        text-align:left;
     }
 
-    .guidance-top{
-        padding:24px 24px 18px 24px;
+    .resilience-intro{
+        text-align:left;
     }
 
-    .heading-text h1{
-        font-size:31px;
+    .diagram-card{
+        padding:8px;
+        border-radius:16px;
     }
 
-    .tabs{
-        grid-template-columns:1fr;
+    .diagram-wrapper{
+        border-radius:12px;
     }
 
-    .guidance-content{
-        padding:28px 24px 34px 24px;
+    .diagram-postit{
+        top:51%;
+        left:50%;
+        width:260px;
+        max-width:70%;
+        font-size:0.72rem;
+        padding:9px 11px;
     }
 
-    .content-main h2{
-        font-size:30px;
+    .diagram-hint{
+        font-size:0.78rem;
     }
 
-    .content-main p{
-        font-size:16px;
-    }
-
-    .footer-wave{
-        height:24px;
-        min-height:24px;
-    }
-
-    .footer-sentence{
-        font-size:12px;
+    .fixed-footer{
+        font-size:0.72rem;
+        padding-left:12px;
+        padding-right:12px;
     }
 }
 
@@ -600,280 +1006,604 @@ a{
      NAVBAR
 ========================================================= -->
 
-
 <div class="navbar">
-    <div class="logo">
+
+    <div class="logo-box">
         <img src="wb_blue.jpg" alt="World Bank Group">
-        <div class="logo-title">Pacific Fiscal Resilience Platform</div>
     </div>
+
+    <div class="platform-title">Pacific Fiscal Resilience Platform</div>
+
     <div class="navlinks">
         <a href="index.html" title="Platform overview, purpose, and context">About</a>
-        <a href="region.html"title="Regional insights across Pacific Island Countries">Regional Insights</a>
-        <a href="countries.html"  title="Country-level fiscal resilience profiles and diagnostics">Country Applications</a>
-        <a href="themes.html" class="active" title="Explore fiscal resilience pillars and thematic guidance">Resilience Pillars</a>
-        <a href="resources.html" title="Access tools, literature, dashboards, and practical resources">Resources</a>
-        <a href="community.html" title="Connect with partners, events, and communities">Community&Partners</a>
+        <a href="themes.html" class="active" title="Explore fiscal resilience pillars and thematic guidance">Fiscal Resilience</a>
+        <a href="region.html" title="Regional insights across Pacific Island Countries">Regional Insights</a>
+        <a href="countries.html" title="Country-level fiscal resilience profiles and diagnostics">Country Applications</a>
+        <a href="community.html" title="Connect with partners, events, and communities">Community&Resources</a>
     </div>
+
 </div>
+
+
 <!-- =========================================================
-     GUIDANCE CONTENT
+     PLATFORM CONTENT
 ========================================================= -->
 
-<section class="section">
+<section class="page-shell">
 
-    <div class="guidance-panel">
+    <div class="weaving-panel">
+        <img src="weaving.jpg" alt="Pacific palm-leaf weaving">
+    </div>
 
-        <!-- UPPER PART: TITLE AND TABS -->
+    <div id="whats-new-stamp">What's New</div>
+    <div id="whats-new-tooltip">
+        • Fiscal resilience framework for Pacific island countries.<br>
+        • Interactive shock–adjustment cycle diagram.<br>
+        • New tools and resources for crisis preparedness.
+    </div>
 
-        <div class="guidance-top">
+    <div class="main-text-panel">
 
+<div class="hero-title-block">
+    <h1 class="hero-greeting">
+        Breaking the shock–adjustment cycle with fiscal resilience
+    </h1>
 
+    <div class="welcome-strip">
+        How fiscal resilience helps protect investment, services, and growth.
+    </div>
+</div>
 
-            <div class="tabs">
+        <div class="resilience-intro">
+            <p>
+                Pacific island countries have repeatedly adjusted, recovered, and rebuilt. The challenge is durability: shocks can weaken revenues, raise spending needs, force abrupt adjustment, and slow the rebuilding of buffers. Fiscal resilience changes this pathway by helping countries absorb shocks, protect essential investment and services, and sustain more stable growth.
+            </p>
+        </div>
 
-                <button class="tab active" onclick="showTab(0)">
-                    <span class="tab-icon">🛡️</span>
-                    <span class="tab-title">Buffers</span>
-                    <span class="tab-subtitle">Liquidity, reserves, and shock readiness.</span>
-                </button>
+<!-- =====================================================
+     INTERACTIVE DIAGRAM
+====================================================== -->
 
-                <button class="tab" onclick="showTab(1)">
-                    <span class="tab-icon">🌊</span>
-                    <span class="tab-title">Debt Sustainability</span>
-                    <span class="tab-subtitle">Stress testing and prudent debt management.</span>
-                </button>
+<section class="diagram-section">
+    <div class="diagram-card">
+        <div class="diagram-wrapper">
 
-                <button class="tab" onclick="showTab(2)">
-                    <span class="tab-icon">🌺</span>
-                    <span class="tab-title">Revenue Resilience</span>
-                    <span class="tab-subtitle">Diversification and lower volatility.</span>
-                </button>
+            <img src="diagram.jpg" alt="Fiscal resilience breaks the shock-adjustment-low growth cycle">
 
-                <button class="tab" onclick="showTab(3)">
-                    <span class="tab-icon">🧭</span>
-                    <span class="tab-title">Expenditure Efficiency</span>
-                    <span class="tab-subtitle">PFM, budget flexibility, and investment quality.</span>
-                </button>
-
+            <div class="diagram-postit">
+                Click on each box to explore how shocks translate into fiscal pressure — and how stronger fiscal systems can absorb shocks while protecting growth.
             </div>
+
+            <!-- Left-side hotspot -->
+            <button class="chart-hotspot hotspot-external" data-target="modal-external" aria-label="External shocks"></button>
+
+            <!-- Top row hotspots -->
+            <button class="chart-hotspot hotspot-pressures" data-target="modal-pressures" aria-label="Fiscal pressures"></button>
+            <button class="chart-hotspot hotspot-stress" data-target="modal-stress" aria-label="Fiscal stress"></button>
+            <button class="chart-hotspot hotspot-adjustment" data-target="modal-adjustment" aria-label="Abrupt adjustment"></button>
+            <button class="chart-hotspot hotspot-lowgrowth" data-target="modal-lowgrowth" aria-label="Lower growth and more volatile growth"></button>
+
+            <!-- Bottom row hotspots -->
+            <button class="chart-hotspot hotspot-capacity" data-target="modal-capacity" aria-label="Fiscal resilience capacity"></button>
+            <button class="chart-hotspot hotspot-absorption" data-target="modal-absorption" aria-label="Shock absorption"></button>
+            <button class="chart-hotspot hotspot-protected" data-target="modal-protected" aria-label="Protected investment and service continuity"></button>
+            <button class="chart-hotspot hotspot-stronggrowth" data-target="modal-stronggrowth" aria-label="Stronger growth and more stable growth"></button>
 
         </div>
 
-        <!-- LOWER PART: DYNAMIC CONTENT -->
-
-        <div class="guidance-content">
-
-            <div class="content-grid">
-
-                <div class="content-main">
-
-                    <div id="content-icon" class="content-icon">🛡️</div>
-
-                    <h2 id="content-title">Buffers</h2>
-
-                    <p id="content-description">
-                        Introduce explicit fiscal buffer floors linked to disaster and shock exposure. For Pacific SIDS, buffers are not only a macroeconomic safeguard; they are a practical tool for keeping essential services running after climate, disaster, or external shocks.
-                    </p>
-
-                    <div id="content-note" class="content-note">
-                        Priority guidance: define minimum liquidity and fiscal buffer targets that reflect country-specific exposure to disasters, revenue volatility, and financing constraints.
-                    </div>
-
-                    <ul id="content-list" class="guidance-list">
-                        <li>Set explicit fiscal buffer floors linked to disaster and macroeconomic shock exposure.</li>
-                        <li>Protect liquidity needed for salaries, essential services, and emergency response.</li>
-                        <li>Integrate disaster-risk financing into medium-term fiscal planning.</li>
-                    </ul>
-
-                </div>
-
-                <div class="content-side">
-
-                    <div class="side-card">
-                        <h3 id="side-title-1">Policy focus</h3>
-                        <p id="side-text-1">
-                            Build buffers before shocks occur, rather than relying only on emergency financing after disasters.
-                        </p>
-                    </div>
-
-                    <div class="side-card">
-                        <h3 id="side-title-2">Operational angle</h3>
-                        <p id="side-text-2">
-                            Link fiscal buffers to annual budgets, disaster-risk financing instruments, and medium-term fiscal frameworks.
-                        </p>
-                    </div>
-
-                    <div class="side-card">
-                        <h3 id="side-title-3">Why it matters</h3>
-                        <p id="side-text-3">
-                            Stronger buffers help Pacific SIDS absorb shocks while protecting vulnerable households and essential public services.
-                        </p>
-                    </div>
-
-                </div>
-
-            </div>
-
+        <div class="diagram-hint">
+            Tip: hover over the diagram to see clickable areas. Click a box for a short explanation.
         </div>
+    </div>
+</section>
+
+
+<!-- =====================================================
+     FIVE FOCUS CARDS
+====================================================== -->
+<section class="focus-section">
+    <h2>Five pillars for strengthening fiscal resilience</h2>
+    <p class="section-note">
+        Once the fiscal challenge is diagnosed, the framework points to five areas where policy action can strengthen resilience, protect fiscal space, and support durable growth.
+    </p>
+
+    <div class="focus-cards-grid">
+
+        <button class="focus-card pillar-trigger active-pillar" data-pillar="fiscal-buffers">
+            <h3>Fiscal Buffers</h3>
+            <p>
+                Rebuild and protect fiscal space before shocks hit, so adjustment does not fall on essential investment and services.
+            </p>
+        </button>
+
+        <button class="focus-card pillar-trigger" data-pillar="debt-sustainability">
+            <h3>Debt Sustainability</h3>
+            <p>
+                Manage debt risks under growth, disaster, and contingent liability shocks.
+            </p>
+        </button>
+
+        <button class="focus-card pillar-trigger" data-pillar="revenue-resilience">
+            <h3>Revenue Resilience</h3>
+            <p>
+                Reduce volatility and strengthen stable, diversified revenue sources.
+            </p>
+        </button>
+
+        <button class="focus-card pillar-trigger" data-pillar="expenditure-efficiency">
+            <h3>Expenditure Efficiency</h3>
+            <p>
+                Improve flexibility and protect priority spending during periods of fiscal stress.
+            </p>
+        </button>
+
+        <button class="focus-card pillar-trigger" data-pillar="shock-resilience">
+            <h3>Shock Resilience</h3>
+            <p>
+                Strengthen preparedness for climate, commodity, tourism, and external financing shocks.
+            </p>
+        </button>
 
     </div>
+
+<div class="pillar-detail-card" id="pillar-detail-card">
+    <h3 id="pillar-detail-title">Fiscal Buffers</h3>
+    <div id="pillar-detail-body">
+        <!-- Content loads here -->
+    </div>
+</div></section>
+
+    </div>
+
+    <!-- FOOTER WAVE FIXED -->
+    <div class="fixed-footer-wave">
+        <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
+            <path d="M0,48 C180,90 360,90 540,50 C720,10 900,10 1080,48 C1260,86 1350,72 1440,42 L1440,90 L0,90 Z"></path>
+        </svg>
+    </div>
+
+    <!-- FOOTER FIXED -->
+    <footer class="fixed-footer">
+        Together, we are strengthening fiscal resilience across the Pacific — sharing knowledge, supporting local institutions, and advancing a more stable, predictable, and prosperous future.
+    </footer>
 
 </section>
 
+
 <!-- =========================================================
-     FOOTER WAVE
+     MODALS
 ========================================================= -->
 
-<div class="footer-wave">
-    <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
-        <path fill="#007a8a" d="M0,48 C180,90 360,90 540,50 C720,10 900,10 1080,48 C1260,86 1350,72 1440,42 L1440,90 L0,90 Z"></path>
-    </svg>
+<div id="modal-external" class="info-modal">
+    <div class="info-modal-content">
+        <button class="close-modal">&times;</button>
+        <h3>External Shocks</h3>
+        <p>
+            Pacific island countries face frequent and overlapping shocks, including climate and natural disasters, commodity price swings, tourism disruptions, and geopolitical risks. These shocks can quickly affect revenues, spending needs, financing conditions, and growth.
+        </p>
+        <ul>
+            <li>Climate and natural disasters</li>
+            <li>Commodity price shocks</li>
+            <li>Tourism disruptions</li>
+            <li>Geopolitical and external financing risks</li>
+        </ul>
+    </div>
 </div>
 
-<footer class="footer">
-    <div class="footer-inner">
-        <div class="footer-sentence">
-    Together, we are building stronger fiscal resilience in the Pacific — sharing knowledge, empowering SIDS, and preparing for the next shock with solidarity and innovation.        </div>
+<div id="modal-pressures" class="info-modal">
+    <div class="info-modal-content">
+        <button class="close-modal">&times;</button>
+        <h3>Fiscal Pressures</h3>
+        <p>
+            Shocks can reduce revenues while increasing emergency spending needs. This creates immediate budget pressure and can weaken fiscal balances before buffers are rebuilt.
+        </p>
+        <ul>
+            <li>Lower tax and non-tax revenues</li>
+            <li>Higher emergency and recovery spending</li>
+            <li>Pressure on fiscal balances and cash management</li>
+        </ul>
     </div>
-</footer>
+</div>
+
+<div id="modal-stress" class="info-modal">
+    <div class="info-modal-content">
+        <button class="close-modal">&times;</button>
+        <h3>Fiscal Stress</h3>
+        <p>
+            Fiscal stress becomes more severe when buffers are thin, revenues are volatile, and fiscal space is constrained. These conditions reduce the ability to respond without disrupting development priorities.
+        </p>
+        <ul>
+            <li>Thin buffers</li>
+            <li>Volatile revenues</li>
+            <li>Constrained fiscal space</li>
+        </ul>
+    </div>
+</div>
+
+<div id="modal-adjustment" class="info-modal">
+    <div class="info-modal-content">
+        <button class="close-modal">&times;</button>
+        <h3>Abrupt Adjustment</h3>
+        <p>
+            Without sufficient buffers or flexibility, governments may need to adjust abruptly. This often means cutting investment, maintenance, or service delivery precisely when support is needed most.
+        </p>
+        <ul>
+            <li>Capital investment becomes the adjustment margin</li>
+            <li>Maintenance may be deferred</li>
+            <li>Public services can come under pressure</li>
+        </ul>
+    </div>
+</div>
+
+<div id="modal-lowgrowth" class="info-modal">
+    <div class="info-modal-content">
+        <button class="close-modal">&times;</button>
+        <h3>Lower and More Volatile Growth</h3>
+        <p>
+            Abrupt adjustment can weaken recovery, reduce confidence, and slow the rebuilding of buffers. The result is a cycle of weaker and more volatile growth.
+        </p>
+        <ul>
+            <li>Lower public investment</li>
+            <li>Weaker recovery momentum</li>
+            <li>Slower buffer rebuilding</li>
+        </ul>
+    </div>
+</div>
+
+<div id="modal-capacity" class="info-modal">
+    <div class="info-modal-content">
+        <button class="close-modal">&times;</button>
+        <h3>Fiscal Resilience Capacity</h3>
+        <p>
+            Fiscal resilience capacity reflects the strength of the fiscal system before shocks arrive. It depends on buffers, stable revenues, flexible expenditure, and sustainable debt.
+        </p>
+        <ul>
+            <li>Fiscal buffers</li>
+            <li>Stable revenues</li>
+            <li>Flexible spending</li>
+            <li>Sustainable debt</li>
+        </ul>
+    </div>
+</div>
+
+<div id="modal-absorption" class="info-modal">
+    <div class="info-modal-content">
+        <button class="close-modal">&times;</button>
+        <h3>Shock Absorption</h3>
+        <p>
+            Stronger fiscal systems help absorb shocks without destabilizing fiscal policy. This reduces the need for procyclical adjustment and allows recovery to proceed more smoothly.
+        </p>
+        <ul>
+            <li>Better use of buffers and financing instruments</li>
+            <li>More stable budget execution</li>
+            <li>Reduced fiscal destabilization</li>
+        </ul>
+    </div>
+</div>
+
+<div id="modal-protected" class="info-modal">
+    <div class="info-modal-content">
+        <button class="close-modal">&times;</button>
+        <h3>Protected Investment and Service Continuity</h3>
+        <p>
+            Fiscal resilience helps protect priority investment, maintenance, and essential services during periods of stress. This supports recovery and protects long-term development outcomes.
+        </p>
+        <ul>
+            <li>Protection of priority capital spending</li>
+            <li>Continuity of essential services</li>
+            <li>Better medium-term planning under risk</li>
+        </ul>
+    </div>
+</div>
+
+<div id="modal-stronggrowth" class="info-modal">
+    <div class="info-modal-content">
+        <button class="close-modal">&times;</button>
+        <h3>Stronger and More Stable Growth</h3>
+        <p>
+            When countries can absorb shocks, protect essential spending, and rebuild buffers, growth becomes more stable and fiscal gains are more likely to endure.
+        </p>
+        <ul>
+            <li>More durable fiscal adjustment</li>
+            <li>More predictable public investment</li>
+            <li>Stronger long-term resilience</li>
+        </ul>
+    </div>
+</div>
 
 
+<!-- =========================================================
+     SCRIPTS
+========================================================= -->
 
 <script>
-const guidanceTabs = [
-    {
-        icon: "🛡️",
-        title: "Buffers",
-        description: "Introduce explicit fiscal buffer floors linked to disaster and shock exposure. For Pacific SIDS, buffers are not only a macroeconomic safeguard; they are a practical tool for keeping essential services running after climate, disaster, or external shocks.",
-        note: "Priority guidance: define minimum liquidity and fiscal buffer targets that reflect country-specific exposure to disasters, revenue volatility, and financing constraints.",
-        items: [
-            "Set explicit fiscal buffer floors linked to disaster and macroeconomic shock exposure.",
-            "Protect liquidity needed for salaries, essential services, and emergency response.",
-            "Integrate disaster-risk financing into medium-term fiscal planning."
-        ],
-        side: [
-            {
-                title: "Policy focus",
-                text: "Build buffers before shocks occur, rather than relying only on emergency financing after disasters."
-            },
-            {
-                title: "Operational angle",
-                text: "Link fiscal buffers to annual budgets, disaster-risk financing instruments, and medium-term fiscal frameworks."
-            },
-            {
-                title: "Why it matters",
-                text: "Stronger buffers help Pacific SIDS absorb shocks while protecting vulnerable households and essential public services."
+    const stamp = document.getElementById('whats-new-stamp');
+    const tooltip = document.getElementById('whats-new-tooltip');
+
+    stamp.addEventListener('mouseenter', () => tooltip.style.display = 'block');
+    stamp.addEventListener('mouseleave', () => tooltip.style.display = 'none');
+    tooltip.addEventListener('mouseenter', () => tooltip.style.display = 'block');
+    tooltip.addEventListener('mouseleave', () => tooltip.style.display = 'none');
+
+    document.querySelectorAll('.chart-hotspot').forEach(button => {
+        button.addEventListener('click', () => {
+            const targetId = button.dataset.target;
+            const modal = document.getElementById(targetId);
+            if(modal){
+                modal.style.display = 'flex';
             }
-        ]
-    },
-    {
-        icon: "🌊",
-        title: "Debt Sustainability",
-        description: "Strengthen fiscal frameworks through stress testing, prudent borrowing, conservative debt management, and better integration of climate and disaster risks into debt sustainability analysis.",
-        note: "Priority guidance: assess debt sustainability under repeated shock scenarios, not only under central baseline assumptions.",
-        items: [
-            "Use regular stress testing to assess the impact of disasters, growth shocks, and financing changes.",
-            "Preserve concessional financing where possible and manage refinancing risks carefully.",
-            "Integrate contingent liabilities and disaster-related fiscal risks into debt analysis."
-        ],
-        side: [
-            {
-                title: "Policy focus",
-                text: "Move from short-term debt monitoring to forward-looking fiscal risk management."
-            },
-            {
-                title: "Operational angle",
-                text: "Use debt stress tests to inform fiscal anchors, borrowing plans, and investment prioritization."
-            },
-            {
-                title: "Why it matters",
-                text: "Debt sustainability is central for Pacific SIDS because repeated shocks can quickly reduce fiscal space."
-            }
-        ]
-    },
-    {
-        icon: "🌺",
-        title: "Revenue Resilience",
-        description: "Reduce volatility through revenue diversification, tax modernization, stronger compliance, and mechanisms that stabilize revenues when tourism, trade, grants, or commodity-related flows weaken.",
-        note: "Priority guidance: strengthen the predictability and diversity of revenues while protecting growth and investment incentives.",
-        items: [
-            "Broaden the tax base and reduce excessive dependence on a narrow set of volatile revenue sources.",
-            "Modernize tax administration and strengthen compliance using digital tools where feasible.",
-            "Explore stabilization mechanisms for highly volatile or externally dependent revenue streams."
-        ],
-        side: [
-            {
-                title: "Policy focus",
-                text: "Make revenues more stable, predictable, and less dependent on a single sector or external flow."
-            },
-            {
-                title: "Operational angle",
-                text: "Combine tax policy reform with practical administrative improvements and taxpayer services."
-            },
-            {
-                title: "Why it matters",
-                text: "Revenue resilience helps Pacific SIDS sustain essential spending when external conditions worsen."
-            }
-        ]
-    },
-    {
-        icon: "🧭",
-        title: "Expenditure Efficiency",
-        description: "Improve investment management, budget flexibility, public financial management, and resilience-oriented spending so limited fiscal resources generate stronger development and preparedness outcomes.",
-        note: "Priority guidance: improve spending quality and flexibility so budgets can respond to shocks without undermining long-term priorities.",
-        items: [
-            "Strengthen public investment management to ensure resilient, high-value infrastructure spending.",
-            "Improve budget execution, transparency, and monitoring of resilience-related expenditures.",
-            "Build flexibility into budgets so governments can reprioritize during crises while protecting core services."
-        ],
-        side: [
-            {
-                title: "Policy focus",
-                text: "Improve the quality, flexibility, and resilience orientation of public spending."
-            },
-            {
-                title: "Operational angle",
-                text: "Link PFM reforms to investment planning, budget execution, and climate/disaster resilience priorities."
-            },
-            {
-                title: "Why it matters",
-                text: "For Pacific SIDS, limited fiscal resources make efficient and resilient spending especially important."
-            }
-        ]
-    }
-];
-
-function showTab(index){
-
-    const item = guidanceTabs[index];
-
-    document.getElementById("content-icon").textContent = item.icon;
-    document.getElementById("content-title").textContent = item.title;
-    document.getElementById("content-description").textContent = item.description;
-    document.getElementById("content-note").textContent = item.note;
-
-    const list = document.getElementById("content-list");
-    list.innerHTML = "";
-
-    item.items.forEach(text => {
-        const li = document.createElement("li");
-        li.textContent = text;
-        list.appendChild(li);
+        });
     });
 
-    document.getElementById("side-title-1").textContent = item.side[0].title;
-    document.getElementById("side-text-1").textContent = item.side[0].text;
+    document.querySelectorAll('.close-modal').forEach(button => {
+        button.addEventListener('click', () => {
+            button.closest('.info-modal').style.display = 'none';
+        });
+    });
 
-    document.getElementById("side-title-2").textContent = item.side[1].title;
-    document.getElementById("side-text-2").textContent = item.side[1].text;
+    document.querySelectorAll('.info-modal').forEach(modal => {
+        modal.addEventListener('click', event => {
+            if(event.target === modal){
+                modal.style.display = 'none';
+            }
+        });
+    });
 
-    document.getElementById("side-title-3").textContent = item.side[2].title;
-    document.getElementById("side-text-3").textContent = item.side[2].text;
+    document.addEventListener('keydown', event => {
+        if(event.key === 'Escape'){
+            document.querySelectorAll('.info-modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+    });
 
-    const tabs = document.querySelectorAll(".tab");
-    tabs.forEach(tab => tab.classList.remove("active"));
-    tabs[index].classList.add("active");
+    /* Fallback for browsers that do not support :has() */
+    const diagramPostit = document.querySelector('.diagram-postit');
+
+    document.querySelectorAll('.chart-hotspot').forEach(hotspot => {
+        hotspot.addEventListener('mouseenter', () => {
+            if(diagramPostit) diagramPostit.style.opacity = '0';
+        });
+
+        hotspot.addEventListener('mouseleave', () => {
+            if(diagramPostit) diagramPostit.style.opacity = '1';
+        });
+
+        hotspot.addEventListener('focus', () => {
+            if(diagramPostit) diagramPostit.style.opacity = '0';
+        });
+
+        hotspot.addEventListener('blur', () => {
+            if(diagramPostit) diagramPostit.style.opacity = '1';
+        });
+    });
+
+
+const pillarDetails = {
+    "fiscal-buffers": {
+        title: "Fiscal Buffers and Disaster Risk Financing",
+        html: `
+            <p>
+                Fiscal buffers are the first line of defense in small, shock-prone Pacific economies. They allow governments to absorb temporary revenue losses, finance emergency needs, and avoid abrupt expenditure cuts, arrears accumulation, or destabilizing borrowing when shocks occur. The report shows that the PIC-11 challenge is not fiscal inaction, but the limited durability of adjustment when buffers are too thin relative to the scale and frequency of shocks.
+            </p>
+
+            <p>
+                The diagnostic story is twofold. First, liquidity is often limited relative to monthly spending needs. Second, fiscal policy tends to become procyclical when buffers are insufficient: revenues rise during upturns and encourage spending expansions, but when downturns occur, revenues fall and emergency spending needs rise, forcing fiscal tightening before recovery is secure.
+            </p>
+
+            <div class="pillar-subhead">Key diagnostic messages</div>
+            <ul>
+                <li>Low cash balances reduce governments’ ability to smooth expenditure during shocks.</li>
+                <li>Thin buffers can force abrupt adjustment through capital spending cuts, arrears, or additional borrowing.</li>
+                <li>Procyclicality prevents the sustained accumulation of precautionary savings.</li>
+                <li>Disaster risk financing can help reduce disruptive post-shock reallocations.</li>
+            </ul>
+
+            <div class="pillar-chart-grid">
+                <div class="pillar-chart-card">
+                    <div class="pillar-chart-title">Figure: Fiscal buffers and recent fiscal stance</div>
+                    <img src="fig21.jpg" alt="Figure: fiscal buffers and recent fiscal stance">
+                    <div class="pillar-chart-source">
+                        Source: World Bank staff estimates. Note: Uploaded chart file: fig21.jpg. Use to illustrate the buffer-rebuilding challenge and uneven fiscal space across countries.
+                    </div>
+                </div>
+
+                <div class="pillar-chart-card">
+                    <div class="pillar-chart-title">Figure: Cyclicality of fiscal balances</div>
+                    <img src="fig23.jpg" alt="Figure: cyclicality of fiscal balances">
+                    <div class="pillar-chart-source">
+                        Source: World Bank staff estimates. Note: Shows the relationship between output gaps and changes in cyclically adjusted primary balances.
+                    </div>
+                </div>
+            </div>
+        `
+    },
+
+    "debt-sustainability": {
+        title: "Debt Sustainability and Fiscal Risk",
+        html: `
+            <p>
+                Debt sustainability in the Pacific needs to be assessed through a resilience lens, not only through headline debt ratios. Several PIC-11 countries benefit from concessional financing, long maturities, and relatively low effective interest rates, but concessional debt is not the same as shock-resilient debt. Debt trajectories can deteriorate quickly when disasters, growth slowdowns, export shocks, revenue losses, or contingent liabilities materialize.
+            </p>
+
+            <p>
+                The report highlights that public debt rose sharply during the pandemic and, although debt has stabilized or declined in several cases, debt dynamics remain fragile under stress. In addition, government balance sheets do not always fully capture fiscal risks from state-owned enterprises, guarantees, arrears, or other contingent liabilities. For the website, the debt pillar therefore shows both the conventional debt trajectory and a fiscal-risk lens.
+            </p>
+
+            <div class="pillar-subhead">Key diagnostic messages</div>
+            <ul>
+                <li>Debt can appear manageable under baseline assumptions while remaining fragile under disaster or growth shocks.</li>
+                <li>Concessional financing lowers near-term servicing costs but does not remove vulnerability.</li>
+                <li>SOE risks and contingent liabilities can convert operational weaknesses into fiscal pressures.</li>
+                <li>Debt strategy needs to be integrated with fiscal-risk monitoring and medium-term planning.</li>
+            </ul>
+
+            <div class="pillar-chart-grid">
+                <div class="pillar-chart-card">
+                    <div class="pillar-chart-title">Figure: Public debt change year-on-year / debt trajectory</div>
+                    <img src="fig212.jpg" alt="Figure: Public debt trajectory and year-on-year change">
+                    <div class="pillar-chart-source">
+                        Source: IMF; World Bank staff estimates. Note: Shows debt levels and recent movements across Fiji, Solomon Islands, tourism/remittance-led economies, and sovereign-rent-led economies.
+                    </div>
+                </div>
+
+                <div class="pillar-chart-card">
+                    <div class="pillar-chart-title">Figure: State-owned enterprise financial risk and fiscal health</div>
+                    <div class="chart-placeholder">
+                        Add image file here, suggested filename:<br>fig215.jpg
+                    </div>
+                    <div class="pillar-chart-source">
+                        Source: World Bank staff computation. Note: The report links weaker SOE financial health to higher public debt burdens and greater debt-regime risk.
+                    </div>
+                </div>
+            </div>
+        `
+    },
+
+    "revenue-resilience": {
+        title: "Revenue Resilience",
+        html: `
+            <p>
+                Revenue resilience captures the stability, diversification, and buoyancy of revenue systems across the cycle. In the PIC-11, revenue volatility is one of the main channels through which external shocks become fiscal stress. Revenue structures differ by country type, but they are generally narrow, concentrated, and highly dependent on external conditions.
+            </p>
+
+            <p>
+                Tourism- and remittance-led economies rely heavily on indirect taxes linked to consumption, imports, visitor activity, and mobility. Sovereign-rent-led economies rely more heavily on fisheries revenues, grants, Compact-related transfers, and other externally determined flows. These sources can be large, but they can also be volatile and difficult to forecast. This weakens budget credibility and makes medium-term fiscal planning harder.
+            </p>
+
+            <div class="pillar-subhead">Key diagnostic messages</div>
+            <ul>
+                <li>Concentrated revenue bases transmit external shocks rapidly into fiscal outcomes.</li>
+                <li>Volatile sovereign rents, grants, and tourism-linked revenues complicate budget planning.</li>
+                <li>Weak direct taxation, informality, exemptions, and limited administration reduce domestic revenue stability.</li>
+                <li>Revenue resilience requires both stronger mobilization and better management of volatility.</li>
+            </ul>
+
+            <div class="pillar-chart-grid">
+                <div class="pillar-chart-card">
+                    <div class="pillar-chart-title">Figure: Composition of government revenue by source</div>
+                    <div class="chart-placeholder">
+                        Add image file here, suggested filename:<br>fig24.jpg
+                    </div>
+                    <div class="pillar-chart-source">
+                        Source: IMF; World Bank staff calculations. Note: Shows tax revenue, grants, other non-tax revenue, and sovereign rents by country and country group.
+                    </div>
+                </div>
+
+                <div class="pillar-chart-card">
+                    <div class="pillar-chart-title">Figure: Revenue volatility in PIC-11</div>
+                    <div class="chart-placeholder">
+                        Add image file here, suggested filename:<br>fig26.jpg
+                    </div>
+                    <div class="pillar-chart-source">
+                        Source: World Bank staff calculations. Note: Calculated as the standard deviation of revenue over the period.
+                    </div>
+                </div>
+            </div>
+        `
+    },
+
+    "expenditure-efficiency": {
+        title: "Expenditure Efficiency and Public Financial Management",
+        html: `
+            <p>
+                Expenditure efficiency is central to fiscal resilience because Pacific governments operate with high and rigid spending needs. Small population size, geographic dispersion, high logistics costs, and the fixed costs of public administration raise the cost of service delivery. Public wage bills, goods and services, subsidies, transfers, and recurrent operating costs often dominate budgets, leaving limited room for adjustment when fiscal stress emerges.
+            </p>
+
+            <p>
+                The key mechanism is that when recurrent spending cannot adjust, capital expenditure often becomes the default adjustment margin. This protects short-term balances but can weaken long-term growth, infrastructure quality, maintenance, service delivery, and climate resilience. Public financial management weaknesses further reduce the quality and impact of spending.
+            </p>
+
+            <div class="pillar-subhead">Key diagnostic messages</div>
+            <ul>
+                <li>Current spending dominates expenditure structures in many PIC-11 countries.</li>
+                <li>Wage bills, transfers, and goods and services create rigid recurrent obligations.</li>
+                <li>Capital spending is often compressed during stress, weakening growth and resilience.</li>
+                <li>PFM reforms are central to protecting priority spending and improving expenditure quality.</li>
+            </ul>
+
+            <div class="pillar-chart-grid">
+                <div class="pillar-chart-card">
+                    <div class="pillar-chart-title">Figure: Current expenditures and capital spending</div>
+                    <img src="fig28.jpg" alt="Figure: current expenditures and capital spending">
+                    <div class="pillar-chart-source">
+                        Source: World Bank staff calculations. Note: Period is 2022–2025; shows the split between current spending and capital expenditure.
+                    </div>
+                </div>
+
+                <div class="pillar-chart-card">
+                    <div class="pillar-chart-title">Figure: Volatility of capital expenditure</div>
+                    <img src="fig210.jpg" alt="Figure: volatility of capital expenditure">
+                    <div class="pillar-chart-source">
+                        Source: IMF; World Bank staff calculations. Note: Coefficient of variation, 2018–2024; illustrates how capital spending becomes the adjustment margin under stress.
+                    </div>
+                </div>
+            </div>
+        `
+    },
+
+    "shock-resilience": {
+        title: "Shock Resilience",
+        html: `
+            <p>
+                Shock resilience reflects the ability of fiscal systems to prepare for, absorb, and recover from the external and climate risks that define the Pacific context. Shocks are not rare exceptions in the PIC-11; they are recurring features of the macro-fiscal environment. Cyclones, earthquakes, commodity price swings, tourism disruptions, global slowdowns, import price pressures, geopolitical risks, and changes in external financing conditions can all affect revenues, spending needs, debt dynamics, and growth.
+            </p>
+
+            <p>
+                This exposure raises the standard for fiscal management. Fiscal frameworks that may be adequate in larger or less volatile economies can be insufficient for small island states repeatedly hit by large shocks. High exposure increases the level of buffers required, makes revenue resilience more important, magnifies the costs of rigid expenditure, and makes debt sustainability more fragile under stress.
+            </p>
+
+            <div class="pillar-subhead">Key diagnostic messages</div>
+            <ul>
+                <li>Climate and natural disasters damage infrastructure, reduce output, and increase emergency spending.</li>
+                <li>Commodity and fuel price shocks transmit quickly through import-dependent economies.</li>
+                <li>Tourism and external-demand shocks weaken revenues and employment.</li>
+                <li>Fiscal planning needs to embed risk, not treat shocks as rare deviations from baseline projections.</li>
+            </ul>
+
+            <div class="pillar-chart-grid">
+                <div class="pillar-chart-card">
+                    <div class="pillar-chart-title">Figure: Average annual disaster losses</div>
+                    <img src="fig216.jpg" alt="Figure: average annual disaster losses as percent of GDP">
+                    <div class="pillar-chart-source">
+                        Source: SPC; PCRAFI/GFDRR. Note: Average annual losses are expressed as percent of GDP.
+                    </div>
+                </div>
+
+                <div class="pillar-chart-card">
+                    <div class="pillar-chart-title">Figure: Global uncertainty and GDP growth</div>
+                    <img src="fig1.jpg" alt="Figure: global economic policy uncertainty and GDP growth">
+                    <div class="pillar-chart-source">
+                        Source: Haver Analytics; International Monetary Fund; World Bank. Note: Shows global economic and trade policy uncertainty, emerging market volatility, and GDP growth for the world, AEs, EMDEs, and PIC-11.
+                    </div>
+                </div>
+            </div>
+        `
+    }
+};
+
+const pillarButtons = document.querySelectorAll('.pillar-trigger');
+const pillarTitle = document.getElementById('pillar-detail-title');
+const pillarBody = document.getElementById('pillar-detail-body');
+
+if(pillarBody){
+    pillarBody.innerHTML = pillarDetails["fiscal-buffers"].html;
 }
+
+pillarButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const pillar = button.dataset.pillar;
+        const detail = pillarDetails[pillar];
+
+        if(detail){
+            pillarTitle.textContent = detail.title;
+            pillarBody.innerHTML = detail.html;
+        }
+
+        pillarButtons.forEach(btn => btn.classList.remove('active-pillar'));
+        button.classList.add('active-pillar');
+    });
+});
 </script>
 
 </body>

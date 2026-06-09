@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FRP - Countries</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800;900&display=swap');
+
+/* =========================================================
+   GLOBAL DESIGN SYSTEM
+========================================================= */
+
+:root{
+    --deep-ocean:#00324a;
+    --ocean:#006f82;
+    --lagoon:#009e96;
+    --reef:#00a88f;
+    --sun:#ffc400;
+    --coral:#00a6df;
+    --sand:#f5f1e7;
+    --cloud:#f4f7f5;
+    --ink:#00324a;
+    --muted:#4f6673;
+
+    --logo-box-width:270px;
+    --logo-fade-width:64px;
+    --title-box-width:360px;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html,
+body{
+    margin:0;
+    height:100vh;
+    overflow:hidden;
+    font-family:'Nunito Sans', Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at top left, rgba(255,196,0,0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(0,166,223,0.20), transparent 32%),
+        linear-gradient(180deg, #00324a 0%, #00445c 38%, #f4f7f5 38%);
+    color:var(--ink);
+}
+
+body{
+    display:grid;
+    grid-template-rows:auto 1fr 26px auto;
+}
+
+a{
+    color:inherit;
+}
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+
+.navbar{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    display:grid;
+    grid-template-columns:240px 450px 1fr;
+    align-items:center;
+    min-height:68px;
+    background:#00324a;
+    border-bottom:1px solid rgba(255,255,255,0.10);
+    box-shadow:0 6px 22px rgba(0,40,60,0.22);
+
+}
+
+.logo-box{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    background:white;
+    height:68px;
+    padding:10px 18px 10px 24px;
+    z-index:2;
+}
+
+.logo-box::after{
+    content:"";
+    position:absolute;
+    top:0;
+    right:calc(-1 * var(--logo-fade-width));
+    width:var(--logo-fade-width);
+    height:100%;
+    background:linear-gradient(
+        to right,
+        #ffffff 0%,
+        rgba(255,255,255,0.76) 34%,
+        rgba(255,255,255,0.00) 100%
+    );
+    pointer-events:none;
+}
+
+.logo-box img{
+    height:36px;
+    width:auto;
+    display:block;
+}
+
+.platform-title{
+    position:relative;
+    z-index:3;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:68px;
+    padding:0 24px;
+    font-size:15px;
+    font-weight:900;
+    letter-spacing:-0.02em;
+    white-space:nowrap;
+    color:#dff9ff;
+    text-shadow:
+        0 1px 2px rgba(0,0,0,0.48),
+        0 0 10px rgba(0,166,223,0.48);
+}
+
+.platform-title::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:17px;
+    transform:translateX(-50%);
+    width:70%;
+    height:2px;
+    border-radius:999px;
+    background:linear-gradient(90deg, transparent, var(--coral), var(--sun), transparent);
+    opacity:0.55;
+}
+
+.navlinks{
+    min-width:0;
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:10px;
+    flex-wrap:nowrap;
+    padding-right:24px;
+    overflow:hidden;
+}
+
+.navlinks a{
+    text-decoration:none;
+    color:white;
+    font-weight:800;
+    padding:8px 12px;
+    border-radius:999px;
+    transition:0.25s;
+    font-size:14px;
+    white-space:nowrap;
+}
+
+.navlinks a.active,
+.navlinks a:hover{
+    background:linear-gradient(90deg, var(--lagoon), var(--coral), var(--sun));
+    color:#00324a;
+    box-shadow:0 4px 12px rgba(0,80,100,0.18);
+    transform:translateY(-1px);
+}
+
+/* =========================================================
+   MAIN SECTION
+========================================================= */
+
+.section{
+    min-height:0;
+    padding:10px 48px 4px 48px;
+    overflow:hidden;
+}
+
+/* =========================================================
+   COUNTRY PANEL
+========================================================= */
+
+.country-panel{
+    position:relative;
+    overflow:hidden;
+    height:100%;
+    min-height:0;
+    border-radius:28px;
+    background:white;
+    box-shadow:0 14px 38px rgba(0,80,100,0.10);
+    border:1px solid rgba(0,122,138,0.10);
+    display:grid;
+    grid-template-rows:auto 1fr;
+}
+
+.country-panel::before{
+    content:"";
+    position:absolute;
+    right:-145px;
+    top:-145px;
+    width:330px;
+    height:330px;
+    border-radius:50%;
+    background:linear-gradient(135deg, rgba(255,196,0,0.20), rgba(0,166,223,0.16));
+}
+
+.country-panel::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:8px;
+    background:linear-gradient(90deg, var(--lagoon), var(--coral), var(--sun));
+}
+
+/* =========================================================
+   TOP AREA
+========================================================= */
+
+.country-top{
+    position:relative;
+    z-index:2;
+    padding:20px 42px 16px 42px;
+    border-bottom:1px solid rgba(255,255,255,0.12);
+    background:
+        linear-gradient(135deg, rgba(0,50,74,0.96), rgba(0,111,130,0.88));
+}
+
+.country-heading{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:24px;
+}
+
+.heading-text h1{
+    margin:0 0 7px 0;
+    font-size:36px;
+    line-height:1.05;
+    color:white;
+    letter-spacing:-0.045em;
+    font-weight:900;
+}
+
+.heading-text p{
+    margin:0;
+    max-width:920px;
+    color:rgba(255,255,255,0.82);
+    font-size:15.5px;
+    line-height:1.5;
+}
+
+h1, h2, h3, .platform-title, .navlinks a, .country-badge, .control-label{
+    font-family:'Nunito Sans', Arial, Helvetica, sans-serif;
+}
+
+.country-controls{
+    flex:0 0 300px;
+    position:relative;
+    overflow:hidden;
+    border-radius:18px;
+    background:white;
+    box-shadow:0 8px 20px rgba(0,80,100,0.07);
+    border:1px solid rgba(0,122,138,0.10);
+    padding:13px 16px;
+}
+
+.country-controls::before{
+    content:"";
+    position:absolute;
+    right:-44px;
+    top:-48px;
+    width:96px;
+    height:96px;
+    border-radius:50%;
+    background:linear-gradient(135deg, rgba(247,181,56,0.18), rgba(20,184,166,0.16));
+}
+
+.control-label{
+    position:relative;
+    z-index:2;
+    display:block;
+    margin-bottom:7px;
+    font-size:12px;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--ocean);
+}
+
+select{
+    position:relative;
+    z-index:2;
+    width:100%;
+    border:1px solid rgba(0,122,138,0.20);
+    border-radius:14px;
+    padding:11px 12px;
+    background:#f8fffb;
+    color:var(--deep-ocean);
+    font-weight:800;
+    font-size:14px;
+    outline:none;
+}
+
+/* =========================================================
+   SCROLLABLE CONTENT AREA
+========================================================= */
+
+.country-content{
+    position:relative;
+    z-index:2;
+    min-height:0;
+    overflow:auto;
+    padding:28px 42px 38px 42px;
+}
+
+.country-content::-webkit-scrollbar{
+    width:8px;
+}
+
+.country-content::-webkit-scrollbar-track{
+    background:rgba(0,122,138,0.08);
+    border-radius:999px;
+}
+
+.country-content::-webkit-scrollbar-thumb{
+    background:rgba(0,122,138,0.35);
+    border-radius:999px;
+}
+
+/* =========================================================
+   DIAGNOSTIC SUMMARY
+========================================================= */
+
+.country-title-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:18px;
+    margin-bottom:18px;
+}
+
+.country-title-row h2{
+    margin:0;
+    font-size:38px;
+    line-height:1.02;
+    color:var(--deep-ocean);
+    letter-spacing:-0.055em;
+    font-weight:900;
+}
+
+.country-badge{
+    display:inline-flex;
+    padding:8px 13px;
+    border-radius:999px;
+    background:#dcf8f2;
+    color:var(--ocean);
+    font-size:13px;
+    font-weight:900;
+    white-space:nowrap;
+}
+
+.diagnostic-grid{
+    display:grid;
+    grid-template-columns:0.95fr 1.05fr;
+    gap:26px;
+    align-items:stretch;
+    margin-bottom:22px;
+}
+
+.chart-card,
+.constraints-card{
+    position:relative;
+    overflow:hidden;
+    border-radius:24px;
+    background:white;
+    box-shadow:0 10px 28px rgba(0,80,100,0.08);
+    border:1px solid rgba(0,122,138,0.10);
+}
+
+.chart-card{
+    padding:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.chart-card img{
+    width:100%;
+    height:auto;
+    max-height:250px;
+    object-fit:contain;
+    display:block;
+    border-radius:18px;
+}
+
+.constraints-card{
+    padding:24px 26px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.constraints-card h3{
+    margin:0 0 14px 0;
+    color:var(--deep-ocean);
+    font-size:19px;
+}
+
+.constraints-list{
+    margin:0;
+    padding:0;
+    list-style:none;
+    display:grid;
+    gap:12px;
+}
+
+.constraints-list li{
+    position:relative;
+    padding-left:22px;
+    color:var(--ink);
+    font-size:15px;
+    line-height:1.45;
+}
+
+.constraints-list li::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:8px;
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:linear-gradient(90deg, var(--lagoon), var(--coral), var(--sun));
+}
+
+/* =========================================================
+   COMPACT TOP BANNER
+========================================================= */
+
+.compact-top{
+    padding:14px 28px 12px 28px;
+}
+
+.compact-heading{
+    display:grid;
+    grid-template-columns:1fr 320px;
+    align-items:center;
+    gap:20px;
+}
+
+.compact-heading-text h1{
+    margin:0 0 4px 0;
+    font-size:24px;
+    line-height:1.1;
+    letter-spacing:-0.03em;
+}
+
+.compact-heading-text p{
+    margin:0;
+    font-size:14px;
+    line-height:1.4;
+    color:rgba(255,255,255,0.82);
+    max-width:700px;
+}
+
+.compact-controls{
+    background:transparent;
+    box-shadow:none;
+    border:0;
+    padding:0;
+}
+
+.compact-controls::before{
+    display:none;
+}
+
+.compact-controls .control-label{
+    color:white;
+    opacity:0.9;
+    margin-bottom:7px;
+    font-size:12px;
+    font-weight:900;
+    letter-spacing:0.06em;
+}
+
+.compact-controls select{
+    background:white;
+    color:#00324a;
+}
+
+/* =========================================================
+   HEATMAP
+========================================================= */
+
+.heatmap-card{
+    position:relative;
+    width:100%;
+    overflow:hidden;
+    border-radius:22px;
+    background:white;
+    box-shadow:0 10px 28px rgba(0,80,100,0.08);
+    border:1px solid rgba(0,122,138,0.10);
+    padding:24px;
+    margin-bottom:32px;
+}
+
+.heatmap-card img{
+    display:block;
+    width:1060px;
+    height:190px;
+    border-radius:0;
+}
+
+/* =========================================================
+   OVERVIEW
+========================================================= */
+
+.overview-card{
+    margin-bottom:18px;
+    padding:20px 24px;
+    border-radius:22px;
+    background:linear-gradient(135deg, rgba(220,248,242,0.75), rgba(255,243,214,0.60));
+    border:1px solid rgba(0,122,138,0.10);
+}
+
+.overview-card h3{
+    margin:0 0 10px 0;
+    color:var(--deep-ocean);
+    font-size:19px;
+}
+
+.overview-card p{
+    margin:0;
+    color:var(--muted);
+    font-size:15.5px;
+    line-height:1.6;
+}
+
+/* =========================================================
+   ACCORDION
+========================================================= */
+
+.accordion{
+    display:grid;
+    gap:12px;
+}
+
+.accordion-item{
+    border-radius:20px;
+    background:white;
+    box-shadow:0 8px 22px rgba(0,80,100,0.075);
+    border:1px solid rgba(0,122,138,0.10);
+    overflow:hidden;
+}
+
+.accordion-header{
+    width:100%;
+    border:0;
+    background:white;
+    cursor:pointer;
+    padding:18px 22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    text-align:left;
+    color:var(--deep-ocean);
+    font-size:18px;
+    font-weight:900;
+}
+
+.accordion-header:hover{
+    background:#f8fffb;
+}
+
+.accordion-arrow{
+    font-size:17px;
+    color:var(--ocean);
+    transition:0.2s;
+}
+
+.accordion-item.open .accordion-arrow{
+    transform:rotate(90deg);
+}
+
+.accordion-body{
+    display:none;
+    padding:0 22px 20px 22px;
+    color:var(--muted);
+    font-size:15px;
+    line-height:1.65;
+}
+
+.accordion-item.open .accordion-body{
+    display:block;
+}
+
+.accordion-body p{
+    margin:0 0 13px 0;
+}
+
+.accordion-body p:last-child{
+    margin-bottom:0;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer-wave{
+    height:34px;
+    margin-top:0;
+    overflow:hidden;
+}
+
+.footer-wave svg{
+    width:100%;
+    height:100%;
+    display:block;
+}
+
+.footer{
+    background:
+        radial-gradient(circle at 12% 15%, rgba(255,196,0,0.34), transparent 28%),
+        linear-gradient(135deg, #00324a, #006f82);
+    padding:12px 48px;
+    border-top:1px solid rgba(255,255,255,0.26);
+    box-shadow:0 -8px 24px rgba(0,80,100,0.08);
+}
+
+.footer-inner{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+.footer-sentence{
+    max-width:1960px;
+    width:100%;
+    color:white;
+    font-size:13px;
+    line-height:1.45;
+    font-weight:600;
+    letter-spacing:0.01em;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1100px){
+
+    html,
+    body{
+        height:auto;
+        overflow:auto;
+    }
+
+    body{
+        display:block;
+    }
+
+    .navbar{
+        display:flex;
+        flex-direction:column;
+        align-items:flex-start;
+        min-height:auto;
+        padding:0;
+        overflow-x:visible;
+    }
+
+    .logo-box{
+        width:100%;
+        height:62px;
+        padding:10px 18px;
+    }
+
+    .logo-box::after{
+        display:none;
+    }
+
+    .platform-title{
+        width:100%;
+        height:48px;
+        justify-content:flex-start;
+        padding:0 18px;
+        font-size:14px;
+        background:#00324a;
+    }
+
+    .platform-title::after{
+        left:18px;
+        transform:none;
+        width:260px;
+        bottom:10px;
+    }
+
+    .navlinks{
+        width:100%;
+        flex-wrap:wrap;
+        justify-content:flex-start;
+        gap:10px;
+        padding:12px 18px 14px 18px;
+        margin-left:0;
+        overflow:visible;
+    }
+
+    .section{
+        height:auto;
+        min-height:auto;
+        padding:16px 32px 8px 32px;
+        overflow:visible;
+    }
+
+    .country-panel{
+        height:auto;
+    }
+
+    .country-heading,
+    .country-title-row{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .country-controls{
+        display:flex;
+        align-items:center;
+        gap:12px;
+        justify-content:flex-start;
+    }
+
+    .country-controls .control-label{
+        margin-bottom:0;
+        white-space:nowrap;
+        font-size:0.85rem;
+    }
+
+    .country-controls select{
+        min-width:200px;
+        max-width:300px;
+    }
+
+    .diagnostic-grid{
+        grid-template-columns:1fr;
+    }
+
+    .country-content{
+        overflow:visible;
+    }
+
+    .footer{
+        padding:12px 32px;
+    }
+}
+
+@media(max-width:650px){
+
+    .logo-box img{
+        height:31px;
+    }
+
+    .navlinks a{
+        padding:8px 11px;
+        font-size:14px;
+    }
+
+    .country-top{
+        padding:24px 24px 18px 24px;
+    }
+
+    .heading-text h1{
+        font-size:31px;
+    }
+
+    .country-content{
+        padding:28px 24px 34px 24px;
+    }
+
+    .country-title-row h2{
+        font-size:30px;
+    }
+
+    .accordion-header{
+        font-size:16px;
+    }
+
+    .footer-wave{
+        height:24px;
+        min-height:24px;
+    }
+
+    .footer-sentence{
+        font-size:12px;
+    }
+}
+
+.country-title-with-flag{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.country-flag{
+    width:48px;
+    height:36px;
+    object-fit:cover;
+    border-radius:6px;
+    box-shadow:0 4px 12px rgba(0,50,74,0.18);
+    border:1px solid rgba(0,50,74,0.10);
+}
+.compact-controls {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-end;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 220px;
+}
+
+.control-group select {
+    width: 220px !important;
+}
+</style>
+</head>
+<body>
+<div class="compact-controls">
+
+    <div class="control-group">
+        <label class="control-label" for="countrySelect1">First country:</label>
+        <select id="countrySelect1" onchange="renderComparisonImage()">
+            <option value="fi">Fiji</option>
+            <option value="ki">Kiribati</option>
+            <option value="mi">Marshall Islands</option>
+            <option value="fs">Micronesia</option>
+            <option value="na">Nauru</option>
+            <option value="pa">Palau</option>
+            <option value="sa">Samoa</option>
+            <option value="si">Solomon Islands</option>
+            <option value="to">Tonga</option>
+            <option value="tu">Tuvalu</option>
+            <option value="va">Vanuatu</option>
+        </select>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="countrySelect2">Second country:</label>
+        <select id="countrySelect2" onchange="renderComparisonImage()">
+            <option value="fi">Fiji</option>
+            <option value="ki">Kiribati</option>
+            <option value="mi">Marshall Islands</option>
+            <option value="fs">Micronesia</option>
+            <option value="na">Nauru</option>
+            <option value="pa">Palau</option>
+            <option value="sa">Samoa</option>
+            <option value="si">Solomon Islands</option>
+            <option value="to">Tonga</option>
+            <option value="tu">Tuvalu</option>
+            <option value="va">Vanuatu</option>
+        </select>
+    </div>
+
+</div>
+
+<div class="chart-card">
+    <img id="comparisonImage" src="" alt="Country comparison chart">
+</div>
+
+<script>
+function renderComparisonImage() {
+    const xx = document.getElementById("countrySelect1").value;
+    const yy = document.getElementById("countrySelect2").value;
+
+    const imageName = "xcross/" + xx + "vs" + yy + ".jpg";
+
+    document.getElementById("comparisonImage").src = imageName;
+    document.getElementById("comparisonImage").alt = xx + " vs " + yy + " comparison chart";
+}
+
+window.onload = renderComparisonImage;
+</script>
+
+
+</body>
+</html>
